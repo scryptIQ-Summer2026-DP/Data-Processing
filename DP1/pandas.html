@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- MathJax for mathematical notation -->
+    <script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$']],
+            displayMath: [['$$', '$$']],
+            processEscapes: true
+        },
+        svg: {
+            fontCache: 'global'
+        }
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    
+    <!-- Pyodide and CodeMirror -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/theme/pastel-on-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/mode/python/python.min.js"></script>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="../assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../assets/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="../assets/android-chrome-512x512.png">
+
+    <!-- Core Stylesheets -->
+    <link rel="stylesheet" href=../assets/colours.css>
+    <link rel="stylesheet" href="../assets/shared-styles.css">
+    <link rel="stylesheet" href="../assets/nav-bar.css">
+    <link rel="stylesheet" href="../assets/module_card.css">
+    <link rel="stylesheet" href="../assets/learning_outcomes.css">
+    <link rel="stylesheet" href="../assets/learning_lists.css">
+    <link rel="stylesheet" href="../assets/box_styles.css">
+    <link rel="stylesheet" href="../assets/code_styles.css">
+    
+    <!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>scryptIQ - DP1 - Pandas</title>
+    <script>
+        window.LESSON_FILES = [
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/refs/heads/main/dp/penguins.csv", filename: "penguins.csv", is_binary: false},
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/refs/heads/main/dp/obesity_dataset.csv", filename: "obesity_dataset.csv", is_binary: false}
+        ];
+        window.LESSON_PACKAGES = ['numpy', 'pandas'];
+    </script>
+</head>
+<body>
+    
+    <!-- Sidebar Navigation -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <a href="../homepage.html" style="text-decoration: none; display: inline-block;">
+                <img src="../assets/scryptIQ_logo_dark.png" alt="scryptIQ Logo" class="sidebar-logo">
+            </a>
+        </div>
+
+        <h3>Content</h3>
+        <ul>
+            <li><a href="./introduction.html" class="">Introduction</a></li><li><a href="./intro-numpy.html">Introduction to NumPy</a></li><li><a href="./operations-numpy.html">Operations in NumPy</a></li>
+            <li>
+                <div class="nav-toggle active" data-target="expandable-section-3">
+                    Pandas
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <ul class="nested-nav expanded" id="expandable-section-3"><li><a href="#introduction">Introduction</a></li><li><a href="#intro-to-pandas">Intro to Pandas</a></li><li><a href="#the-penguin-dataset">The Penguin Dataset</a></li><li><a href="#viewing-your-data">Viewing your data</a></li><li><a href="#accessing-columns">Accessing Columns</a></li><li><a href="#slicing-with--loc">Slicing with .loc</a></li><li><a href="#filtering">Filtering</a></li><li><a href="#making-a-copy">Making a copy</a></li><li><a href="#summary---quiz">Summary & Quiz</a></li>
+                </ul>
+            </li><li><a href="./data-augmentation.html">Data augmentation</a></li><li><a href="./bonus-material.html">Numbers in Memory (Bonus)</a></li><li><a href="./assignment.html">Assignment</a></li><li><a href="./feedback.html">Feedback</a></li>
+        </ul>
+
+        <h3 class="collapsible-header collapsed">
+            Resources
+            <span class="collapse-icon">►</span>
+        </h3>
+        <div class="collapsible-content collapsed">
+            <ul>
+                <li><a href="./glossary.html">Glossary</a></li><li><a href="./downloads.html">Downloads</a></li><li><a href="../HB/introduction.html">Handbook</a></li>
+            </ul>
+        </div>
+
+        <h3>
+            <li><a href="./report-issue.html">Report an Issue</a></li>
+        </h3>
+    </div>
+
+    <!-- Sidebar Toggle Button -->
+    <button id="sidebar-toggle" class="sidebar-toggle">❮</button>
+
+    <!-- Main Content Area -->
+    <div id="main-content" class="main-content">
+        <!-- Top Navigation Bar -->
+        <div class="top-navbar">
+            <h1 class="page-title">Data Processing 1</h1>
+            <div class="nav-actions">
+                <a href="../homepage.html" class="text-button" title="Materials homepage">
+                    Homepage
+                </a>
+                <a href="https://scryptiq.ai/my-cohorts/" class="text-button scryptiq-button" title="Find out more about us">
+                    scryptIQ
+                </a>
+            </div>
+        </div>
+
+        
+            <div class="module-card" id="introduction">
+                <div class="module-header">
+                    Pandas <span class="module-tag">DP1</span>
+                </div>
+                <div class="module-body">
+                    <h3>Learning Objectives</h3>
+                    <div class="learning-outcomes">
+                        <div class="outcome-item">
+                    <span class="outcome-number">1</span>
+                    <span class="outcome-text">What is Pandas and DataFrames?</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">2</span>
+                    <span class="outcome-text">How to view and interact with your data</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">3</span>
+                    <span class="outcome-text">How to index/slice/filter DataFrames</span>
+                </div>
+                    </div>
+                    <h3>Introduction</h3>
+                    <p>While working with NumPy, you may have found that its matrices feel less intuitive than the more familiar way of handling <em>tabular</em> data: the <strong>spreadsheet</strong>. <strong>Pandas</strong> was created to bridge this gap. A specialised package built on top of NumPy, it is an open-source, community-supported project designed to make handling, transforming, and analysing tabular data straightforward. It is fast and memory-efficient, since it inherits NumPy&#x27;s performance under the hood.<br><br>As with NumPy, Pandas is one of the core data science packages in Python, and you will find it widely used across both <strong>academic and commercial</strong> settings.</p>
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p>Over the years there have been some new tabular handling packages, namely <a href="https://pola.rs/">Polars</a> and <a href="https://arrow.apache.org/">Apache Arrow</a>, which are said to be even faster and more memory efficient. They were created after Pandas and use similar syntax to what Pandas pioneered. These tools may be better for someone working with extremely big data. However, for your average data science needs Pandas is more than enough. Especially as there are many packages that integrate with Pandas, including a wealth of visualisation packages.</p>
+            </div>
+        </div>
+        
+                </div>
+            </div>
+            
+            <div class="module-card" id="intro-to-pandas">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Intro to Pandas</h3>
+                        <p>As with NumPy you will need to install Pandas to your local environment to use it. Also like NumPy, Pandas is normally loaded into the workspace with the alias <strong>pd</strong>.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-88">import pandas as pd
+
+import numpy as np</textarea>
+            </div>
+            <div id="code-cell-88-output" class="output" style="display: none;"></div>
+        </div>
+        <p>For this course we will be working with Pandas version <strong>2.3.3</strong>. Currently, Pandas has been updated to <a href="https://pandas.pydata.org/community/blog/pandas-3.0.html"><strong>3.0+</strong></a> in 2026, which has had some major changes to how <em>strings</em> and <em>copy warnings</em> are handled. However, the syntax and common methods are completely unchanged. We have chosen to stick with version <strong>2+</strong>, as many software packages will not have upgraded to <strong>3+</strong>, leading to confusion.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-89">pd.__version__</textarea>
+            </div>
+            <div id="code-cell-89-output" class="output"></div>
+        </div>
+        <p>As with the array being the core structure at the heart of NumPy, for Pandas there is the DataFrame. Unlike the array, a DataFrame will have names associated with each column, as you would see in a spreadsheet. Additionally, there is an index column, which by default is an integer starting with 0 for the first row, counting up.<br><br>We&#x27;ll have a look at this by creating a DataFrame a few ways:</p><h4>From a matrix</h4>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-90">matrix = np.array(
+                    [[ 5,  21,  -1],
+                    [ 10,  42,  20],
+                    [ 8,  -1,  11]],
+                    
+                )
+
+print(pd.DataFrame(matrix))</textarea>
+            </div>
+            <div id="code-cell-90-output" class="output"></div>
+        </div>
+        <p>Here you can see the data has been visually formatted into something more akin to a spreadsheet. Both the left-hand side and the top have new numbers, these are indexes for the rows and the columns respectively. However, having the columns as numbers is neither distinguishable from the row index, nor informative of what is in those columns. Therefore, you normally create the DataFrame with <strong>named</strong> columns, typically strings (words).</p><p><img src="./images/pandas.png" alt="Pandas" class="notebook-image"></p><p>To do this we utilise a dictionary, where the <strong>key</strong> is the name of the column and the <strong>value</strong> is the data:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-91">data = {
+        &quot;col-one&quot; : [ 5,  21,  -1],
+        &quot;col-two&quot; : [ 10,  42,  20],
+        &quot;col-three&quot; :[ 8,  -1,  11]
+}
+
+print(pd.DataFrame(data))</textarea>
+            </div>
+            <div id="code-cell-91-output" class="output"></div>
+        </div>
+        
+        <div class="info-box remember-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                REMEMBER
+            </div>
+            <div class="box-content">
+                <p>Keep the column names as informative as possible without being too long. If you need to use more than one word then use a <strong>-</strong> or <strong>_</strong> to separate the words. A <em>space</em> will work some of the time but can cause issues. It is also crucial to make sure you don&#x27;t leave any trailing spaces after words, i.e. &quot;col-one &quot;. This will create errors in accessing the column that are frustrating to catch!</p>
+            </div>
+        </div>
+        <p>We now have a properly formatted Pandas Dataframe with <em>3</em> columns and <em>3</em> rows. However, we are not normally creating a DataFrame from scratch, rather we are importing our own or others’ experimental data into our workspace.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="the-penguin-dataset">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>The Penguin Dataset</h3>
+                        <p>For demonstration throughout <strong>DP1-2</strong> we will be using the Palmer Archipelago Penguins dataset to help us explore how to work with data in Pandas. This dataset was made publicly available by <em>Horst AM, Hill AP, Gorman KB (2020)</em>: <a href="https://allisonhorst.github.io/palmerpenguins/">Palmer Archipelago (Antarctica) penguin data</a>.<br><br>This dataset is stored in the <strong>data</strong> folder that can also be found inside your lesson repository under the name <strong>penguins.csv</strong>. To bring it into Pandas we use the <code>pd.read_csv()</code> function from Pandas and store it as the variable <strong>df</strong>, a shortening of DataFrame:</p>
+        <div class="info-box key-terms-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                KEY TERMS
+            </div>
+            <div class="box-content">
+                <p><strong>CSV:</strong> A Comma-Separated Values file. A plain text format where each line represents a row of data and each value is separated by a comma. It is one of the most universal formats for storing and sharing tabular data.<br><br>There are several other functions for reading in other types of tabular dataset, these can be found <a href="https://pandas.pydata.org/docs/reference/io.html">here</a>. However, a CSV is one of the more universal.</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-92">df = pd.read_csv(&quot;./data/penguins.csv&quot;)</textarea>
+            </div>
+            <div id="code-cell-92-output" class="output" style="display: none;"></div>
+        </div>
+        <p>The argument for <code>pd.read_csv()</code> is a string of the path of the file we want. The path is the location of the file given the many folders it may be nested within. If we were to give the full path of the file in our computer, i.e. <code>/Users/MY_COMP/Documents/scryptiq/DP1_Lesson/data/penguins.csv</code> this would be the <strong>absolute path</strong>. Alternatively, as we have done here, we can give the <strong>relative path</strong> by providing a full stop (<strong>.</strong>). This tells the computer that the path starts in the same folder you are currently in, in this case it would be your working repository.<br><br>This content was written for a MacOS / Linux system, which utilises forward slashes <code>/</code> for its paths. In contrast Windows uses backwards slashes <code>\</code>, which in Python are treated as <em>escape sequences</em>, terminating the path early. You therefore need to provide a <code>r</code> character before the string, so to have the computer know to not treat it as a normal backwards slash:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-93"># A windows path
+df = pd.read_csv(r&quot;.\data\penguins.csv&quot;)</textarea>
+            </div>
+        </div>
+        
+        <div class="info-box key-terms-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                KEY TERMS
+            </div>
+            <div class="box-content">
+                <p><strong>Path:</strong> The address of a file or folder on your computer&#x27;s filesystem that is represented as a sequence of directory names that tells the computer where to find something.<br><br><strong>Absolute Path:</strong> The full address of a file from the root of the filesystem, e.g. <code>/Users/MY_COMP/Documents/project/data/penguins.csv</code> on macOS/Linux. It will work regardless of where your script is located.<br><br><strong>Relative Path:</strong> An address given <em>relative</em> to the folder your script is currently running in. Shorter and more portable than an absolute path, as it doesn&#x27;t depend on a specific machine&#x27;s folder structure.<br><ul class="nested-list"><li><strong>./:</strong>: Refers to the current directory (the folder your script is in). So <code>./data/penguins.csv</code> means <em>look in a folder called data inside the current folder</em>.</li><br><li><strong>../:</strong>: Refers to the parent directory — one level up from the current folder. So <code>../data/penguins.csv</code> means <em>go up one folder, then look in data</em>.</li></ul></p>
+            </div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="viewing-your-data">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Viewing your data</h3>
+                        <p>To see the contents of the imported DataFrame, simply type the variable <code>df</code> or use <code>print()</code>:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-94">df</textarea>
+            </div>
+            <div id="code-cell-94-output" class="output"></div>
+        </div>
+        <p>From the print we can see the dataset has <strong>344</strong> rows and <strong>8</strong> columns. Due to the size, both in width and length the DataFrame has been truncated.<br><br>To just get an overview of the data without printing the whole DataFrame, it is common to use the <code>.head()</code> method to print instead. By default <code>.head()</code> will only print the first 5 rows and is typically your first action after loading the data, just to check whether the data has been loaded in correctly!</p>
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-95"># Provide a number inside .head() to change the number of rows shown
+
+df.head()</textarea>
+            </div>
+            <button id="run-code-cell-95" class="run-button">Run Code</button>
+            <div id="code-cell-95-output" class="output"></div>
+        </div>
+        <p>Like a NumPy array, a DataFrame has a <code>shape</code> attribute, that can be used to programmatically obtain the number of rows and columns:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-96">data_shape = df.shape
+
+print(data_shape)
+print(&quot; &quot;)
+print(&quot;The DataFrame has&quot;, data_shape[0], &quot;rows and&quot;, data_shape[1], &quot;columns&quot;)</textarea>
+            </div>
+            <div id="code-cell-96-output" class="output"></div>
+        </div>
+        <p>You can also get all the column names through the <code>.columns</code> attribute, which returns an indexable list:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-97">data_cols = df.columns
+
+print(data_cols)
+print(&quot; &quot;)
+print(f&quot;First column is: {data_cols[0]}&quot;)</textarea>
+            </div>
+            <div id="code-cell-97-output" class="output"></div>
+        </div>
+        <p>Having a closer look at the column names shows us that two of them don&#x27;t follow the good practice rules for names. Both &quot;Culmen Length (mm)&quot; and &quot;Culmen Depth (mm)&quot; have spaces and capitalisation.<br><br>This can be quickly rectified by using the <code>.rename()</code> method. To do so, you provide a dictionary where the:<ul class="nested-list"><li><strong>keys</strong> are the current column name</li><br><li><strong>values</strong> are what you want to replace them</li></ul></p><p>To have the method alter the DataFrame, rather than returning a renamed one, we set the <strong>inplace</strong> argument to True.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-98">rename = {
+            &quot;Culmen Length (mm)&quot; : &quot;bill_length_mm&quot;,
+             &quot;Culmen Depth (mm)&quot; : &quot;bill_depth_mm&quot;
+        }
+
+df.rename(columns=rename, inplace=True)
+
+df.columns</textarea>
+            </div>
+            <div id="code-cell-98-output" class="output"></div>
+        </div>
+        <h4>Data Types</h4><p>Unlike NumPy, a DataFrame can consist of mixed data types for different columns. However, the data within each column must be of the same type. For this reason you can think of each column as a vertical NumPy array.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-99">df.dtypes</textarea>
+            </div>
+            <div id="code-cell-99-output" class="output"></div>
+        </div>
+        <p>Where a column dtype is <code>object</code> it indicates it is neither a float nor an integer. This is typically a string, although it can be <em>lists/arrays</em>, <em>tuples</em>, <em>dictionaries</em>, etc.<br><br>The number of any given type can be found by a combination of conditional operators and <code>sum()</code>:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-100">dtype_bool = df.dtypes == &quot;float64&quot;
+
+print(dtype_bool)
+print(&quot; &quot;)
+# As True == 1 and False == 0, sum will count where it is True
+total_object = sum(dtype_bool)
+print(f&quot;Number of float columns: {total_object}&quot;)</textarea>
+            </div>
+            <div id="code-cell-100-output" class="output"></div>
+        </div>
+        
+        <div class="info-box important-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                IMPORTANT
+            </div>
+            <div class="box-content">
+                <p>As of Pandas version <strong>3+</strong>, strings now have their own dtype, distinct from object.</p>
+            </div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="viewing-your-data">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>11.</strong></p>
+                <p>Load the practice dataset <strong>obesity_dataset.csv</strong> into the variable <code>pe_df</code>. It is in the same folder (<code>data</code>) as the penguins dataset. Check that it has loaded correctly using <code>head()</code>.<br>With this dataset, find and print:<ul class="nested-list"><li>The number of rows and columns</li><br><li>The name of the 5th column</li><br><li>The number of object-type (text) columns</li></ul></p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-101">pe_df = </textarea>
+            </div>
+            <button id="run-code-cell-101" class="run-button">Run Code</button>
+            <div id="code-cell-101-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="accessing-columns">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Accessing Columns</h3>
+                        <p>The data is accessed much like in NumPy, except now there is a string identifier to index with. For example if we wanted to access the <em>body mass</em> column, we would place the column name inside square brackets <code>[]</code> after the DataFrame variable:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-102">index_df = df[&quot;body_mass_g&quot;]
+
+print(index_df)
+print(&quot;&quot;)
+print(type(index_df))</textarea>
+            </div>
+            <div id="code-cell-102-output" class="output"></div>
+        </div>
+        <p>This returns a Pandas series, which is a 1-D array akin to a NumPy array, just with some extra attributes that associate it with the DataFrame. If you were to index for more than one column, a DataFrame will be returned instead. To do so, you will need to place your column names inside a list:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-103">sub_df = df[[&quot;species&quot;, &quot;body_mass_g&quot;]]
+
+print(sub_df)
+print(&quot;&quot;)
+print(type(sub_df))</textarea>
+            </div>
+            <div id="code-cell-103-output" class="output"></div>
+        </div>
+        <p>What do you think will be returned by a singular column name inside a list? Run the cell below to find out:</p>
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-104">df[[&quot;body_mass_g&quot;]]</textarea>
+            </div>
+            <button id="run-code-cell-104" class="run-button">Run Code</button>
+            <div id="code-cell-104-output" class="output"></div>
+        </div>
+        <p>The Pandas series can be indexed in all the same ways as a NumPy array:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-105">df[&quot;body_mass_g&quot;][0:5]</textarea>
+            </div>
+            <div id="code-cell-105-output" class="output"></div>
+        </div>
+        <p>Or, if you prefer, you can convert it to a NumPy array to play around with it that way. This has the added benefit of ensuring it can be used with all of NumPy’s additional tools. Although, often a Pandas series will automatically work with a NumPy function.<br><br>There are two methods to type cast it to a NumPy array:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-106"># Using NumPy
+np.array(df[&quot;body_mass_g&quot;])
+
+# OR
+
+# Using a Pandas method
+df[&quot;body_mass_g&quot;].to_numpy()</textarea>
+            </div>
+            <div id="code-cell-106-output" class="output" style="display: none;"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="accessing-columns">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>12.</strong></p>
+                <p>From the obesity dataset (pe_df):<ol class="nested-list"><li>Isolate just the <strong>Weight</strong> column as a Pandas Series and print the first 10 values</li><br><li>Separately, create a sub-DataFrame containing only the <strong>Gender</strong>, <strong>Weight</strong>, and <strong>NObeyesdad</strong> columns.</li></ol></p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-107">pe_df</textarea>
+            </div>
+            <button id="run-code-cell-107" class="run-button">Run Code</button>
+            <div id="code-cell-107-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="slicing-with--loc">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Slicing with .loc</h3>
+                        <p>The above methods of indexing and slicing, whilst they work, are not the officially recommended method, due to the fact that it chains together multiple actions. Instead, if you aim to select some columns and some rows, <code>.loc</code> is the best method to use.<br><br>Like with NumPy, <code>.loc</code> allows the user to index and slice inside a singular set of square brackets <code>[]</code>. However, rather than using integers, it is the labels for both the columns and index, i.e. <code>df.loc[index_label, column_labels]</code>. As standard, the index is a continuous series of numbers, therefore this translates to something similar to NumPy, however, users will replace the index with string labels.<br><br>For our dataset, in order to obtain all the rows from the column called &quot;body_mass_g&quot;, we would use:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-108">df.loc[:, &#x27;body_mass_g&#x27;]</textarea>
+            </div>
+            <div id="code-cell-108-output" class="output"></div>
+        </div>
+        <p>To display only the first three masses, assuming the DataFrame index starts at 0, you would use:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-109">df.loc[0:2, &#x27;body_mass_g&#x27;]</textarea>
+            </div>
+            <div id="code-cell-109-output" class="output"></div>
+        </div>
+        <p>Like with NumPy, the rows are indexed <strong>first</strong> and the columns <strong>second</strong>. However, a big difference is that <code>.loc</code> slicing is <strong>end-inclusive</strong>, which means the index <em>2</em> above is included in the return. Pandas uses end-inclusive slicing here for readability, though this differs from the standard Python convention.<br><br>As seen previously, multiple columns can be returned by placing them inside a list.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-110"># Return rows at index 25, 50, 75, 100
+df.loc[[25, 50, 75, 100], [&#x27;species&#x27;, &#x27;body_mass_g&#x27;]]</textarea>
+            </div>
+            <div id="code-cell-110-output" class="output"></div>
+        </div>
+        <h4>.iloc[]</h4><p>An alternative to <code>.loc</code> is <code>.iloc</code>, which is purely numerical index based slicing. However, given <code>.loc</code> can utilise numerical indexing for the rows it seems <strong>less explicit</strong> to use the numerical indexes of the columns rather than their given labels. The one big difference is that <code>.iloc</code> is <strong>end-exclusive</strong>, as is normally seen with slicing but not with <code>.iloc</code>. We recommend you pick one type to use exclusively, to prevent confusion.<br><br>Below, we have recreated the some of the <code>.loc</code> slices with <code>.iloc</code>:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-111"># Only 2 rows are returned instead of 3
+df.iloc[0:2, 5]</textarea>
+            </div>
+            <div id="code-cell-111-output" class="output"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-112"># Return rows at index 25, 50, 75, 100
+# Return the first (species) and sixth (body_mass_g)
+df.loc[:, &#x27;body_mass_g&#x27;]</textarea>
+            </div>
+            <div id="code-cell-112-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="slicing-with--loc">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>13.</strong></p>
+                <p>Using <code>.loc</code> on pe_df, return:<ul class="nested-list"><li>The <strong>Height</strong> values for the first 5 rows</li><br><li>The <strong>SMOKE</strong>, <strong>Age</strong>, and <strong>MTRANS</strong> columns for rows at index 100, 200, and 300</li></ul></p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-113">pe_df</textarea>
+            </div>
+            <button id="run-code-cell-113" class="run-button">Run Code</button>
+            <div id="code-cell-113-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="filtering">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Filtering</h3>
+                        <p>The entire DataFrame can be easily filtered to only return rows of data where a condition is met. For example if we were only interested in the <strong>Chinstrap</strong> penguins, we would select for them in the following way:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-114">df[df[&#x27;species&#x27;] == &quot;Chinstrap&quot;]</textarea>
+            </div>
+            <div id="code-cell-114-output" class="output"></div>
+        </div>
+        <p>Lets break it down. Inside the square brackets a boolean array is created, just as we saw previously:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-115">df[&#x27;species&#x27;] == &quot;Chinstrap&quot;</textarea>
+            </div>
+            <div id="code-cell-115-output" class="output"></div>
+        </div>
+        <p>This array is mapped to the DataFrame index, where the values are <em>True</em> the rows are selected.<br><br>As with NumPy multiple conditionals can be combined with <strong>&amp;</strong> and <strong>|</strong> operators:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-116">df[(df[&#x27;species&#x27;] == &quot;Chinstrap&quot;) &amp; (df[&#x27;bill_length_mm&#x27;] &gt; 55)]</textarea>
+            </div>
+            <div id="code-cell-116-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="filtering">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>14.</strong></p>
+                <p><ul class="nested-list"><li>Filter <code>pe_df</code> to show only participants classified as <strong>&#x27;Obesity_Type_III&#x27;</strong> from the <strong>NObeyesdad</strong> column.</li><br><li>Next, write a second filter to show only <strong>male</strong> participants with a <strong>weight</strong> greater than <strong>100 kg</strong>.</li></ul></p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-117">pe_df</textarea>
+            </div>
+            <button id="run-code-cell-117" class="run-button">Run Code</button>
+            <div id="code-cell-117-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="making-a-copy">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Making a copy</h3>
+                        
+        <div class="video-container">
+            <iframe 
+                src="https://www.youtube.com/embed/ulYMgLev5Xo"
+                width="560"
+                height="315"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+        </div>
+        <p>When you filter or slice a DataFrame, the result is not always a brand new, independent DataFrame. Often it is a <strong>view</strong>: a window onto the <em>original</em> data rather than a separate copy of it.<br><br>This becomes important the moment you try to <strong>modify</strong> a subset. Because Pandas cannot always tell whether you intend to change the subset alone or the original DataFrame behind it, it raises a <code>SettingWithCopyWarning</code> to flag the ambiguity.</p>
+        <div class="info-box key-terms-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                KEY TERMS
+            </div>
+            <div class="box-content">
+                <p><strong>View:</strong> A subset that still points at the original DataFrame&#x27;s data. Changing it may also change the original.<br><br><strong>Copy:</strong> A fully independent duplicate of the data. Changing it leaves the original untouched.</p>
+            </div>
+        </div>
+        <p>For example, say we filter for the <strong>Chinstrap</strong> penguins and then try to set their <code>bill_length_mm</code> to <code>0</code>. Pandas warns us that it is unsure whether we mean to alter the subset or the original <code>df</code>:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-118">chinstrap = df[df[&#x27;species&#x27;] == &quot;Chinstrap&quot;]
+
+chinstrap[&#x27;bill_length_mm&#x27;] = 0  # raises SettingWithCopyWarning
+
+chinstrap.head()</textarea>
+            </div>
+            <div id="code-cell-118-output" class="output"></div>
+        </div>
+        <p>As it assumes that the aim is to change a set of values in the original DataFrame, it suggests tp the user to use <code>.loc</code> to set the value, as this will explicitly return a <strong>view</strong>. Here, we can just pass the boolean array from the filter to the row part of the indexer, instead of giving it explicit indexes as we did previously.<br><br>This ends up looking like the below:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-119"># Use .loc to assign new values
+df.loc[df[&#x27;species&#x27;] == &quot;Chinstrap&quot;, [&#x27;bill_length_mm&#x27;]] = 0
+
+df</textarea>
+            </div>
+            <div id="code-cell-119-output" class="output"></div>
+        </div>
+        <p>However, our aim here is to create a subset of the data which we want to alter further, leaving the original DataFrame untouched. To work on a subset safely, append the <code>.copy()</code> method when you create it. This returns an independent DataFrame, so any changes apply only to the subset and the original <code>df</code> is left untouched.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-120">chinstrap = df[df[&#x27;species&#x27;] == &quot;Chinstrap&quot;].copy()
+
+chinstrap[&#x27;bill_length_mm&#x27;] = 0  # safe, no warning
+
+chinstrap.head()</textarea>
+            </div>
+            <div id="code-cell-120-output" class="output"></div>
+        </div>
+        <p>To summarise, use standard filtering with <code>.copy()</code> when you want to create a subset of the data to work with downstream, and use <code>.loc</code> when you want to alter the values at specific positions.</p>
+        <div class="info-box important-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                IMPORTANT
+            </div>
+            <div class="box-content">
+                <p>For Pandas 3.0+ all filtering and indexing operations will return a <strong>copy</strong> when assigned to a variable, rather than the patchwork of <strong>views</strong> and <strong>copies</strong>. Due to this the warning has been removed. More can be read about it <a href="https://pandas.pydata.org/docs/user_guide/copy_on_write.html">here</a>.<br><br>The same rule applies that you should use <code>.loc</code> for assigning values. Except now you do not need to append <code>.copy()</code> to the filtering/indexing when assigning a subset to a new variable.</p>
+            </div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="summary---quiz">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Summary & Quiz</h3>
+                        <p>Pandas works as a combination of the power of NumPy with the familiarity of spreadsheets. If you work with tabular data, Pandas should become one of the go-to tools for quick data exploration and cleaning. In the next section we will focus on using Pandas tools to augment the data and to analyse the underlying statistics.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="summary---quiz">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Summary & Quiz</h3>
+                        
+        <div class="quiz-box" id="quiz-3">
+            <div class="quiz-body">
+                <p class="quiz-intro">Attempt the questions below once you have finished. If you get any wrong, head back to that section to remind yourself of the reasoning/syntax behind the correct answer:</p>
+                
+            <div class="quiz-question" id="quiz-3-q0" data-quiz="quiz-3" data-topic-id="dataframes">
+                <span class="quiz-topic-tag">DataFrames</span>
+                <p class="quiz-question-text">What is the core data structure of Pandas?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-3-q0" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">The array</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-3-q0" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">The DataFrame</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-3-q0" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">The matrix</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-3-q0" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">The Series index</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div><hr class="quiz-divider">
+            <div class="quiz-question" id="quiz-3-q1" data-quiz="quiz-3" data-topic-id="accessing-columns">
+                <span class="quiz-topic-tag">Accessing Columns</span>
+                <p class="quiz-question-text">What is returned when you access a single column with `df[&quot;body_mass_g&quot;]`?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-3-q1" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">A DataFrame</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-3-q1" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">A NumPy array</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-3-q1" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">A Pandas Series</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-3-q1" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">A dictionary</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div><hr class="quiz-divider">
+            <div class="quiz-question" id="quiz-3-q2" data-quiz="quiz-3" data-topic-id="cleaning-columns">
+                <span class="quiz-topic-tag">Cleaning Columns</span>
+                <p class="quiz-question-text">Which method renames columns in place when given a dictionary and `inplace=True`?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-3-q2" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">.replace()</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-3-q2" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">.rename()</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-3-q2" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">.columns()</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-3-q2" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">.relabel()</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div><hr class="quiz-divider">
+            <div class="quiz-question" id="quiz-3-q3" data-quiz="quiz-3" data-topic-id="loc-slicing">
+                <span class="quiz-topic-tag">.loc Slicing</span>
+                <p class="quiz-question-text">How does `.loc` slicing differ from standard Python/NumPy slicing?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-3-q3" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It is zero-indexed only</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-3-q3" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It is end-inclusive</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-3-q3" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It cannot select columns</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-3-q3" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It only accepts integers</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div><hr class="quiz-divider">
+            <div class="quiz-question" id="quiz-3-q4" data-quiz="quiz-3" data-topic-id="filtering">
+                <span class="quiz-topic-tag">Filtering</span>
+                <p class="quiz-question-text">How do you filter a DataFrame to rows where species equals &quot;Chinstrap&quot;?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-3-q4" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">df.filter(&quot;Chinstrap&quot;)</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-3-q4" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">df[df[&#x27;species&#x27;] == &quot;Chinstrap&quot;]</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-3-q4" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">df.loc(&quot;Chinstrap&quot;)</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-3-q4" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">df[&#x27;species&#x27;].get(&quot;Chinstrap&quot;)</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+                
+            <div class="quiz-topics-footer">
+                <span class="quiz-topics-label">Topics covered</span>
+                <div class="quiz-topics-list">
+                    <span class="quiz-topic-pill" id="quiz-3-topic-dataframes">DataFrames</span><span class="quiz-topic-pill" id="quiz-3-topic-accessing-columns">Accessing Columns</span><span class="quiz-topic-pill" id="quiz-3-topic-cleaning-columns">Cleaning Columns</span><span class="quiz-topic-pill" id="quiz-3-topic-loc-slicing">.loc Slicing</span><span class="quiz-topic-pill" id="quiz-3-topic-filtering">Filtering</span>
+                </div>
+            </div>
+            </div>
+        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+        <div class="page-navigation">
+            <a href="./operations-numpy.html" class="nav-button prev">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                </svg>
+                Previous
+            </a>
+            <a href="./data-augmentation.html" class="nav-button next">
+                Next
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </a></div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div>© All materials are copyright scryptIQ 2025</div>
+            <div>Powered by Pyodide</div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../assets/main.js"></script>
+    
+    <!-- Pyodide Initialisation Script -->
+    <script>
+
+// Generalisable Pyodide Initialisation Script
+// Variables and state build up naturally as code blocks execute in order
+
+async function main() {
+    // Show loading message for all output elements
+    document.querySelectorAll(".output").forEach(el => {
+        el.textContent = "Loading Pyodide...";
+        el.classList.add("loading-message");
+    });
+    
+    try {
+        // Load Pyodide
+        console.log("Loading Pyodide...");
+        const pyodideStartTime = performance.now();
+        let pyodide = await loadPyodide();
+        const pyodideLoadTime = performance.now() - pyodideStartTime;
+        console.log(`Pyodide loaded in ${pyodideLoadTime.toFixed(2)}ms`);
+        
+        // Load required packages only if specified
+        const lessonPackages = window.LESSON_PACKAGES || [];
+        
+        if (lessonPackages.length > 0) {
+            console.log("Loading required Python packages...");
+            const packagesStartTime = performance.now();
+            
+            // Separate built-in packages from PyPI packages
+            const builtInPackages = lessonPackages.filter(pkg => 
+                ['numpy', 'scipy', 'matplotlib', 'pandas', 'scikit-learn', 'pillow', 'regex'].includes(pkg)
+            );
+            
+            const micropipPackages = lessonPackages.filter(pkg => !builtInPackages.includes(pkg));
+            
+            // Load built-in packages (fast)
+            if (builtInPackages.length > 0) {
+                await pyodide.loadPackage(builtInPackages);
+                console.log(`Loaded built-in packages: ${builtInPackages.join(', ')}`);
+            }
+            
+            // Install PyPI packages (slower)
+            if (micropipPackages.length > 0) {
+                await pyodide.loadPackage(['micropip']);
+                const micropip = pyodide.pyimport('micropip');
+                await micropip.install(micropipPackages);
+                console.log(`Installed PyPI packages: ${micropipPackages.join(', ')}`);
+            }
+            
+            const packagesLoadTime = performance.now() - packagesStartTime;
+            console.log(`Packages loaded in ${packagesLoadTime.toFixed(2)}ms`);
+            console.log(`Total initialisation time: ${(pyodideLoadTime + packagesLoadTime).toFixed(2)}ms`);
+        } else {
+            console.log("No packages to load for this lesson");
+            console.log(`Total initialisation time: ${pyodideLoadTime.toFixed(2)}ms`);
+        }
+
+        // Only set up basic Python environment - no pre-loaded variables
+        await pyodide.runPythonAsync(`
+            import sys
+            from io import StringIO
+        `);
+
+        // Only set up matplotlib if it's in the loaded packages
+        if (lessonPackages.includes('matplotlib')) {
+            await pyodide.runPythonAsync(`
+                # Set up matplotlib for web rendering
+                import matplotlib
+                matplotlib.use('AGG')
+                import matplotlib.pyplot as plt
+                import io
+                import base64
+                
+                def capture_matplotlib():
+                    """Capture current matplotlib figure as HTML img tag"""
+                    buf = io.BytesIO()
+                    plt.savefig(buf, format='png', bbox_inches='tight', dpi=100)
+                    buf.seek(0)
+                    img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+                    plt.close()
+                    return f'<img src="data:image/png;base64,{img_base64}" style="max-width: 100%; height: auto;" />'
+
+                # Silence the "FigureCanvasAgg is non-interactive" warning that
+                # occurs when notebook code calls plt.show().  In this environment
+                # figures are captured automatically via capture_matplotlib(), so
+                # plt.show() should simply be a no-op.
+                plt.show = lambda *args, **kwargs: None
+            `);
+            console.log('Matplotlib capture function set up');
+        }
+        
+        console.log("Pyodide loaded successfully");
+        
+        // Load remote files if URLs are specified
+        const lessonFiles = window.LESSON_FILES || [];
+        
+        if (lessonFiles.length > 0) {
+            try {
+                console.log(`Checking for ${lessonFiles.length} remote file(s) to load...`);
+                
+                // Build Python code to load all files dynamically
+                let pythonCode = `
+from pyodide.http import pyfetch
+import os
+
+# Create data directory if it doesn't exist
+os.makedirs('./data', exist_ok=True)
+`;
+                
+                // Add loading code for each file
+                for (const file of lessonFiles) {
+                    if (file.is_binary) {
+                        // Binary files (images, etc.) - use bytes
+                        pythonCode += `
+# Load ${file.filename} (binary)
+try:
+    response = await pyfetch("${file.url}")
+    content = await response.bytes()
+    with open('./data/${file.filename}', 'wb') as f:
+        f.write(bytes(content))
+    print("Loaded: ${file.filename}")
+except Exception as e:
+    print(f"Could not load ${file.filename}: {e}")
+`;
+                    } else {
+                        // Text files (CSV, etc.) - use string
+                        pythonCode += `
+# Load ${file.filename} (text)
+try:
+    response = await pyfetch("${file.url}")
+    content = await response.string()
+    with open('./data/${file.filename}', 'w') as f:
+        f.write(content)
+    print("Loaded: ${file.filename}")
+except Exception as e:
+    print(f"Could not load ${file.filename}: {e}")
+`;
+                    }
+                }
+                
+                await pyodide.runPythonAsync(pythonCode);
+                console.log("Remote files loaded successfully");
+            } catch (error) {
+                console.warn("Error loading remote files (continuing anyway):", error);
+            }
+        } else {
+            console.log("No remote files to load for this lesson");
+        }
+        
+        // Function to execute Python code and capture output
+        async function executePythonCode(code) {
+            try {
+                // Redirect Python stdout and stderr to capture print statements and warnings
+                await pyodide.runPythonAsync(`
+                    old_stdout = sys.stdout
+                    old_stderr = sys.stderr
+                    sys.stdout = mystdout = StringIO()
+                    sys.stderr = mystderr = StringIO()
+                `);
+
+                // Run the user code.
+                // We pass the code string via pyodide.globals to avoid JS-string escaping
+                // issues, then use Python's ast module to execute it.  The last expression
+                // (if any) is eval-ed inside Python so that repr() is called there —
+                // this means display settings such as np.set_printoptions() are always
+                // respected before the value crosses the Python→JS boundary.
+                // (Pyodide auto-converts numpy arrays to TypedArray, so String(result)
+                // would bypass numpy's formatting entirely.)
+                pyodide.globals.set('__cell_code__', code);
+                await pyodide.runPythonAsync(`
+import ast as _ast
+__cell_result__ = None
+try:
+    _tree = _ast.parse(__cell_code__)
+    if _tree.body and isinstance(_tree.body[-1], _ast.Expr):
+        _last = _tree.body.pop()
+        exec(compile(_ast.Module(body=_tree.body, type_ignores=[]), '<cell>', 'exec'), globals())
+        _val = eval(compile(_ast.Expression(body=_last.value), '<cell>', 'eval'), globals())
+        if _val is not None:
+            __cell_result__ = repr(_val)
+    else:
+        exec(compile(_tree, '<cell>', 'exec'), globals())
+finally:
+    for _k in ['_tree', '_last', '_val', '_ast']:
+        globals().pop(_k, None)
+    globals().pop('__cell_code__', None)
+`);
+
+                // Get the captured stdout and stderr
+                let stdout = await pyodide.runPythonAsync(`
+                    sys.stdout = old_stdout
+                    sys.stderr = old_stderr
+                    mystdout.getvalue()
+                `);
+
+                const stderr = await pyodide.runPythonAsync(`mystderr.getvalue()`);
+                if (stderr) {
+                    if (stdout) stdout += "\n";
+                    stdout += stderr;
+                }
+
+                // Retrieve the Python-side repr string (already formatted correctly)
+                const resultRepr = await pyodide.runPythonAsync(`
+_r = __cell_result__
+del __cell_result__
+_r
+`);
+
+                // Check for matplotlib figures only if matplotlib was loaded
+                const lessonPackages = window.LESSON_PACKAGES || [];
+                if (lessonPackages.includes('matplotlib')) {
+                    const hasFigures = await pyodide.runPythonAsync(`
+                        import matplotlib.pyplot as plt
+                        len(plt.get_fignums()) > 0
+                    `);
+
+                    if (hasFigures) {
+                        const figureHtml = await pyodide.runPythonAsync(`capture_matplotlib()`);
+                        if (stdout) stdout += "\n";
+                        stdout += figureHtml;
+                    }
+                }
+
+                // Combine stdout and result repr
+                let output = stdout;
+                if (resultRepr !== undefined && resultRepr !== null && String(resultRepr).trim() !== '') {
+                    if (output) output += "\n";
+                    output += String(resultRepr);
+                }
+                
+                return { success: true, output: output || "Code executed successfully (no output)" };
+                
+            } catch (error) {
+                // Attempt to restore stdout/stderr even on failure
+                try {
+                    await pyodide.runPythonAsync(`
+                        if 'old_stdout' in dir(): sys.stdout = old_stdout
+                        if 'old_stderr' in dir(): sys.stderr = old_stderr
+                    `);
+                } catch (_) {}
+                // Re-run through Python's traceback machinery to get a clean error message
+                let tracebackStr = '';
+                try {
+                    pyodide.globals.set('_traceback_code', code);
+                    await pyodide.runPythonAsync(`
+                        import traceback as _tb
+                        from io import StringIO as _SIO
+                        _trace_result = None
+                        _saved_io = (sys.stdout, sys.stderr)
+                        sys.stdout = sys.stderr = _SIO()
+                        try:
+                            exec(compile(_traceback_code, '<exec>', 'exec'), globals())
+                        except Exception:
+                            _trace_result = _tb.format_exc()
+                        finally:
+                            sys.stdout, sys.stderr = _saved_io
+                    `);
+                    const tbVal = await pyodide.runPythonAsync('_trace_result');
+                    if (tbVal) tracebackStr = tbVal;
+                } catch (_) {}
+                let displayMsg;
+                if (tracebackStr && tracebackStr.includes('File "<exec>"')) {
+                    const lines = tracebackStr.split('\n');
+                    let execIdx = -1;
+                    for (let i = lines.length - 1; i >= 0; i--) {
+                        if (lines[i].includes('File "<exec>"')) { execIdx = i; break; }
+                    }
+                    displayMsg = execIdx !== -1
+                        ? lines.slice(execIdx).join('\n').trim()
+                        : tracebackStr.trim();
+                } else {
+                    displayMsg = (error.message || '').trim() || error.type || String(error);
+                }
+                return { success: false, output: 'Error:\n' + displayMsg };
+            }
+        }
+        
+        // Execute all hidden code blocks first (for setup code like imports)
+        const hiddenCodeBlocks = Array.from(document.querySelectorAll('.hidden-code textarea'));
+        console.log(`Found ${hiddenCodeBlocks.length} hidden code blocks`);
+
+        for (const textarea of hiddenCodeBlocks) {
+            const code = textarea.value.trim();
+            if (!code) continue;
+            
+            console.log(`Executing hidden code block: ${textarea.id}`);
+            console.log(`Hidden code content: ${code.substring(0, 100)}...`);
+            const result = await executePythonCode(code);
+            
+            if (!result.success) {
+                console.error(`Error in hidden code block ${textarea.id}:`, result.output);
+            } else {
+                console.log(`Hidden code block ${textarea.id} executed successfully`);
+                console.log(`Result: ${result.output}`);
+            }
+        }
+
+        console.log("All hidden code blocks executed");
+        
+        // Get all fixed code blocks in document order
+        const fixedCodeBlocks = Array.from(document.querySelectorAll('.code-fixed textarea'));
+        
+        // Setup and execute fixed code blocks sequentially
+        for (const textarea of fixedCodeBlocks) {
+            const code = textarea.value.trim();
+            if (!code) continue;
+            
+            // Set up CodeMirror editor (read-only)
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: "python",
+                theme: "pastel-on-dark",
+                lineNumbers: true,
+                readOnly: true,
+                viewportMargin: Infinity
+            });
+            
+            // Find corresponding output element
+            const outputId = textarea.id + '-output';
+            const outputElement = document.getElementById(outputId);
+            
+            if (outputElement) {
+                outputElement.textContent = "Running code...";
+                outputElement.classList.add("loading-message");
+                
+                // Execute the code (this maintains state for subsequent blocks)
+                const result = await executePythonCode(code);
+                
+                // Display the output - check if it's HTML
+                const trimmedOutput = result.output.trim();
+                console.log('Output length:', trimmedOutput.length);
+                console.log('Output starts with:', trimmedOutput.substring(0, 100));
+                
+                if (trimmedOutput.includes('<script') && trimmedOutput.includes('Plotly')) {
+                    // It's Plotly HTML output - extract just the body content
+                    console.log('Rendering as Plotly HTML');
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(result.output, 'text/html');
+                    // Clear the output element and append the body content
+                    outputElement.innerHTML = '';
+                    
+                    // Find and load external scripts first (like Plotly CDN)
+                    const externalScripts = Array.from(doc.querySelectorAll('script[src]'));
+                    const inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+                    
+                    // Append non-script content first
+                    Array.from(doc.body.children).forEach(child => {
+                        if (child.tagName !== 'SCRIPT') {
+                            outputElement.appendChild(child.cloneNode(true));
+                        }
+                    });
+                    
+                    // Load external scripts sequentially
+                    const loadScript = (src) => {
+                        return new Promise((resolve, reject) => {
+                            const script = document.createElement('script');
+                            script.src = src;
+                            script.onload = resolve;
+                            script.onerror = reject;
+                            document.head.appendChild(script);
+                        });
+                    };
+                    
+                    // Load all external scripts first
+                    Promise.all(externalScripts.map(s => loadScript(s.src)))
+                        .then(() => {
+                            console.log('External scripts loaded, executing inline scripts');
+                            // Now execute inline scripts
+                            inlineScripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                newScript.textContent = oldScript.textContent;
+                                outputElement.appendChild(newScript);
+                            });
+                            console.log('Output element after processing:', outputElement.children.length, 'children');
+                        })
+                        .catch(err => {
+                            console.error('Failed to load external scripts:', err);
+                            outputElement.textContent = 'Error loading Plotly: ' + err.message;
+                        });
+                } else if (trimmedOutput.startsWith('<!DOCTYPE') || 
+                           trimmedOutput.startsWith('<html') ||
+                            trimmedOutput.startsWith('<div') ||
+                            trimmedOutput.startsWith('<img')) {
+                    console.log('Rendering as generic HTML');
+                    outputElement.innerHTML = result.output;
+                    console.log('Output element after innerHTML:', outputElement.children.length, 'children');
+                } else {
+                    console.log('Rendering as plain text');
+                    outputElement.textContent = result.output;
+                }
+                outputElement.classList.remove("loading-message");
+                if (result.success) {
+                    outputElement.classList.add("success-message");
+                    outputElement.classList.remove("error-message");
+                } else {
+                    outputElement.classList.add("error-message");
+                    outputElement.classList.remove("success-message");
+                }
+            }
+            
+            // Small delay to show progression
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        
+        // Set flag to indicate all FIXED cells have been executed
+        // This is used by PDF generation to ensure all outputs are ready
+        window.allCellsExecuted = true;
+        console.log("All FIXED cells executed successfully");
+        
+        // Setup all editable code blocks (but don't execute them)
+        document.querySelectorAll('.code-editor textarea').forEach((textarea) => {
+            // Set up CodeMirror editor (editable)
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: "python",
+                theme: "pastel-on-dark",
+                lineNumbers: true,
+                viewportMargin: Infinity
+            });
+            
+            // Find corresponding run button and output element
+            const baseId = textarea.id;
+            const runButtonId = 'run-' + baseId;
+            const outputId = baseId + '-output';
+            
+            const runButton = document.getElementById(runButtonId);
+            const outputElement = document.getElementById(outputId);
+            
+            if (runButton && outputElement) {
+                // Set initial state
+                outputElement.textContent = "Ready to run code!";
+                outputElement.classList.remove("loading-message");
+                
+                runButton.addEventListener("click", async () => {
+                    const code = editor.getValue().trim();
+                    if (!code) {
+                        outputElement.textContent = "No code to run";
+                        return;
+                    }
+                    
+                    outputElement.textContent = "Running...";
+                    outputElement.classList.remove("error-message", "success-message");
+                    outputElement.classList.add("loading-message");
+                    
+                    // Execute the code (this also maintains state for future blocks)
+                    const result = await executePythonCode(code);
+                    
+                    // Display the output - check if it's HTML
+                    const trimmedOutput = result.output.trim();
+                    console.log('Output length:', trimmedOutput.length);
+                    console.log('Output starts with:', trimmedOutput.substring(0, 100));
+                    
+                    if (trimmedOutput.includes('<script') && trimmedOutput.includes('Plotly')) {
+                        // It's Plotly HTML output - extract just the body content
+                        console.log('Rendering as Plotly HTML');
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(result.output, 'text/html');
+                        // Clear the output element and append the body content
+                        outputElement.innerHTML = '';
+                        
+                        // Find and load external scripts first (like Plotly CDN)
+                        const externalScripts = Array.from(doc.querySelectorAll('script[src]'));
+                        const inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+                        
+                        // Append non-script content first
+                        Array.from(doc.body.children).forEach(child => {
+                            if (child.tagName !== 'SCRIPT') {
+                                outputElement.appendChild(child.cloneNode(true));
+                            }
+                        });
+                        
+                        // Load external scripts sequentially
+                        const loadScript = (src) => {
+                            return new Promise((resolve, reject) => {
+                                const script = document.createElement('script');
+                                script.src = src;
+                                script.onload = resolve;
+                                script.onerror = reject;
+                                document.head.appendChild(script);
+                            });
+                        };
+                        
+                        // Load all external scripts first
+                        Promise.all(externalScripts.map(s => loadScript(s.src)))
+                            .then(() => {
+                                console.log('External scripts loaded, executing inline scripts');
+                                // Now execute inline scripts
+                                inlineScripts.forEach(oldScript => {
+                                    const newScript = document.createElement('script');
+                                    newScript.textContent = oldScript.textContent;
+                                    outputElement.appendChild(newScript);
+                                });
+                                console.log('Output element after processing:', outputElement.children.length, 'children');
+                            })
+                            .catch(err => {
+                                console.error('Failed to load external scripts:', err);
+                                outputElement.textContent = 'Error loading Plotly: ' + err.message;
+                            });
+                    } else if (trimmedOutput.startsWith('<!DOCTYPE') || 
+                               trimmedOutput.startsWith('<html') ||
+                               trimmedOutput.startsWith('<div') ||
+                               trimmedOutput.startsWith('<img')) {
+                        outputElement.innerHTML = result.output;
+                    } else {
+                        outputElement.textContent = result.output;
+                    }
+                    outputElement.classList.remove("loading-message");
+                    if (result.success) {
+                        outputElement.classList.add("success-message");
+                        outputElement.classList.remove("error-message");
+                    } else {
+                        outputElement.classList.add("error-message");
+                        outputElement.classList.remove("success-message");
+                    }
+                });
+            }
+        });
+        
+        console.log("All code blocks initialised successfully");
+
+        // Set flag to indicate Pyodide is fully ready
+        window.pyodideReady = true;
+        console.log("Pyodide fully ready");
+        
+    } catch (error) {
+        console.error("Failed to initialise Pyodide:", error);
+        document.querySelectorAll(".output").forEach(el => {
+            el.textContent = "Error loading Pyodide: " + error.message;
+            el.classList.remove("loading-message");
+            el.classList.add("error-message");
+        });
+    }
+}
+
+// Start the application when DOM is loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', main);
+} else {
+    main();
+}
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- MathJax for mathematical notation -->
+    <script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$']],
+            displayMath: [['$$', '$$']],
+            processEscapes: true
+        },
+        svg: {
+            fontCache: 'global'
+        }
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    
+    <!-- Pyodide and CodeMirror -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/theme/pastel-on-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/mode/python/python.min.js"></script>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="../assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../assets/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="../assets/android-chrome-512x512.png">
+
+    <!-- Core Stylesheets -->
+    <link rel="stylesheet" href=../assets/colours.css>
+    <link rel="stylesheet" href="../assets/shared-styles.css">
+    <link rel="stylesheet" href="../assets/nav-bar.css">
+    <link rel="stylesheet" href="../assets/module_card.css">
+    <link rel="stylesheet" href="../assets/learning_outcomes.css">
+    <link rel="stylesheet" href="../assets/learning_lists.css">
+    <link rel="stylesheet" href="../assets/box_styles.css">
+    <link rel="stylesheet" href="../assets/code_styles.css">
+    
+    <!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>scryptIQ - DP1 - Data augmentation</title>
+    <script>
+        window.LESSON_FILES = [
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/refs/heads/main/dp/penguins.csv", filename: "penguins.csv", is_binary: false},
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/refs/heads/main/dp/obesity_dataset.csv", filename: "obesity_dataset.csv", is_binary: false}
+        ];
+        window.LESSON_PACKAGES = ['numpy', 'pandas'];
+    </script>
+</head>
+<body>
+    
+    <!-- Sidebar Navigation -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <a href="../homepage.html" style="text-decoration: none; display: inline-block;">
+                <img src="../assets/scryptIQ_logo_dark.png" alt="scryptIQ Logo" class="sidebar-logo">
+            </a>
+        </div>
+
+        <h3>Content</h3>
+        <ul>
+            <li><a href="./introduction.html" class="">Introduction</a></li><li><a href="./intro-numpy.html">Introduction to NumPy</a></li><li><a href="./operations-numpy.html">Operations in NumPy</a></li><li><a href="./pandas.html">Pandas</a></li>
+            <li>
+                <div class="nav-toggle active" data-target="expandable-section-4">
+                    Data augmentation
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <ul class="nested-nav expanded" id="expandable-section-4"><li><a href="#introduction">Introduction</a></li><li><a href="#missing-data">Missing Data</a></li><li><a href="#columnar-operations">Columnar Operations</a></li><li><a href="#common-tools">Common tools</a></li><li><a href="#groupby">GroupBy</a></li><li><a href="#altogether">Altogether</a></li><li><a href="#summary---quiz">Summary & Quiz</a></li>
+                </ul>
+            </li><li><a href="./bonus-material.html">Numbers in Memory (Bonus)</a></li><li><a href="./assignment.html">Assignment</a></li><li><a href="./feedback.html">Feedback</a></li>
+        </ul>
+
+        <h3 class="collapsible-header collapsed">
+            Resources
+            <span class="collapse-icon">►</span>
+        </h3>
+        <div class="collapsible-content collapsed">
+            <ul>
+                <li><a href="./glossary.html">Glossary</a></li><li><a href="./downloads.html">Downloads</a></li><li><a href="../HB/introduction.html">Handbook</a></li>
+            </ul>
+        </div>
+
+        <h3>
+            <li><a href="./report-issue.html">Report an Issue</a></li>
+        </h3>
+    </div>
+
+    <!-- Sidebar Toggle Button -->
+    <button id="sidebar-toggle" class="sidebar-toggle">❮</button>
+
+    <!-- Main Content Area -->
+    <div id="main-content" class="main-content">
+        <!-- Top Navigation Bar -->
+        <div class="top-navbar">
+            <h1 class="page-title">Data Processing 1</h1>
+            <div class="nav-actions">
+                <a href="../homepage.html" class="text-button" title="Materials homepage">
+                    Homepage
+                </a>
+                <a href="https://scryptiq.ai/my-cohorts/" class="text-button scryptiq-button" title="Find out more about us">
+                    scryptIQ
+                </a>
+            </div>
+        </div>
+
+        
+            <div class="module-card" id="introduction">
+                <div class="module-header">
+                    Data augmentation <span class="module-tag">DP1</span>
+                </div>
+                <div class="module-body">
+                    <h3>Learning Objectives</h3>
+                    <div class="learning-outcomes">
+                        <div class="outcome-item">
+                    <span class="outcome-number">1</span>
+                    <span class="outcome-text">Working with missing data (NaN)</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">2</span>
+                    <span class="outcome-text">How to augment data in Pandas</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">3</span>
+                    <span class="outcome-text">How to create new columns</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">4</span>
+                    <span class="outcome-text">Common methods with Pandas</span>
+                </div>
+                    </div>
+                    <h3>Introduction</h3>
+                    <p>Now that we know how to load in, access, and filter our data; we can begin to look at cleaning or enriching the data for more in depth analysis.</p>
+                </div>
+            </div>
+            
+            <div class="module-card" id="missing-data">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Missing Data</h3>
+                        <p>Often there will be missing values in various rows and columns. These will appear as <strong>NaN</strong> values, which we saw in the NumPy section. To check whether any columns contain NaN values you can use the <code>.isnull()</code> method combined with the <code>.any()</code> method.<br><br><code>.any()</code> will return a <strong>True</strong> value if there is a single instance of True from the <code>.isnull()</code> method.</p>
+        <div class="code-area">
+            <div class="code-collapse-header" onclick="toggleCodeCollapse('code-cell-121')">
+                <span class="code-collapse-icon">▶</span>
+                <span class="code-collapse-label">Show code</span>
+            </div>
+            <div class="code-container code-fixed code-collapsed" id="code-cell-121-container">
+                <textarea id="code-cell-121">import pandas as pd
+import numpy as np
+
+# Run the code from the previous section
+df = pd.read_csv(&quot;./data/penguins.csv&quot;)
+rename = {
+            &quot;Culmen Length (mm)&quot; : &quot;bill_length_mm&quot;,
+             &quot;Culmen Depth (mm)&quot; : &quot;bill_depth_mm&quot;
+        }
+
+df.rename(columns=rename, inplace=True)</textarea>
+            </div>
+            <div id="code-cell-121-output" class="output" style="display: none;"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-122">df.isnull().any()</textarea>
+            </div>
+            <div id="code-cell-122-output" class="output"></div>
+        </div>
+        <p>This shows that there are NaN values in a majority of the columns. For some tools - such as machine learning algorithms - these will need to be replaced, typically with <strong>0</strong> or sometimes an <strong>average value</strong> of the column. To do so, use the Pandas method <code>.fillna()</code>. This method will replace all <code>null</code> values with your given value:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-123"># Replace all with 0
+no_nan_df = df.fillna(0)
+
+no_nan_df.head(5)</textarea>
+            </div>
+            <div id="code-cell-123-output" class="output"></div>
+        </div>
+        <p>Alternatively, specific replacement values can be given for individual columns by providing a dictionary where the <strong>key</strong> is the column name and the <strong>value</strong> is the replacement number.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-124"># Various types of NaN replacement methods
+replacement_values = {&quot;bill_length_mm&quot; : np.mean(df[&quot;bill_length_mm&quot;]), &quot;bill_depth_mm&quot; : np.mean(df[&quot;bill_depth_mm&quot;]), 
+                        &quot;flipper_length_mm&quot; : 0, &quot;body_mass_g&quot; : 0, &quot;sex&quot; : &quot;Unknown&quot;,}
+
+df.fillna(value = replacement_values).head(5)</textarea>
+            </div>
+            <div id="code-cell-124-output" class="output"></div>
+        </div>
+        <p>If there are only a few rows with NaN values, an alternative is to drop just those rows using the <code>.dropna()</code> method:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-125">df.dropna()
+
+print(f&quot;Number of rows from {df.shape[0]} -&gt; {df.dropna().shape[0]}&quot;)</textarea>
+            </div>
+            <div id="code-cell-125-output" class="output"></div>
+        </div>
+        <p>You can also only drop the rows where there are NaN values in a specific column, using the parameter <code>subset</code> with the argument being a column name.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-126">df.dropna(subset=&#x27;sex&#x27;).head(5)</textarea>
+            </div>
+            <div id="code-cell-126-output" class="output"></div>
+        </div>
+        <p>However, we will settle for all NaNs to be removed:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-127"># Inplace calls the dropna on the original dataframe
+df.dropna(inplace=True)</textarea>
+            </div>
+            <div id="code-cell-127-output" class="output" style="display: none;"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="columnar-operations">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Columnar Operations</h3>
+                        <p>Pandas DataFrames are mutable objects, which can have new columns of data added. The sole pre-requisite is that the newly added data must be the same length as the DataFrame, to ensure it matches, much like a NumPy concatenation.<br><br>To create a new column we simply assign a new column name inside square brackets <code>[]</code>; as though we were accessing a pre-existing column. A new data array is then assigned to it.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-128"># We can guarantee a new column is the same length by using
+# the length of the dataframe
+
+df[&#x27;new_column&#x27;] = np.arange(df.shape[0])
+df.head(3)</textarea>
+            </div>
+            <div id="code-cell-128-output" class="output"></div>
+        </div>
+        <p>However, we will seldom wish to add new data to a DataFrame. More often, we&#x27;ll want to add a new data column based on, for instance, a combination of data columns, or a satisfied (or unsatisfied) logical condition. All of the mathematical operators <code>+</code>, <code>-</code>, <code>/</code>, <code>*</code>, … or logical operators <code>&lt;</code>, <code>&gt;</code>, <code>==</code>, … will work row-wise when applied to one or more columns.<br><br>For example, the body mass is currently in grams, this can be used to create a new column in kilograms:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-129">df[&#x27;body_mass_kg&#x27;] = df[&#x27;body_mass_g&#x27;] / 1000
+df.head(3)</textarea>
+            </div>
+            <div id="code-cell-129-output" class="output"></div>
+        </div>
+        <p>Or we can have a column that indicates when flipper size is large:<br><br><em>This could be empirically decided by the value that is 2 standard deviations greater than the mean.</em></p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-130"># 2 std is the mean + (std x 2)
+std_2 = np.mean(df[&#x27;flipper_length_mm&#x27;]) + (np.std(df[&#x27;flipper_length_mm&#x27;]) * 2)
+
+# Apply the conditional
+df[&#x27;flippers_large&#x27;] = df[&#x27;flipper_length_mm&#x27;] &gt;= std_2
+
+df.head(3)</textarea>
+            </div>
+            <div id="code-cell-130-output" class="output"></div>
+        </div>
+        <p>In the cell below, filter the penguin DataFrame to only have samples where <strong>flippers_large</strong> is <strong>True</strong>:</p>
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-131">df</textarea>
+            </div>
+            <button id="run-code-cell-131" class="run-button">Run Code</button>
+            <div id="code-cell-131-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="columnar-operations">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>15.</strong></p>
+                <p>Using the <strong>obesity dataset</strong> create a new column called <strong>&quot;BMI&quot;</strong>.<br>This value can be calculated using the following formula:<br>$$BMI = \frac{weight}{height^2}$$</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-132">pe_df = pd.read_csv(&quot;./data/obesity_dataset.csv&quot;)</textarea>
+            </div>
+            <button id="run-code-cell-132" class="run-button">Run Code</button>
+            <div id="code-cell-132-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="common-tools">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Common tools</h3>
+                        <p>We have already been introduced to a few common Pandas methods, <code>.rename()</code>, <code>.to_numpy()</code>, <code>.isnull()</code>, and <code>.dropna()</code>. Here we will mention two others, <code>.drop()</code> and <code>.value_counts()</code>.</p><h4>.drop()</h4><p>During the examples above we added a column called <code>new_column</code> for demonstration purposes, however it has served its use and is now cluttering the DataFrame. To remove this column we use the <code>.drop()</code> method as so:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-133"># The columns argument tells it to apply along axis 1 (columns)
+# The method returns a new DataFrame
+df.drop(columns = [&#x27;new_column&#x27;])</textarea>
+            </div>
+            <div id="code-cell-133-output" class="output"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-134"># This can be applied to multiple columns
+# This time we use inplace=True to have it apply to the original DataFrame
+df.drop(columns = [&#x27;new_column&#x27;, &#x27;body_mass_kg&#x27;], inplace = True)</textarea>
+            </div>
+            <div id="code-cell-134-output" class="output" style="display: none;"></div>
+        </div>
+        <h4>.value_counts()</h4><p>One of the first acts of data exploration is to know how many of each category you have in your experimental sample, as a quick sanity check that the information has been recorded correctly.<br><br>The method <code>.value_counts()</code> will obtain the count of each unique value in a column, returning the count as a <em>Pandas Series</em>. This is most useful for columns with strings or with only a few discrete integers:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-135">df[&#x27;species&#x27;].value_counts()</textarea>
+            </div>
+            <div id="code-cell-135-output" class="output"></div>
+        </div>
+        <p>From the above, it is clear that we have a majority of <strong>Adelie</strong> penguins and a lot fewer <strong>Chinstrap</strong> penguins.<br><br>Multiple columns can be combined to find sub-counts:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-136">multi_count = df[[&#x27;species&#x27;, &#x27;island&#x27;]].value_counts()
+
+multi_count</textarea>
+            </div>
+            <div id="code-cell-136-output" class="output"></div>
+        </div>
+        <p>When <code>.value_counts()</code> is given multiple columns, it returns a result with a <em>hierarchical index</em> (also called a MultiIndex): the index has more than one level. The first column forms the outer level, and the second column forms an inner level <em>nested within</em> it. So each unique value in the first column is paired with <strong>each</strong> unique set of value from the second. It appears that only the <strong>Adelie</strong> penguin was found on multiple islands, likely contributing to its over representation.<br><br>As it is a Pandas Series, a 1-D array, to access a specific count you use <code>.loc</code> combined with a tuple that contains the unique pair you want:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-137">multi_count.loc[(&#x27;Adelie&#x27;, &#x27;Biscoe&#x27;)]</textarea>
+            </div>
+            <div id="code-cell-137-output" class="output"></div>
+        </div>
+        <p>Try using <code>.value_counts()</code> with a few column combinations to get a feel for the data and the method itself:</p>
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-138">df</textarea>
+            </div>
+            <button id="run-code-cell-138" class="run-button">Run Code</button>
+            <div id="code-cell-138-output" class="output"></div>
+        </div>
+        
+        <div class="info-box important-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                IMPORTANT
+            </div>
+            <div class="box-content">
+                <p>Using <code>.value_counts()</code> to understand the distribution of a class is an important step in classification machine learning, as an imbalance of a class can affect how well the model learns!</p>
+            </div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="common-tools">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>16.</strong></p>
+                <p>Programmatically calculate and display the ratio of <strong>Adelie</strong> species across the three islands from the given multi-column value counts.<ul class="nested-list"><li>Assign it to an appropriate variable</li><br><li>Use <code>.loc[]</code> to isolate the <strong>Adelie</strong> species</li><br><li>Use another <code>.loc[]</code> to isolate the individual island counts</li><ul class="nested-list"><li>assign each to its own variable</li></ul></li><br><li>Use the variables to calculate the ratio</li></ul></p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-139">df[[&#x27;species&#x27;, &#x27;island&#x27;]].value_counts()</textarea>
+            </div>
+            <button id="run-code-cell-139" class="run-button">Run Code</button>
+            <div id="code-cell-139-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="groupby">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>GroupBy</h3>
+                        <p>An extension on just counting the values is the <code>.groupby()</code> method, which will pivot the table by a given column(s) categories, applying a summary function such as mean, min, max, etc.<br><br>This tool can be very powerful for finding the statistics of multiple groups within a DataFrame. For example, if we wanted to find the mean bill length per species we would write the code as so:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-140">df.groupby(&quot;species&quot;)[&quot;bill_length_mm&quot;].mean() </textarea>
+            </div>
+            <div id="code-cell-140-output" class="output"></div>
+        </div>
+        <p>Breaking the above down, the first part tells the method which column to use. The column should be one that contains categorical data.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-141">df.groupby(&quot;species&quot;)</textarea>
+            </div>
+        </div>
+        <p>The second part selects for the feature of interest and attaches the statistical method we want to apply.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-142">[&quot;bill_length_mm&quot;].mean() </textarea>
+            </div>
+        </div>
+        <p>Using the above is a quick and easy way to get statistical outputs per category, but is limited to that one statistic.<br><br>If you would like to create a DataFrame containing several statistical measurements you can use the <code>.agg()</code> method (aggregate) method below. This method allows you to apply a function or list of functions to the columns (default) or rows (axis-1).<br><br>It can look a bit intimidating at first, however, we will demonstrate it with one example, and then expand it to several.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-143">df.groupby(&quot;species&quot;).agg(**{
+    &quot;max_bill&quot; : (&quot;bill_length_mm&quot;, &quot;max&quot;)
+})</textarea>
+            </div>
+            <div id="code-cell-143-output" class="output"></div>
+        </div>
+        <p>Here, instead of chaining a column with a method we use the aggregator method <code>.agg()</code> which contains:<ul class="nested-list"><li>the name of the new column</li><br><li>the column to apply the summary function to</li><br><li>the summary function</li></ul></p><p>These are within a dictionary where:<ul class="nested-list"><li>The new column name is the <strong>key</strong></li><br><li>The <strong>value</strong> is a tuple of the column to apply to and its summary function</li></ul></p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-144">.agg(**{
+    # new col    # col to apply to   # summary function
+    &quot;max_bill&quot; : (&quot;bill_length_mm&quot;, &quot;max&quot;)
+})</textarea>
+            </div>
+        </div>
+        <p>The $**$ operator will <em>unpack</em> the dictionary so that it is in the proper format for <code>.agg()</code>. This can be a bit confusing, but it is a methodology worth committing to memory due to its usefulness.<br><br>Groupby can also have multiple columns, breaking down the summary function for each sub-group:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-145">df.groupby([&#x27;species&#x27;, &#x27;island&#x27;]).agg(**{
+    &quot;max_bill&quot; : (&quot;bill_length_mm&quot;, &quot;max&quot;)
+})</textarea>
+            </div>
+            <div id="code-cell-145-output" class="output"></div>
+        </div>
+        
+        <div class="info-box important-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                IMPORTANT
+            </div>
+            <div class="box-content">
+                <p>All of the main summary functions can be given as a string to groupby: <code>&quot;mean&quot;</code>, <code>&quot;sum&quot;</code>, <code>&quot;min&quot;</code> / <code>&quot;max&quot;</code>, <code>&quot;count&quot;</code>, <code>&quot;std&quot;</code> / <code>&quot;var&quot;</code>, <code>&quot;median&quot;</code>.<br><br>You can also provide a custom function to apply your own analytical pipelines.</p>
+            </div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="groupby">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>17.</strong></p>
+                <p>Using <code>.groupby()</code> and <code>.agg()</code>, find the <strong>maximum</strong> body mass for each species,<br>further split by sex.<ul class="nested-list"><li>Print the resulting DataFrame.</li><br><li>Use <code>.idxmax()</code> (a method that returns the index label of the maximum value) to find the species/sex combination with the highest body mass.</li></ul></p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-146"># write your code here
+</textarea>
+            </div>
+            <button id="run-code-cell-146" class="run-button">Run Code</button>
+            <div id="code-cell-146-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="altogether">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Altogether</h3>
+                        <p>To bring everything covered in this notebook together, let&#x27;s use <code>.groupby()</code> and <code>.agg()</code> to calculate some summary statistics on a subset of the penguin dataset, and then apply a formula to the result.<br><br>In this example we will filter for female penguins, group by species and island, to then extract the mean, standard deviation, and count of bill length. These three values are all we need to calculate the <strong>95% confidence interval</strong> around the mean for each group:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-147">gb_df = df[df[&#x27;sex&#x27;] == &#x27;F&#x27;].groupby([&#x27;species&#x27;, &#x27;island&#x27;]).agg(**{
+        &quot;mean_bill&quot; : (&quot;bill_length_mm&quot;, &quot;mean&quot;),
+        &quot;std_bill&quot; : (&quot;bill_length_mm&quot;, &quot;std&quot;),
+        &quot;count_bill&quot; : (&quot;bill_length_mm&quot;, &quot;count&quot;)
+})
+
+gb_df</textarea>
+            </div>
+            <div id="code-cell-147-output" class="output"></div>
+        </div>
+        <p>From these metrics the 95% confidence interval around the mean can be calculated using this formula:<br><br>$$CI_{95} = \frac{1.96 \cdot \sigma}{\sqrt{n}}$$<br><br>where:<ul class="nested-list"><li>σ = the standard deviation</li><br><li>n = the number of samples</li><br><li>1.96 = 95% of the distribution</li></ul></p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-148">gb_df[&#x27;CI-95&#x27;] = (1.96 * gb_df[&quot;std_bill&quot;]) / np.sqrt(gb_df[&quot;count_bill&quot;])
+
+gb_df</textarea>
+            </div>
+            <div id="code-cell-148-output" class="output"></div>
+        </div>
+        <p>This could then be used for plotting or statistical analysis, something that will be explored further in the next lesson <strong>DP2</strong>.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="altogether">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>18.</strong></p>
+                <p>Filter the obesity dataset to <strong>male</strong> participants only. Using this subset, calculate each person&#x27;s <strong>Basal Metabolic Rate (BMR)</strong> using the <a href="https://en.wikipedia.org/wiki/Harris%E2%80%93Benedict_equation">Harris-Benedict equation</a>:<br>$$BMR = (13.4 \times weight) + (4.8 \times height_{cm}) - (5.7 \times age) + 88.36$$<br>Note that <code>Height</code> in the dataset is in <strong>metres</strong>; you will need to convert it first.<ol class="nested-list"><li>Filter to male participants only, storing as <code>male_df</code> (use <code>.copy()</code>).</li><br><li>Add a <code>height_cm</code> column by converting <code>Height</code> from metres to centimetres.</li><br><li>Add a <code>BMR</code> column using the formula above.</li><br><li>Use <code>.value_counts()</code> on <code>NObeyesdad</code> to check the class distribution of your male subset.</li><br><li>Using <code>.groupby()</code> and <code>.agg()</code>, calculate the mean BMR, mean weight, and participant count per obesity category from <code>NObeyesdad</code>. Store as <code>summary_df</code>.</li><br><li>Drop the intermediate <code>height_cm</code> column from <code>male_df</code></li><br><li>Use <code>.loc[]</code> to print the summary rows for <code>&#x27;Normal_Weight&#x27;</code> and <code>&#x27;Obesity_Type_III&#x27;</code>.</li></ol></p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-149">pe_df = pd.read_csv(&quot;./data/obesity_dataset.csv&quot;)</textarea>
+            </div>
+            <button id="run-code-cell-149" class="run-button">Run Code</button>
+            <div id="code-cell-149-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="summary---quiz">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Summary & Quiz</h3>
+                        <p>We have gone from the basics of NumPy through to complex Pandas groupbys to gain quick and easy statistical information about our penguin dataset. Both packages are a vast ecosystem with a lot of flexibility and reach to empower you as a researcher. Whilst we don&#x27;t expect you to remember all the syntax, methods, functions mentioned here, we hope it is a good starting point to understand <em>what</em> can be done.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="summary---quiz">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Summary & Quiz</h3>
+                        
+        <div class="quiz-box" id="quiz-4">
+            <div class="quiz-body">
+                <p class="quiz-intro">Attempt the questions below once you have finished. If you get any wrong, head back to that section to remind yourself of the reasoning/syntax behind the correct answer:</p>
+                
+            <div class="quiz-question" id="quiz-4-q0" data-quiz="quiz-4" data-topic-id="missing-data">
+                <span class="quiz-topic-tag">Missing Data</span>
+                <p class="quiz-question-text">Which method combination checks whether any column in a DataFrame contains NaN values?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-4-q0" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">.isnull().any()</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-4-q0" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">.dropna().sum()</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-4-q0" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">.fillna().all()</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-4-q0" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">.notna().count()</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div><hr class="quiz-divider">
+            <div class="quiz-question" id="quiz-4-q1" data-quiz="quiz-4" data-topic-id="missing-data">
+                <span class="quiz-topic-tag">Missing Data</span>
+                <p class="quiz-question-text">What does `df.dropna(inplace=True)` do?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-4-q1" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">Returns a new DataFrame with NaNs removed, leaving the original unchanged</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-4-q1" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">Removes rows containing NaN values from the original DataFrame</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-4-q1" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">Replaces all NaN values with zero</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-4-q1" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">Drops every column that contains a NaN</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div><hr class="quiz-divider">
+            <div class="quiz-question" id="quiz-4-q2" data-quiz="quiz-4" data-topic-id="drop">
+                <span class="quiz-topic-tag">.drop()</span>
+                <p class="quiz-question-text">Which argument must be set when calling `df.drop()` to remove a column?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-4-q2" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">rows</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-4-q2" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">columns</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-4-q2" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">axis=&quot;index&quot;</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-4-q2" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">labels=&quot;row&quot;</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div><hr class="quiz-divider">
+            <div class="quiz-question" id="quiz-4-q3" data-quiz="quiz-4" data-topic-id="value-counts">
+                <span class="quiz-topic-tag">.value_counts()</span>
+                <p class="quiz-question-text">What does `.value_counts()` return when given a single column?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-4-q3" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">The mean of each unique value</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-4-q3" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">The count of each unique value</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-4-q3" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">A boolean mask of duplicates</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-4-q3" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">The total number of rows</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div><hr class="quiz-divider">
+            <div class="quiz-question" id="quiz-4-q4" data-quiz="quiz-4" data-topic-id="groupby">
+                <span class="quiz-topic-tag">GroupBy</span>
+                <p class="quiz-question-text">In `df.groupby(&quot;species&quot;).agg(...)`, what role does the `&quot;species&quot;` column play?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-4-q4" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It is the column the summary statistic is calculated on</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-4-q4" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It is the categorical column the data is grouped by</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-4-q4" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It is the new column name for the result</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-4-q4" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It is dropped before aggregation</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+                
+            <div class="quiz-topics-footer">
+                <span class="quiz-topics-label">Topics covered</span>
+                <div class="quiz-topics-list">
+                    <span class="quiz-topic-pill" id="quiz-4-topic-missing-data">Missing Data</span><span class="quiz-topic-pill" id="quiz-4-topic-drop">.drop()</span><span class="quiz-topic-pill" id="quiz-4-topic-value-counts">.value_counts()</span><span class="quiz-topic-pill" id="quiz-4-topic-groupby">GroupBy</span>
+                </div>
+            </div>
+            </div>
+        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+        <div class="page-navigation">
+            <a href="./pandas.html" class="nav-button prev">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                </svg>
+                Previous
+            </a>
+            <a href="./bonus-material.html" class="nav-button next">
+                Next
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </a></div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div>© All materials are copyright scryptIQ 2025</div>
+            <div>Powered by Pyodide</div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../assets/main.js"></script>
+    
+    <!-- Pyodide Initialisation Script -->
+    <script>
+
+// Generalisable Pyodide Initialisation Script
+// Variables and state build up naturally as code blocks execute in order
+
+async function main() {
+    // Show loading message for all output elements
+    document.querySelectorAll(".output").forEach(el => {
+        el.textContent = "Loading Pyodide...";
+        el.classList.add("loading-message");
+    });
+    
+    try {
+        // Load Pyodide
+        console.log("Loading Pyodide...");
+        const pyodideStartTime = performance.now();
+        let pyodide = await loadPyodide();
+        const pyodideLoadTime = performance.now() - pyodideStartTime;
+        console.log(`Pyodide loaded in ${pyodideLoadTime.toFixed(2)}ms`);
+        
+        // Load required packages only if specified
+        const lessonPackages = window.LESSON_PACKAGES || [];
+        
+        if (lessonPackages.length > 0) {
+            console.log("Loading required Python packages...");
+            const packagesStartTime = performance.now();
+            
+            // Separate built-in packages from PyPI packages
+            const builtInPackages = lessonPackages.filter(pkg => 
+                ['numpy', 'scipy', 'matplotlib', 'pandas', 'scikit-learn', 'pillow', 'regex'].includes(pkg)
+            );
+            
+            const micropipPackages = lessonPackages.filter(pkg => !builtInPackages.includes(pkg));
+            
+            // Load built-in packages (fast)
+            if (builtInPackages.length > 0) {
+                await pyodide.loadPackage(builtInPackages);
+                console.log(`Loaded built-in packages: ${builtInPackages.join(', ')}`);
+            }
+            
+            // Install PyPI packages (slower)
+            if (micropipPackages.length > 0) {
+                await pyodide.loadPackage(['micropip']);
+                const micropip = pyodide.pyimport('micropip');
+                await micropip.install(micropipPackages);
+                console.log(`Installed PyPI packages: ${micropipPackages.join(', ')}`);
+            }
+            
+            const packagesLoadTime = performance.now() - packagesStartTime;
+            console.log(`Packages loaded in ${packagesLoadTime.toFixed(2)}ms`);
+            console.log(`Total initialisation time: ${(pyodideLoadTime + packagesLoadTime).toFixed(2)}ms`);
+        } else {
+            console.log("No packages to load for this lesson");
+            console.log(`Total initialisation time: ${pyodideLoadTime.toFixed(2)}ms`);
+        }
+
+        // Only set up basic Python environment - no pre-loaded variables
+        await pyodide.runPythonAsync(`
+            import sys
+            from io import StringIO
+        `);
+
+        // Only set up matplotlib if it's in the loaded packages
+        if (lessonPackages.includes('matplotlib')) {
+            await pyodide.runPythonAsync(`
+                # Set up matplotlib for web rendering
+                import matplotlib
+                matplotlib.use('AGG')
+                import matplotlib.pyplot as plt
+                import io
+                import base64
+                
+                def capture_matplotlib():
+                    """Capture current matplotlib figure as HTML img tag"""
+                    buf = io.BytesIO()
+                    plt.savefig(buf, format='png', bbox_inches='tight', dpi=100)
+                    buf.seek(0)
+                    img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+                    plt.close()
+                    return f'<img src="data:image/png;base64,{img_base64}" style="max-width: 100%; height: auto;" />'
+
+                # Silence the "FigureCanvasAgg is non-interactive" warning that
+                # occurs when notebook code calls plt.show().  In this environment
+                # figures are captured automatically via capture_matplotlib(), so
+                # plt.show() should simply be a no-op.
+                plt.show = lambda *args, **kwargs: None
+            `);
+            console.log('Matplotlib capture function set up');
+        }
+        
+        console.log("Pyodide loaded successfully");
+        
+        // Load remote files if URLs are specified
+        const lessonFiles = window.LESSON_FILES || [];
+        
+        if (lessonFiles.length > 0) {
+            try {
+                console.log(`Checking for ${lessonFiles.length} remote file(s) to load...`);
+                
+                // Build Python code to load all files dynamically
+                let pythonCode = `
+from pyodide.http import pyfetch
+import os
+
+# Create data directory if it doesn't exist
+os.makedirs('./data', exist_ok=True)
+`;
+                
+                // Add loading code for each file
+                for (const file of lessonFiles) {
+                    if (file.is_binary) {
+                        // Binary files (images, etc.) - use bytes
+                        pythonCode += `
+# Load ${file.filename} (binary)
+try:
+    response = await pyfetch("${file.url}")
+    content = await response.bytes()
+    with open('./data/${file.filename}', 'wb') as f:
+        f.write(bytes(content))
+    print("Loaded: ${file.filename}")
+except Exception as e:
+    print(f"Could not load ${file.filename}: {e}")
+`;
+                    } else {
+                        // Text files (CSV, etc.) - use string
+                        pythonCode += `
+# Load ${file.filename} (text)
+try:
+    response = await pyfetch("${file.url}")
+    content = await response.string()
+    with open('./data/${file.filename}', 'w') as f:
+        f.write(content)
+    print("Loaded: ${file.filename}")
+except Exception as e:
+    print(f"Could not load ${file.filename}: {e}")
+`;
+                    }
+                }
+                
+                await pyodide.runPythonAsync(pythonCode);
+                console.log("Remote files loaded successfully");
+            } catch (error) {
+                console.warn("Error loading remote files (continuing anyway):", error);
+            }
+        } else {
+            console.log("No remote files to load for this lesson");
+        }
+        
+        // Function to execute Python code and capture output
+        async function executePythonCode(code) {
+            try {
+                // Redirect Python stdout and stderr to capture print statements and warnings
+                await pyodide.runPythonAsync(`
+                    old_stdout = sys.stdout
+                    old_stderr = sys.stderr
+                    sys.stdout = mystdout = StringIO()
+                    sys.stderr = mystderr = StringIO()
+                `);
+
+                // Run the user code.
+                // We pass the code string via pyodide.globals to avoid JS-string escaping
+                // issues, then use Python's ast module to execute it.  The last expression
+                // (if any) is eval-ed inside Python so that repr() is called there —
+                // this means display settings such as np.set_printoptions() are always
+                // respected before the value crosses the Python→JS boundary.
+                // (Pyodide auto-converts numpy arrays to TypedArray, so String(result)
+                // would bypass numpy's formatting entirely.)
+                pyodide.globals.set('__cell_code__', code);
+                await pyodide.runPythonAsync(`
+import ast as _ast
+__cell_result__ = None
+try:
+    _tree = _ast.parse(__cell_code__)
+    if _tree.body and isinstance(_tree.body[-1], _ast.Expr):
+        _last = _tree.body.pop()
+        exec(compile(_ast.Module(body=_tree.body, type_ignores=[]), '<cell>', 'exec'), globals())
+        _val = eval(compile(_ast.Expression(body=_last.value), '<cell>', 'eval'), globals())
+        if _val is not None:
+            __cell_result__ = repr(_val)
+    else:
+        exec(compile(_tree, '<cell>', 'exec'), globals())
+finally:
+    for _k in ['_tree', '_last', '_val', '_ast']:
+        globals().pop(_k, None)
+    globals().pop('__cell_code__', None)
+`);
+
+                // Get the captured stdout and stderr
+                let stdout = await pyodide.runPythonAsync(`
+                    sys.stdout = old_stdout
+                    sys.stderr = old_stderr
+                    mystdout.getvalue()
+                `);
+
+                const stderr = await pyodide.runPythonAsync(`mystderr.getvalue()`);
+                if (stderr) {
+                    if (stdout) stdout += "\n";
+                    stdout += stderr;
+                }
+
+                // Retrieve the Python-side repr string (already formatted correctly)
+                const resultRepr = await pyodide.runPythonAsync(`
+_r = __cell_result__
+del __cell_result__
+_r
+`);
+
+                // Check for matplotlib figures only if matplotlib was loaded
+                const lessonPackages = window.LESSON_PACKAGES || [];
+                if (lessonPackages.includes('matplotlib')) {
+                    const hasFigures = await pyodide.runPythonAsync(`
+                        import matplotlib.pyplot as plt
+                        len(plt.get_fignums()) > 0
+                    `);
+
+                    if (hasFigures) {
+                        const figureHtml = await pyodide.runPythonAsync(`capture_matplotlib()`);
+                        if (stdout) stdout += "\n";
+                        stdout += figureHtml;
+                    }
+                }
+
+                // Combine stdout and result repr
+                let output = stdout;
+                if (resultRepr !== undefined && resultRepr !== null && String(resultRepr).trim() !== '') {
+                    if (output) output += "\n";
+                    output += String(resultRepr);
+                }
+                
+                return { success: true, output: output || "Code executed successfully (no output)" };
+                
+            } catch (error) {
+                // Attempt to restore stdout/stderr even on failure
+                try {
+                    await pyodide.runPythonAsync(`
+                        if 'old_stdout' in dir(): sys.stdout = old_stdout
+                        if 'old_stderr' in dir(): sys.stderr = old_stderr
+                    `);
+                } catch (_) {}
+                // Re-run through Python's traceback machinery to get a clean error message
+                let tracebackStr = '';
+                try {
+                    pyodide.globals.set('_traceback_code', code);
+                    await pyodide.runPythonAsync(`
+                        import traceback as _tb
+                        from io import StringIO as _SIO
+                        _trace_result = None
+                        _saved_io = (sys.stdout, sys.stderr)
+                        sys.stdout = sys.stderr = _SIO()
+                        try:
+                            exec(compile(_traceback_code, '<exec>', 'exec'), globals())
+                        except Exception:
+                            _trace_result = _tb.format_exc()
+                        finally:
+                            sys.stdout, sys.stderr = _saved_io
+                    `);
+                    const tbVal = await pyodide.runPythonAsync('_trace_result');
+                    if (tbVal) tracebackStr = tbVal;
+                } catch (_) {}
+                let displayMsg;
+                if (tracebackStr && tracebackStr.includes('File "<exec>"')) {
+                    const lines = tracebackStr.split('\n');
+                    let execIdx = -1;
+                    for (let i = lines.length - 1; i >= 0; i--) {
+                        if (lines[i].includes('File "<exec>"')) { execIdx = i; break; }
+                    }
+                    displayMsg = execIdx !== -1
+                        ? lines.slice(execIdx).join('\n').trim()
+                        : tracebackStr.trim();
+                } else {
+                    displayMsg = (error.message || '').trim() || error.type || String(error);
+                }
+                return { success: false, output: 'Error:\n' + displayMsg };
+            }
+        }
+        
+        // Execute all hidden code blocks first (for setup code like imports)
+        const hiddenCodeBlocks = Array.from(document.querySelectorAll('.hidden-code textarea'));
+        console.log(`Found ${hiddenCodeBlocks.length} hidden code blocks`);
+
+        for (const textarea of hiddenCodeBlocks) {
+            const code = textarea.value.trim();
+            if (!code) continue;
+            
+            console.log(`Executing hidden code block: ${textarea.id}`);
+            console.log(`Hidden code content: ${code.substring(0, 100)}...`);
+            const result = await executePythonCode(code);
+            
+            if (!result.success) {
+                console.error(`Error in hidden code block ${textarea.id}:`, result.output);
+            } else {
+                console.log(`Hidden code block ${textarea.id} executed successfully`);
+                console.log(`Result: ${result.output}`);
+            }
+        }
+
+        console.log("All hidden code blocks executed");
+        
+        // Get all fixed code blocks in document order
+        const fixedCodeBlocks = Array.from(document.querySelectorAll('.code-fixed textarea'));
+        
+        // Setup and execute fixed code blocks sequentially
+        for (const textarea of fixedCodeBlocks) {
+            const code = textarea.value.trim();
+            if (!code) continue;
+            
+            // Set up CodeMirror editor (read-only)
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: "python",
+                theme: "pastel-on-dark",
+                lineNumbers: true,
+                readOnly: true,
+                viewportMargin: Infinity
+            });
+            
+            // Find corresponding output element
+            const outputId = textarea.id + '-output';
+            const outputElement = document.getElementById(outputId);
+            
+            if (outputElement) {
+                outputElement.textContent = "Running code...";
+                outputElement.classList.add("loading-message");
+                
+                // Execute the code (this maintains state for subsequent blocks)
+                const result = await executePythonCode(code);
+                
+                // Display the output - check if it's HTML
+                const trimmedOutput = result.output.trim();
+                console.log('Output length:', trimmedOutput.length);
+                console.log('Output starts with:', trimmedOutput.substring(0, 100));
+                
+                if (trimmedOutput.includes('<script') && trimmedOutput.includes('Plotly')) {
+                    // It's Plotly HTML output - extract just the body content
+                    console.log('Rendering as Plotly HTML');
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(result.output, 'text/html');
+                    // Clear the output element and append the body content
+                    outputElement.innerHTML = '';
+                    
+                    // Find and load external scripts first (like Plotly CDN)
+                    const externalScripts = Array.from(doc.querySelectorAll('script[src]'));
+                    const inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+                    
+                    // Append non-script content first
+                    Array.from(doc.body.children).forEach(child => {
+                        if (child.tagName !== 'SCRIPT') {
+                            outputElement.appendChild(child.cloneNode(true));
+                        }
+                    });
+                    
+                    // Load external scripts sequentially
+                    const loadScript = (src) => {
+                        return new Promise((resolve, reject) => {
+                            const script = document.createElement('script');
+                            script.src = src;
+                            script.onload = resolve;
+                            script.onerror = reject;
+                            document.head.appendChild(script);
+                        });
+                    };
+                    
+                    // Load all external scripts first
+                    Promise.all(externalScripts.map(s => loadScript(s.src)))
+                        .then(() => {
+                            console.log('External scripts loaded, executing inline scripts');
+                            // Now execute inline scripts
+                            inlineScripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                newScript.textContent = oldScript.textContent;
+                                outputElement.appendChild(newScript);
+                            });
+                            console.log('Output element after processing:', outputElement.children.length, 'children');
+                        })
+                        .catch(err => {
+                            console.error('Failed to load external scripts:', err);
+                            outputElement.textContent = 'Error loading Plotly: ' + err.message;
+                        });
+                } else if (trimmedOutput.startsWith('<!DOCTYPE') || 
+                           trimmedOutput.startsWith('<html') ||
+                            trimmedOutput.startsWith('<div') ||
+                            trimmedOutput.startsWith('<img')) {
+                    console.log('Rendering as generic HTML');
+                    outputElement.innerHTML = result.output;
+                    console.log('Output element after innerHTML:', outputElement.children.length, 'children');
+                } else {
+                    console.log('Rendering as plain text');
+                    outputElement.textContent = result.output;
+                }
+                outputElement.classList.remove("loading-message");
+                if (result.success) {
+                    outputElement.classList.add("success-message");
+                    outputElement.classList.remove("error-message");
+                } else {
+                    outputElement.classList.add("error-message");
+                    outputElement.classList.remove("success-message");
+                }
+            }
+            
+            // Small delay to show progression
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        
+        // Set flag to indicate all FIXED cells have been executed
+        // This is used by PDF generation to ensure all outputs are ready
+        window.allCellsExecuted = true;
+        console.log("All FIXED cells executed successfully");
+        
+        // Setup all editable code blocks (but don't execute them)
+        document.querySelectorAll('.code-editor textarea').forEach((textarea) => {
+            // Set up CodeMirror editor (editable)
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: "python",
+                theme: "pastel-on-dark",
+                lineNumbers: true,
+                viewportMargin: Infinity
+            });
+            
+            // Find corresponding run button and output element
+            const baseId = textarea.id;
+            const runButtonId = 'run-' + baseId;
+            const outputId = baseId + '-output';
+            
+            const runButton = document.getElementById(runButtonId);
+            const outputElement = document.getElementById(outputId);
+            
+            if (runButton && outputElement) {
+                // Set initial state
+                outputElement.textContent = "Ready to run code!";
+                outputElement.classList.remove("loading-message");
+                
+                runButton.addEventListener("click", async () => {
+                    const code = editor.getValue().trim();
+                    if (!code) {
+                        outputElement.textContent = "No code to run";
+                        return;
+                    }
+                    
+                    outputElement.textContent = "Running...";
+                    outputElement.classList.remove("error-message", "success-message");
+                    outputElement.classList.add("loading-message");
+                    
+                    // Execute the code (this also maintains state for future blocks)
+                    const result = await executePythonCode(code);
+                    
+                    // Display the output - check if it's HTML
+                    const trimmedOutput = result.output.trim();
+                    console.log('Output length:', trimmedOutput.length);
+                    console.log('Output starts with:', trimmedOutput.substring(0, 100));
+                    
+                    if (trimmedOutput.includes('<script') && trimmedOutput.includes('Plotly')) {
+                        // It's Plotly HTML output - extract just the body content
+                        console.log('Rendering as Plotly HTML');
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(result.output, 'text/html');
+                        // Clear the output element and append the body content
+                        outputElement.innerHTML = '';
+                        
+                        // Find and load external scripts first (like Plotly CDN)
+                        const externalScripts = Array.from(doc.querySelectorAll('script[src]'));
+                        const inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+                        
+                        // Append non-script content first
+                        Array.from(doc.body.children).forEach(child => {
+                            if (child.tagName !== 'SCRIPT') {
+                                outputElement.appendChild(child.cloneNode(true));
+                            }
+                        });
+                        
+                        // Load external scripts sequentially
+                        const loadScript = (src) => {
+                            return new Promise((resolve, reject) => {
+                                const script = document.createElement('script');
+                                script.src = src;
+                                script.onload = resolve;
+                                script.onerror = reject;
+                                document.head.appendChild(script);
+                            });
+                        };
+                        
+                        // Load all external scripts first
+                        Promise.all(externalScripts.map(s => loadScript(s.src)))
+                            .then(() => {
+                                console.log('External scripts loaded, executing inline scripts');
+                                // Now execute inline scripts
+                                inlineScripts.forEach(oldScript => {
+                                    const newScript = document.createElement('script');
+                                    newScript.textContent = oldScript.textContent;
+                                    outputElement.appendChild(newScript);
+                                });
+                                console.log('Output element after processing:', outputElement.children.length, 'children');
+                            })
+                            .catch(err => {
+                                console.error('Failed to load external scripts:', err);
+                                outputElement.textContent = 'Error loading Plotly: ' + err.message;
+                            });
+                    } else if (trimmedOutput.startsWith('<!DOCTYPE') || 
+                               trimmedOutput.startsWith('<html') ||
+                               trimmedOutput.startsWith('<div') ||
+                               trimmedOutput.startsWith('<img')) {
+                        outputElement.innerHTML = result.output;
+                    } else {
+                        outputElement.textContent = result.output;
+                    }
+                    outputElement.classList.remove("loading-message");
+                    if (result.success) {
+                        outputElement.classList.add("success-message");
+                        outputElement.classList.remove("error-message");
+                    } else {
+                        outputElement.classList.add("error-message");
+                        outputElement.classList.remove("success-message");
+                    }
+                });
+            }
+        });
+        
+        console.log("All code blocks initialised successfully");
+
+        // Set flag to indicate Pyodide is fully ready
+        window.pyodideReady = true;
+        console.log("Pyodide fully ready");
+        
+    } catch (error) {
+        console.error("Failed to initialise Pyodide:", error);
+        document.querySelectorAll(".output").forEach(el => {
+            el.textContent = "Error loading Pyodide: " + error.message;
+            el.classList.remove("loading-message");
+            el.classList.add("error-message");
+        });
+    }
+}
+
+// Start the application when DOM is loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', main);
+} else {
+    main();
+}
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- MathJax for mathematical notation -->
+    <script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$']],
+            displayMath: [['$$', '$$']],
+            processEscapes: true
+        },
+        svg: {
+            fontCache: 'global'
+        }
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    
+    <!-- Pyodide and CodeMirror -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/theme/pastel-on-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/mode/python/python.min.js"></script>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="../assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../assets/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="../assets/android-chrome-512x512.png">
+
+    <!-- Core Stylesheets -->
+    <link rel="stylesheet" href=../assets/colours.css>
+    <link rel="stylesheet" href="../assets/shared-styles.css">
+    <link rel="stylesheet" href="../assets/nav-bar.css">
+    <link rel="stylesheet" href="../assets/module_card.css">
+    <link rel="stylesheet" href="../assets/learning_outcomes.css">
+    <link rel="stylesheet" href="../assets/learning_lists.css">
+    <link rel="stylesheet" href="../assets/box_styles.css">
+    <link rel="stylesheet" href="../assets/code_styles.css">
+    
+    <!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>scryptIQ - DP1 - Introduction to NumPy</title>
+    <script>
+        window.LESSON_FILES = [
+            
+        ];
+        window.LESSON_PACKAGES = ['numpy'];
+    </script>
+</head>
+<body>
+    
+    <!-- Sidebar Navigation -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <a href="../homepage.html" style="text-decoration: none; display: inline-block;">
+                <img src="../assets/scryptIQ_logo_dark.png" alt="scryptIQ Logo" class="sidebar-logo">
+            </a>
+        </div>
+
+        <h3>Content</h3>
+        <ul>
+            <li><a href="./introduction.html" class="">Introduction</a></li>
+            <li>
+                <div class="nav-toggle active" data-target="expandable-section-1">
+                    Introduction to NumPy
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <ul class="nested-nav expanded" id="expandable-section-1"><li><a href="#introduction">Introduction</a></li><li><a href="#why-are-lists-not-enough">Why are lists not enough?</a></li><li><a href="#creating-an-array">Creating an array</a></li><li><a href="#shape">Shape</a></li><li><a href="#numpy-indexing">NumPy indexing</a></li><li><a href="#numpy-slicing">NumPy slicing</a></li><li><a href="#slicing-a-matrix">Slicing a matrix</a></li><li><a href="#filtering">Filtering</a></li><li><a href="#summary---quiz">Summary & Quiz</a></li>
+                </ul>
+            </li><li><a href="./operations-numpy.html">Operations in NumPy</a></li><li><a href="./pandas.html">Pandas</a></li><li><a href="./data-augmentation.html">Data augmentation</a></li><li><a href="./bonus-material.html">Numbers in Memory (Bonus)</a></li><li><a href="./assignment.html">Assignment</a></li><li><a href="./feedback.html">Feedback</a></li>
+        </ul>
+
+        <h3 class="collapsible-header collapsed">
+            Resources
+            <span class="collapse-icon">►</span>
+        </h3>
+        <div class="collapsible-content collapsed">
+            <ul>
+                <li><a href="./glossary.html">Glossary</a></li><li><a href="./downloads.html">Downloads</a></li><li><a href="../HB/introduction.html">Handbook</a></li>
+            </ul>
+        </div>
+
+        <h3>
+            <li><a href="./report-issue.html">Report an Issue</a></li>
+        </h3>
+    </div>
+
+    <!-- Sidebar Toggle Button -->
+    <button id="sidebar-toggle" class="sidebar-toggle">❮</button>
+
+    <!-- Main Content Area -->
+    <div id="main-content" class="main-content">
+        <!-- Top Navigation Bar -->
+        <div class="top-navbar">
+            <h1 class="page-title">Data Processing 1</h1>
+            <div class="nav-actions">
+                <a href="../homepage.html" class="text-button" title="Materials homepage">
+                    Homepage
+                </a>
+                <a href="https://scryptiq.ai/my-cohorts/" class="text-button scryptiq-button" title="Find out more about us">
+                    scryptIQ
+                </a>
+            </div>
+        </div>
+
+        
+            <div class="module-card" id="introduction">
+                <div class="module-header">
+                    Introduction to NumPy <span class="module-tag">DP1</span>
+                </div>
+                <div class="module-body">
+                    <h3>Learning Objectives</h3>
+                    <div class="learning-outcomes">
+                        <div class="outcome-item">
+                    <span class="outcome-number">1</span>
+                    <span class="outcome-text">Why use NumPy arrays over lists?</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">2</span>
+                    <span class="outcome-text">How to work with 2-dimensional arrays</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">3</span>
+                    <span class="outcome-text">How to slice and filter arrays</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">4</span>
+                    <span class="outcome-text">What is a NaN value?</span>
+                </div>
+                    </div>
+                    <h3>Introduction</h3>
+                    <p>At the core of all data driven packages in Python will be <strong>NumPy</strong> (numerical Python). It is the universal standard for working with numerical data in Python due to its ubiquity in many third-party scientific packages. It is essential to master the basics of its structure and methods, to then use more specialised packages in your research computing journey.<br><br>This section will walk you through these basics, and as we progress through the subsequent modules you will find yourself implementing them frequently as well as learning new NumPy based tools that fit the specific workflows and fields we will cover.</p>
+        <div class="info-box fact-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                FACT
+            </div>
+            <div class="box-content">
+                <p>The NumPy library is optimised to interface and use the coding language <strong>C / C++</strong>, which is much more efficient than Python (which can be quite slow compared to its peers). This means we can perform rapid mathematical operations on our data, whilst retaining the readability and flexibility of Python.</p>
+            </div>
+        </div>
+        
+                </div>
+            </div>
+            
+            <div class="module-card" id="why-are-lists-not-enough">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Why are lists not enough?</h3>
+                        <p>The core structure of the <strong>NumPy</strong> package is the <em>NumPy array</em>, which is a collection of homogeneous (all one type), numerical elements. The array in its simplest form is 1-dimensional, although it is often multidimensional in the form of a matrix (nested arrays of all the same size). In fact, it can never be a jagged, nested array, unlike a list.<br><br>From this description, NumPy seems like a more restrictive version of a Python <code>list</code>, which begs the question &quot;what does NumPy do better?&quot;. This is best explored through some demonstrative code:</p><p>One key limitation of a list is that mathematical operators do not act on the elements within, but on the list as a whole.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-1">[1, 2, 3, 4] * 4</textarea>
+            </div>
+            <div id="code-cell-1-output" class="output"></div>
+        </div>
+        <p>Using the multiplication operator ($*$) causes the list to be repeated as many times as the value <em>after</em> the operator. This behaviour is useful in certain software situations, but typically for data science when we <em>multiply</em>, <em>add</em>, or <em>divide</em> we want that action to occur element-wise, not object-wise.<br><br>To achieve this using lists we would need to employ a for loop:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-2">my_list = [1, 2, 3, 4]
+
+for c, i in enumerate(my_list):
+
+    my_list[c] = i * 4
+
+my_list
+</textarea>
+            </div>
+            <div id="code-cell-2-output" class="output"></div>
+        </div>
+        <p>This achieves our goal, however there are two key problems:<br><br><strong>1. <code>For</code> loops are slow. If the list were thousands of elements long, each operation would begin to stack up.</strong><br><br><strong>2. It is cumbersome to write out a unique <code>for</code> loop for each operation.</strong><br><br>Try running the cell below as it is, which is quite rapid. However, try making the list <code>10000000</code> times bigger rather than 10, how much slower is it then?</p>
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-3">import time
+
+# Get the time now
+start = time.time()
+
+my_list = [1, 2, 3, 4] * 10  # change the 10 here to 10000000
+
+for c, i in enumerate(my_list):
+
+    my_list[c] = i * 2
+
+# Get the time after completion
+end = time.time()
+# Find the difference for the time elapsed
+print(f&#x27;Elapsed: {end - start} seconds&#x27;)</textarea>
+            </div>
+            <button id="run-code-cell-3" class="run-button">Run Code</button>
+            <div id="code-cell-3-output" class="output"></div>
+        </div>
+        <p>Performing several million operations is not uncommon, especially when you have large tabular datasets, so it is imperative to use a more efficient system.</p>
+        <div class="info-box tip-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                TIP
+            </div>
+            <div class="box-content">
+                <p>The <code>time</code> package is a built-in module for Python. It comes in very handy for measuring how long your code takes, which can then be used to further optimise it.</p>
+            </div>
+        </div>
+        <h4>With NumPy</h4><p>Now lets solve the problem using <strong>NumPy</strong>, which means we need to load the <strong>NumPy</strong> library into our workspace:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-4">import numpy as np</textarea>
+            </div>
+            <div id="code-cell-4-output" class="output" style="display: none;"></div>
+        </div>
+        
+        <div class="info-box remember-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                REMEMBER
+            </div>
+            <div class="box-content">
+                <p>The <strong>NumPy</strong> functions are nearly always imported with the alias <strong>np</strong>. This is due to the fact we will be using many functions from the library, so reducing the namespace to fewer letters is beneficial.<br><br>The alias can be any string you like, however it is useful to use a standard alias for ease of sharing your code with others or when working with an LLM (genAI) tool.</p>
+            </div>
+        </div>
+        <p>First we need to cast the list into a <strong>NumPy</strong> array. To do so simply call the function <code>np.array()</code> with the argument being the variable name for a list or a list itself.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-5">my_list = [1, 2, 3, 4]
+
+my_array = np.array(my_list)
+
+print(&quot;Type:&quot;)
+print(type(my_array))
+
+print(&quot; &quot;)
+print(&quot;The array:&quot;)
+my_array</textarea>
+            </div>
+            <div id="code-cell-5-output" class="output"></div>
+        </div>
+        <p>Now, rather than calling a <code>for loop</code>, each element can be multiplied by <em>2</em> in one line of code:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-6">my_array * 2</textarea>
+            </div>
+            <div id="code-cell-6-output" class="output"></div>
+        </div>
+        <p>This solution is both more elegant than a <code>for loop</code>, and also consumes less memory as <strong>NumPy</strong> is more efficient with how it stores data. This allows us, as the user, to scale our data science needs to large tracts of data without longer wait times or more computational memory.<br><br>The application of an operation over an entire array without using an explicit loop is called <strong>vectorisation</strong> and can be utilised by any of the mathematical operators, <strong>NumPy</strong> functions, and custom functions. These will be explored further along in the next section.</p><p>Let&#x27;s compare the time NumPy takes with our previous <code>for loop</code>:</p>
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-7"># Get the time now
+start = time.time()
+
+my_list = [1, 2, 3, 4] * 10  # change the 10 here to 10000000
+my_array = np.array(my_list)
+
+my_array = my_array * 2
+
+# Get the time after completion
+end = time.time()
+# Find the difference for the time elapsed
+print(f&#x27;Elapsed: {end - start} seconds&#x27;)</textarea>
+            </div>
+            <button id="run-code-cell-7" class="run-button">Run Code</button>
+            <div id="code-cell-7-output" class="output"></div>
+        </div>
+        <p>When you run this with a list of <strong>40,000,000</strong> elements, <strong>NumPy</strong> is almost 2 times quicker, and that is on one of the easiest tasks for a <code>for loop</code>.<br><br>From this alone, it can be seen that NumPy is a better tool for working with numerical data, and that is before we explore the additional functions and methods.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="creating-an-array">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Creating an array</h3>
+                        <p>Now that we are acquainted with the use case of NumPy, we can look at the basics of the <strong>NumPy array</strong>.<br><br>At the core of NumPy is the <strong>array</strong>, a structure for <em>storing</em>, <em>retrieving</em>, and <em>manipulating</em> data. Think of it as a list, a sequence of elements, one that is specialised for numerical data.</p><p><img src="./images/list-1.png" alt="Numpy Array" class="notebook-image"></p><p>A NumPy array is created by converting either a list or a tuple using the NumPy function array:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-8">my_data = [5, 21, 5, -1]
+
+my_array = np.array(my_data)
+
+my_array</textarea>
+            </div>
+            <div id="code-cell-8-output" class="output"></div>
+        </div>
+        <p>NumPy arrays <em>should</em> be homogeneous (all one type of data), either an <strong>integer</strong> or a <strong>float</strong>. When you convert your list to a NumPy array it will infer from the elements within what <strong>data type</strong> or <strong>dtype</strong> they are automatically. This can be viewed using the <code>.dtype</code> attribute:</p>
+        <div class="info-box remember-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                REMEMBER
+            </div>
+            <div class="box-content">
+                <p>All data structures in Python have <strong>attributes</strong> and <strong>methods</strong> attached to them. These are accessed by the <code>.</code> notation after the variable name. When an attribute you  just give its name, when a method it is the name followed by <code>()</code>, just like a function.</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-9">my_array.dtype # the dtype attribute</textarea>
+            </div>
+            <div id="code-cell-9-output" class="output"></div>
+        </div>
+        
+        <div class="info-box key-terms-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                KEY TERMS
+            </div>
+            <div class="box-content">
+                <p><strong>Integer:</strong> A whole number with no decimal component (e.g. -3, 0, 42).<br><br><strong>Float:</strong> A number that represents a fractional value using a decimal point (e.g. 3.14, -0.5).</p>
+            </div>
+        </div>
+        <p>It may seem inconsequential whether the data is a float or an integer, however some third party functions will be <em>explicitly</em> expecting an integer or float and will throw an error when they do not.</p>
+        <div class="info-box important-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                IMPORTANT
+            </div>
+            <div class="box-content">
+                <p>Only when all of the elements in an array are integers will the dtype of the array be <strong>int</strong>. When, even a singular <strong>float</strong> is present the whole array will be converted to a float type.</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-10"># the first element is now a float! 
+my_data = [5.0, 21, 5, -1]
+
+my_array = np.array(my_data)
+
+print(f&quot;My array type is: {my_array.dtype}&quot;)
+
+my_array</textarea>
+            </div>
+            <div id="code-cell-10-output" class="output"></div>
+        </div>
+        <p>This can be reversed by insisting on the <strong>dtype</strong> of the array, either on creation or afterwards:</p><h4>At creation</h4>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-11">my_array = np.array(my_data, dtype=np.int64)
+
+print(f&quot;My array type is: {my_array.dtype}&quot;)
+
+my_array</textarea>
+            </div>
+            <div id="code-cell-11-output" class="output"></div>
+        </div>
+        <h4>After creation</h4>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-12">my_data = [5.0, 21, 5, -1]
+
+my_array = np.array(my_data)
+
+print(f&quot;My array type is: {my_array.dtype}&quot;)
+
+my_array = my_array.astype(np.int64)  # use the method .astype()
+
+print(f&quot;My array type after conversion is: {my_array.dtype}&quot;)
+
+my_array</textarea>
+            </div>
+            <div id="code-cell-12-output" class="output"></div>
+        </div>
+        <p>The <code>.astype()</code> method is useful for ensuring arrays returned to you are of the type you need for subsequent workflows.<br><br>You may have noticed the number <strong>64</strong> after either <em>float</em> or <em>int</em>. This stands for the number of bits the number occupies, determining how long it can be. You are unlikely to need to understand this concept fully, however for those who do we cover this in more detail in the <a href="./bonus-material.html">bonus material</a> at the end of this lesson.</p><h4>Non-numerical Numpy</h4><p>As with a float, if there was a string inside a newly created NumPy array it will become an array with a dtype of <strong>&lt;U32</strong>. This is a <em>unicode</em> dtype.<br><br>It is not recommended to use NumPy for strings as its functionality is for numerical data. However, there may be times when an experimental reading is imported as a string, messing up your newly created array.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-13">my_data = [5.0, 21, 5, -1, &quot;90&quot;]
+
+my_array = np.array(my_data)
+
+print(f&quot;My array type is: {my_array.dtype}&quot;)
+
+print(my_array)</textarea>
+            </div>
+            <div id="code-cell-13-output" class="output"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-14">my_array = my_array.astype(np.float64)
+
+my_array</textarea>
+            </div>
+            <div id="code-cell-14-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="creating-an-array">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>2.</strong></p>
+                <p>Convert the data given into a NumPy array.<br>The data is currently stored as integers, however, they need to be converted to floats. Use one of the two methods to achieve this goal.</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-15">practice_data = [23, 321, 423, 1, 42, 123, 31, 52]
+
+# Write your answer here:</textarea>
+            </div>
+            <button id="run-code-cell-15" class="run-button">Run Code</button>
+            <div id="code-cell-15-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="shape">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Shape</h3>
+                        <p>For the standard data structures in Python we use the <code>len()</code> function to obtain the number of elements inside, which works for NumPy arrays too:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-16">len(my_array)</textarea>
+            </div>
+            <div id="code-cell-16-output" class="output"></div>
+        </div>
+        <p>However, the NumPy way of obtaining this information is the <code>.shape</code> attribute, which returns a tuple:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-17">my_array.shape</textarea>
+            </div>
+            <div id="code-cell-17-output" class="output"></div>
+        </div>
+        
+        <div class="info-box key-terms-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                KEY TERMS
+            </div>
+            <div class="box-content">
+                <p><strong>Attribute:</strong> A named property belonging to an object that stores information about it. Unlike a method it does not need <code>()</code> after the attribute name as no function is being invoked.<br><br>Attributes describe the object, rather than perform an action.</p>
+            </div>
+        </div>
+        <p>The reason we use <code>.shape</code> rather than <code>len()</code> is because we are typically working with multi-dimensional arrays rather than 1D ones. Since NumPy requires all sub-arrays to be the same length (non-jagged), the result is a <strong>matrix</strong>.<br><br>A matrix is a tabular data structure where position is meaningful in both directions. For example, each row might represent an experimental repeat, and each column a different specimen or condition. This means there is a relationship between elements <em>within</em> a row (across columns) and between elements <em>across</em> rows (down columns). See the diagram below for a visual explanation of the structure:</p><p><img src="./images/matrix.png" alt="A matix" class="notebook-image"></p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-18">nested_list = [ [5, 21, -1], 
+                [10, 42, 20], 
+                [8, -1, 11]  ]
+
+matrix = np.array(nested_list)
+
+print(matrix)
+print(&quot;&quot;)
+print(f&quot;The shape of the matrix is: {matrix.shape}&quot;)</textarea>
+            </div>
+            <div id="code-cell-18-output" class="output"></div>
+        </div>
+        <p>Now that we have a 2-dimensional array, we can see the length of the array has been moved to the <strong>2nd element</strong> in the shape tuple, with the first element describing the number of nested arrays inside. From here on, we will work with matrices rather than 1-dimensional arrays.</p><p>Attempting to convert a jagged nested list to a NumPy array will throw a <code>ValueError</code>. Run the cell below to see:</p>
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-19">jagged_list = [[5, 21, 5], [10, 42, 20, 1001], [8, -1, 11]]
+
+matrix = np.array(jagged_list)</textarea>
+            </div>
+            <button id="run-code-cell-19" class="run-button">Run Code</button>
+            <div id="code-cell-19-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="shape">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>3.</strong></p>
+                <p>Programmatically calculate the <strong>total number</strong> of elements within the matrix that was created above.<br><em>Hint: Use the tuple from .shape</em></p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-20"># Use the matrix given below:
+
+matrix</textarea>
+            </div>
+            <button id="run-code-cell-20" class="run-button">Run Code</button>
+            <div id="code-cell-20-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="numpy-indexing">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>NumPy indexing</h3>
+                        <p>Indexing a NumPy array is <em>exactly</em> the same as indexing a list. The first element is index <code>0</code> with subsequent elements increasing by 1.</p><p><img src="./images/list-1.png" alt="Indexing Notation" class="notebook-image"></p>
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-21"># Access all the elements using positive indexing
+
+array_1d = np.array([5, 21, 5, -1])
+
+array_1d[0]</textarea>
+            </div>
+            <button id="run-code-cell-21" class="run-button">Run Code</button>
+            <div id="code-cell-21-output" class="output"></div>
+        </div>
+        <p>Likewise negative indexing can be used to obtain the last elements more easily:</p><p><img src="./images/list-2.png" alt="Negative Indexing Notation" class="notebook-image"></p>
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-22"># Access all the elements using negative indexing
+
+array_1d = np.array([5, 21, 5, -1])
+
+array_1d[-1]</textarea>
+            </div>
+            <button id="run-code-cell-22" class="run-button">Run Code</button>
+            <div id="code-cell-22-output" class="output"></div>
+        </div>
+        <p>Extending this to multi-dimensional arrays is simply a case of knowing the order of access. Let&#x27;s take the matrix we made before, viewing it both as a whole and its shape:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-23">print(f&quot;Matrix shape: {matrix.shape}&quot;)
+ 
+matrix</textarea>
+            </div>
+            <div id="code-cell-23-output" class="output"></div>
+        </div>
+        <p>The shape contains:<ul class="nested-list"><li>The <strong>first</strong> element is the number of arrays within</li><br><li>The <strong>second</strong> element is the length of the nested arrays</li></ul>This information shows us how to order our indexing, the first index will be what array or <em>row</em> to access. The second is what element inside that array. These are then placed within the standard square brackets <code>[]</code>.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-24"># The second array and its third element
+matrix[1, 2]</textarea>
+            </div>
+            <div id="code-cell-24-output" class="output"></div>
+        </div>
+        <p>Have a practise with the matrix in the cell below:</p>
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-25">matrix</textarea>
+            </div>
+            <button id="run-code-cell-25" class="run-button">Run Code</button>
+            <div id="code-cell-25-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="numpy-slicing">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>NumPy slicing</h3>
+                        <p>The same understanding can be extended from list slicing to arrays. Remember with slicing the first number is <strong>inclusive</strong> and the second number after the colon is <strong>exclusive</strong>:</p><p><img src="./images/list-3.png" alt="Slicing Notation" class="notebook-image"></p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-26">array_1d = np.array([5, 21, 5, -1, 20, 8932, 12, 42, 31])</textarea>
+            </div>
+            <div id="code-cell-26-output" class="output" style="display: none;"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-27"># Try the following slices:
+# 1. Elements from index 2 up to (not including) index 7
+# 2. The last 4 elements
+# 3. Every other element
+
+array_1d[]</textarea>
+            </div>
+            <button id="run-code-cell-27" class="run-button">Run Code</button>
+            <div id="code-cell-27-output" class="output"></div>
+        </div>
+        
+        <div class="info-box remember-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                REMEMBER
+            </div>
+            <div class="box-content">
+                <p>If you are using either <code>0</code> or <code>-1</code> to slice from the beginning or end respectively, then they can be omitted and it will still work.<br><br>See below:</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-28">print(&quot;Slice the first 3 elements&quot;)
+print(array_1d[:3])
+print(&quot;&quot;)
+print(&quot;Slice the last 3 elements&quot;)
+print(array_1d[-3:])</textarea>
+            </div>
+            <div id="code-cell-28-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="slicing-a-matrix">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Slicing a matrix</h3>
+                        <p>Slicing a matrix is approached in much of the same way as indexing, a single set of square brackets <code>[]</code> with the first item being the slice for the rows and the second for the elements within each row. With matrix slicing we can isolate internal fragments of multiple arrays.</p><p>The slice below: takes only the <strong>last three</strong> elements from the <strong>second and third</strong> arrays.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-29">long_matrix = np.array([[3, 53, 131, 312, 52, 523, 23],
+                        [83, 2, 32, 1, 21, 321, 321],
+                        [32, 21, 321, 12, 31 , 75, 43],
+                        [92, 1, 321, 11, 39 , 90, 23]])
+
+long_matrix[1:3, -3:]</textarea>
+            </div>
+            <div id="code-cell-29-output" class="output"></div>
+        </div>
+        <p>Likewise we can combine slicing with indexing to retrieve all the elements that sit in the <strong>fourth</strong> position by not giving any restrictions to the first slice:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-30"># All of the vertical elements in the fourth position
+long_matrix[:, 3]</textarea>
+            </div>
+            <div id="code-cell-30-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="slicing-a-matrix">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>4.</strong></p>
+                <p>Complete the following with the matrix given below:<ol class="nested-list"><li>Retrieve the value <code>88</code></li><br><li>Retrieve the entire third row</li><br><li>Retrieve the last column</li><br><li>Slice out the top-right 2×3 submatrix (rows 0–1, columns 2–4)</li></ol></p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-31">exercise_matrix = np.array([
+    [12, 47, 3,  91, 25],
+    [8,  36, 74, 19, 55],
+    [63, 7,  88, 41, 16],
+    [29, 52, 6,  77, 34]
+])</textarea>
+            </div>
+            <button id="run-code-cell-31" class="run-button">Run Code</button>
+            <div id="code-cell-31-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="chaining-indexing---slicing">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Chaining indexing / slicing</h3>
+                        <p>The above methodology indexes or slices the array using a singular index bracket, which is the go to method for isolating sub-sets of data. An alternative method is to chain together singular indexing/slicing, one after the other. Here we need to think in terms of executing in sequence from <em>left</em> to <em>right</em>.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-32">print(&quot;First slice:&quot;)
+print(long_matrix[1:3])</textarea>
+            </div>
+            <div id="code-cell-32-output" class="output"></div>
+        </div>
+        <p>We can now add a new indexing bracket after writing the first:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-33">print(&quot;Sub index:&quot;)
+print(long_matrix[1:3][1])</textarea>
+            </div>
+            <div id="code-cell-33-output" class="output"></div>
+        </div>
+        <p>And so on...</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-34">print(&quot;Sub index with a slice after&quot;)
+print(long_matrix[1:3][1][-2:])</textarea>
+            </div>
+            <div id="code-cell-34-output" class="output"></div>
+        </div>
+        <p>This process highlights how the process is a <strong>chaining</strong> of actions with the leftmost happening first, with its result passed to the next action in the chain. Whilst the first method is the go-to, this alternative method may make more sense to others.<br><br>It&#x27;s not only indexing/slicing that can be chained; any action that returns an object can be chained. Something we will encounter multiple times along our data processing journey.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="filtering">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Filtering</h3>
+                        <p>Another powerful tool of NumPy arrays is the ease at which you can filter them for elements that meet a specific condition.<br><br>For example, below, we can select only the elements that are <em>less than or equal</em> to <strong>6</strong>:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-35">filter_array = np.array([   [2, 6, 8, 10], 
+                            [1, 3, 5, 7], 
+                            [15, 16, 17, 18]    ])
+
+filter_array</textarea>
+            </div>
+            <div id="code-cell-35-output" class="output"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-36">filter_array[filter_array &lt;= 6]</textarea>
+            </div>
+            <div id="code-cell-36-output" class="output"></div>
+        </div>
+        <p>Here, the conditional statement, <code>filter_array &lt;= 6</code> creates an array of <strong>boolean</strong> values that match the shape of the array. These values, where <code>True</code>, tell the indexer which of the elements to extract.<br><br>This concept is called <strong>boolean masking</strong>. Think of it as placing a mask on top of the array, which where <code>True</code>, you can see the elements.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-37">print(&quot;The boolean:&quot;)
+print(filter_array &lt;= 6)
+
+print(&quot;&quot;)
+
+print(&quot;The original:&quot;)
+print(filter_array)
+
+print(&quot;&quot;)
+
+print(&quot;Combined:&quot;)
+print(filter_array[filter_array &lt;= 6])</textarea>
+            </div>
+            <div id="code-cell-37-output" class="output"></div>
+        </div>
+        <p>Conditional statements can be combined to generate more complex conditions. To combine we use the <strong>AND</strong> (<code>&amp;</code>) or <strong>OR</strong> (<code>|</code>) operators, with each condition inside its own rounded bracket.</p>
+        <div class="info-box key-terms-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                KEY TERMS
+            </div>
+            <div class="box-content">
+                <p><strong>AND (&amp;) operator:</strong> Returns <code>True</code> only when both conditions are <code>True</code>. Used in boolean masking to combine multiple conditions where all must be satisfied simultaneously.<br><br><strong>OR (|) operator:</strong> Returns <code>True</code> when at least one condition is <code>True</code>. Used in boolean masking to combine multiple conditions where any one being satisfied is sufficient.</p>
+            </div>
+        </div>
+        <p>Look at the conditional statement below, what do you think the returned values will be?<br><br><em>The second conditional is a bit more tricky, the operator is a modulus operation.</em></p>
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-38">filter_array[(filter_array &lt;= 10) &amp; (filter_array % 2 == 0)]</textarea>
+            </div>
+            <button id="run-code-cell-38" class="run-button">Run Code</button>
+            <div id="code-cell-38-output" class="output"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-collapse-header" onclick="toggleCodeCollapse('code-cell-39')">
+                <span class="code-collapse-icon">▶</span>
+                <span class="code-collapse-label">Show solution</span>
+            </div>
+            <div class="code-container code-fixed code-solution code-collapsed" id="code-cell-39-container">
+                <textarea id="code-cell-39"># Only the values less than or equal to 10
+filter_array &lt;= 10
+
+# Only the even numbers (where dividing by 2 gives a whole number)
+filter_array % 2 == 0
+
+# Where both are true is the even values less than or equal to 10</textarea>
+            </div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="filtering">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>5.</strong></p>
+                <p>Complete the following with the matrix given below:<ol class="nested-list"><li>Create just the boolean mask for all values greater than 50</li><ul class="nested-list"><li>Use that mask to retrieve those values as a 1D array</li></ul></li><br><li>Create a mask for values that are both greater than 20 and less than 60</li><ul class="nested-list"><li>Use the resultant filtered array to count how many values this applies to</li></ul></ol></p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-40">exercise_matrix = np.array([
+    [12, 47, 3,  91, 25],
+    [8,  36, 74, 19, 55],
+    [63, 7,  88, 41, 16],
+    [29, 52, 6,  77, 34]
+])</textarea>
+            </div>
+            <button id="run-code-cell-40" class="run-button">Run Code</button>
+            <div id="code-cell-40-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="masking-to-replace-values">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Masking to replace values:</h3>
+                        <p>An advanced use of masking is to use the boolean array to replace or update a specific set of values in the original array.<br><br>For example, below is some dummy data that mimics a set of fluorescent plate readings:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-41">plate = np.array(
+    [   [  51.5,   44.8,  844.3,  684.9,  905.4,  794. ,  777.8,  718.3,
+                946.7,  781.5, 2022.8, 1966.9],
+            [  53.8,   54.7,  748.6,   102. ,  863.9,  843.9,  849.5,  851.7,
+                1057. ,  751.2, 1981.8, 1980.9],
+            [  40.2,   43.5,  738.5,  702.3,   467. ,  935.5,  786.3,  699.2,
+                701.1,  878.1, 1940.2, 2024.3],
+            [  50.6,   48.4,  889.2,  865.2,  720.1,  827.9,  814. ,  826.2,
+                904.6,  826.8, 1976.5, 2000.6],
+            [  49.9,   45.7,  881.5,  808.1,  834.7,  875.8,  625.1,  761.6,
+                743.6,  723.3, 2024. , 2022.3],
+            [  54.4,   53.9,  767. ,  979.4,  696.1,  916.2,  598.1,    81. ,
+                819.5,  870.3, 2033.3, 1995.1],
+            [  50.3,   55.6,  885.3,  895.2,  758.2,  744.5,  903. ,  777. ,
+                646.9,  664. , 1978.8, 1996. ],
+            [  52.3,   45.7,  689.7,  859.7,  817.1,  882.9,  748.7,  819. ,
+                875.1,  762.9, 1915.6, 1927.6]  ]
+)
+
+print(plate.shape)
+
+plate</textarea>
+            </div>
+            <div id="code-cell-41-output" class="output"></div>
+        </div>
+        <p>In a hypothetical scenario it is known from experience that those with fluorescence below <strong>100</strong> have failed and we want to alter them so that they are excluded from the analysis. To do so we can apply a boolean mask for all values <strong>equal to or below 100</strong>:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-42">mask = plate &lt;= 100
+
+mask</textarea>
+            </div>
+            <div id="code-cell-42-output" class="output"></div>
+        </div>
+        <p>This can then be placed on the original combined with an <code>=</code> to assign a new value. Here we will make them all <strong>0</strong>:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-43">plate[mask] = 0
+
+plate</textarea>
+            </div>
+            <div id="code-cell-43-output" class="output"></div>
+        </div>
+        <p>Subsequent analysis can then flag any values that are <strong>0</strong> as a fail, preventing them from warping analysis but still keeping that information for other uses. e.g. the failure rate across all experiments or machines.<br><br>Rather than <strong>zeros</strong>, a more Pythonic value to use would be <strong>NaN</strong> values, which stand for <strong>&quot;Not a Number&quot;</strong>. This value is a special type of float, so even though it looks like a string it is treated as a numerical value. As a float type, it will change the array dtype to float.</p><p>A <strong>NaN</strong> value can be called from NumPy with <code>np.nan</code>:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-44">plate[mask] = np.nan
+
+plate</textarea>
+            </div>
+            <div id="code-cell-44-output" class="output"></div>
+        </div>
+        <p>The benefit of <strong>NaN</strong> values is that most plotting functions will treat them as they are not there, allowing you to maintain the structure without altering analysis. However, they can cause an error for some analytical functions.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="masking-to-replace-values">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>6.</strong></p>
+                <p>You have been given a nested list of fluorescence readings from a plate-based experiment. The values have been imported with their units attached, making them strings rather than numbers.<br>Write a workflow that:<ol class="nested-list"><li>Strips the units from each value in each sub-list</li><ul class="nested-list"><li>Use a for loop and append the cleaned sub-list to an empty list</li></ul></li><br><li>Convert the cleaned nested list to a NumPy matrix, ensuring the dtype is <strong>float</strong></li><br><li>Create 3 boolean masks to bin the readings into categories:</li><ul class="nested-list"><li><strong>High:</strong> values greater than or equal to 140</li><br><li><strong>Medium:</strong> values greater than 120 and less than 140</li><br><li><strong>Low:</strong> values less than or equal to 120</li></ul></li><br><li>Use the masks to replace the original values with the bin midpoint — 140.0, 130.0, and 120.0 respectively</li></ol><em>Hint: steps 1 and 2 will need some of your knowledge from Python Fundamentals, i.e. string methods</em></p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-45">readings = [
+    [&quot;120.5 AFU&quot;, &quot;134.2 AFU&quot;, &quot;119.8 AFU&quot;, &quot;128.4 AFU&quot;],
+    [&quot;115.3 AFU&quot;, &quot;142.1 AFU&quot;, &quot;109.7 AFU&quot;, &quot;131.6 AFU&quot;],
+    [&quot;138.9 AFU&quot;, &quot;127.4 AFU&quot;, &quot;141.2 AFU&quot;, &quot;118.6 AFU&quot;],
+    [&quot;122.8 AFU&quot;, &quot;136.5 AFU&quot;, &quot;114.9 AFU&quot;, &quot;129.3 AFU&quot;]
+]</textarea>
+            </div>
+            <button id="run-code-cell-45" class="run-button">Run Code</button>
+            <div id="code-cell-45-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="summary---quiz">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Summary & Quiz</h3>
+                        <p>NumPy is a core data science package, so it is worth getting to know all the ways of interacting with its arrays. In the next section we will go through the ins and outs of NumPy operations, as well as the common functions and methods within NumPy.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="summary---quiz">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Summary & Quiz</h3>
+                        
+        <div class="quiz-box" id="quiz-1">
+            <div class="quiz-body">
+                <p class="quiz-intro">Attempt the questions below once you have finished. If you get any wrong, head back to that section to remind yourself of the reasoning/syntax behind the correct answer:</p>
+                
+            <div class="quiz-question" id="quiz-1-q0" data-quiz="quiz-1" data-topic-id="vectorisation">
+                <span class="quiz-topic-tag">Vectorisation</span>
+                <p class="quiz-question-text">Why is applying an operation to a whole NumPy array preferable to looping over a list?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q0" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It changes the result of the calculation</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-1-q0" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It is faster and more memory-efficient, applying element-wise without an explicit loop</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q0" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It converts the data into strings automatically</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q0" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It allows the array to become jagged</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div><hr class="quiz-divider">
+            <div class="quiz-question" id="quiz-1-q1" data-quiz="quiz-1" data-topic-id="data-types">
+                <span class="quiz-topic-tag">Data Types</span>
+                <p class="quiz-question-text">A list contains [5.0, 21, 5, -1]. What dtype will the resulting NumPy array have?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q1" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">int64</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-1-q1" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">float64</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q1" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">&lt;U32</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q1" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">bool</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div><hr class="quiz-divider">
+            <div class="quiz-question" id="quiz-1-q2" data-quiz="quiz-1" data-topic-id="data-types">
+                <span class="quiz-topic-tag">Data Types</span>
+                <p class="quiz-question-text">Which method converts an existing array to a different dtype?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q2" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">.dtype</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q2" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">.shape</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-1-q2" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">.astype()</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q2" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">.convert()</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div><hr class="quiz-divider">
+            <div class="quiz-question" id="quiz-1-q3" data-quiz="quiz-1" data-topic-id="shape">
+                <span class="quiz-topic-tag">Shape</span>
+                <p class="quiz-question-text">For a matrix, what does the `.shape` attribute return?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q3" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">The total number of elements</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-1-q3" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">A tuple of (rows, columns)</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q3" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">The length of the first row only</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q3" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">A list of every element</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div><hr class="quiz-divider">
+            <div class="quiz-question" id="quiz-1-q4" data-quiz="quiz-1" data-topic-id="slicing">
+                <span class="quiz-topic-tag">Slicing</span>
+                <p class="quiz-question-text">In the slice `array[2:7]`, which indices are included?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q4" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">2 up to and including 7</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-1-q4" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">2 up to but not including 7</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q4" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">3 up to and including 7</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q4" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">All elements after index 2</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div><hr class="quiz-divider">
+            <div class="quiz-question" id="quiz-1-q5" data-quiz="quiz-1" data-topic-id="boolean-masking">
+                <span class="quiz-topic-tag">Boolean Masking</span>
+                <p class="quiz-question-text">What does the expression `filter_array[filter_array &lt;= 6]` rely on?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q5" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">A for loop over each element</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-1-q5" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">A boolean mask that selects elements where the condition is True</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q5" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">Converting the array to a list first</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q5" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">Sorting the array in ascending order</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+                
+            <div class="quiz-topics-footer">
+                <span class="quiz-topics-label">Topics covered</span>
+                <div class="quiz-topics-list">
+                    <span class="quiz-topic-pill" id="quiz-1-topic-vectorisation">Vectorisation</span><span class="quiz-topic-pill" id="quiz-1-topic-data-types">Data Types</span><span class="quiz-topic-pill" id="quiz-1-topic-shape">Shape</span><span class="quiz-topic-pill" id="quiz-1-topic-slicing">Slicing</span><span class="quiz-topic-pill" id="quiz-1-topic-boolean-masking">Boolean Masking</span>
+                </div>
+            </div>
+            </div>
+        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+        <div class="page-navigation">
+            <a href="./introduction.html" class="nav-button prev">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                </svg>
+                Previous
+            </a>
+            <a href="./operations-numpy.html" class="nav-button next">
+                Next
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </a></div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div>© All materials are copyright scryptIQ 2025</div>
+            <div>Powered by Pyodide</div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../assets/main.js"></script>
+    
+    <!-- Pyodide Initialisation Script -->
+    <script>
+
+// Generalisable Pyodide Initialisation Script
+// Variables and state build up naturally as code blocks execute in order
+
+async function main() {
+    // Show loading message for all output elements
+    document.querySelectorAll(".output").forEach(el => {
+        el.textContent = "Loading Pyodide...";
+        el.classList.add("loading-message");
+    });
+    
+    try {
+        // Load Pyodide
+        console.log("Loading Pyodide...");
+        const pyodideStartTime = performance.now();
+        let pyodide = await loadPyodide();
+        const pyodideLoadTime = performance.now() - pyodideStartTime;
+        console.log(`Pyodide loaded in ${pyodideLoadTime.toFixed(2)}ms`);
+        
+        // Load required packages only if specified
+        const lessonPackages = window.LESSON_PACKAGES || [];
+        
+        if (lessonPackages.length > 0) {
+            console.log("Loading required Python packages...");
+            const packagesStartTime = performance.now();
+            
+            // Separate built-in packages from PyPI packages
+            const builtInPackages = lessonPackages.filter(pkg => 
+                ['numpy', 'scipy', 'matplotlib', 'pandas', 'scikit-learn', 'pillow', 'regex'].includes(pkg)
+            );
+            
+            const micropipPackages = lessonPackages.filter(pkg => !builtInPackages.includes(pkg));
+            
+            // Load built-in packages (fast)
+            if (builtInPackages.length > 0) {
+                await pyodide.loadPackage(builtInPackages);
+                console.log(`Loaded built-in packages: ${builtInPackages.join(', ')}`);
+            }
+            
+            // Install PyPI packages (slower)
+            if (micropipPackages.length > 0) {
+                await pyodide.loadPackage(['micropip']);
+                const micropip = pyodide.pyimport('micropip');
+                await micropip.install(micropipPackages);
+                console.log(`Installed PyPI packages: ${micropipPackages.join(', ')}`);
+            }
+            
+            const packagesLoadTime = performance.now() - packagesStartTime;
+            console.log(`Packages loaded in ${packagesLoadTime.toFixed(2)}ms`);
+            console.log(`Total initialisation time: ${(pyodideLoadTime + packagesLoadTime).toFixed(2)}ms`);
+        } else {
+            console.log("No packages to load for this lesson");
+            console.log(`Total initialisation time: ${pyodideLoadTime.toFixed(2)}ms`);
+        }
+
+        // Only set up basic Python environment - no pre-loaded variables
+        await pyodide.runPythonAsync(`
+            import sys
+            from io import StringIO
+        `);
+
+        // Only set up matplotlib if it's in the loaded packages
+        if (lessonPackages.includes('matplotlib')) {
+            await pyodide.runPythonAsync(`
+                # Set up matplotlib for web rendering
+                import matplotlib
+                matplotlib.use('AGG')
+                import matplotlib.pyplot as plt
+                import io
+                import base64
+                
+                def capture_matplotlib():
+                    """Capture current matplotlib figure as HTML img tag"""
+                    buf = io.BytesIO()
+                    plt.savefig(buf, format='png', bbox_inches='tight', dpi=100)
+                    buf.seek(0)
+                    img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+                    plt.close()
+                    return f'<img src="data:image/png;base64,{img_base64}" style="max-width: 100%; height: auto;" />'
+
+                # Silence the "FigureCanvasAgg is non-interactive" warning that
+                # occurs when notebook code calls plt.show().  In this environment
+                # figures are captured automatically via capture_matplotlib(), so
+                # plt.show() should simply be a no-op.
+                plt.show = lambda *args, **kwargs: None
+            `);
+            console.log('Matplotlib capture function set up');
+        }
+        
+        console.log("Pyodide loaded successfully");
+        
+        // Load remote files if URLs are specified
+        const lessonFiles = window.LESSON_FILES || [];
+        
+        if (lessonFiles.length > 0) {
+            try {
+                console.log(`Checking for ${lessonFiles.length} remote file(s) to load...`);
+                
+                // Build Python code to load all files dynamically
+                let pythonCode = `
+from pyodide.http import pyfetch
+import os
+
+# Create data directory if it doesn't exist
+os.makedirs('./data', exist_ok=True)
+`;
+                
+                // Add loading code for each file
+                for (const file of lessonFiles) {
+                    if (file.is_binary) {
+                        // Binary files (images, etc.) - use bytes
+                        pythonCode += `
+# Load ${file.filename} (binary)
+try:
+    response = await pyfetch("${file.url}")
+    content = await response.bytes()
+    with open('./data/${file.filename}', 'wb') as f:
+        f.write(bytes(content))
+    print("Loaded: ${file.filename}")
+except Exception as e:
+    print(f"Could not load ${file.filename}: {e}")
+`;
+                    } else {
+                        // Text files (CSV, etc.) - use string
+                        pythonCode += `
+# Load ${file.filename} (text)
+try:
+    response = await pyfetch("${file.url}")
+    content = await response.string()
+    with open('./data/${file.filename}', 'w') as f:
+        f.write(content)
+    print("Loaded: ${file.filename}")
+except Exception as e:
+    print(f"Could not load ${file.filename}: {e}")
+`;
+                    }
+                }
+                
+                await pyodide.runPythonAsync(pythonCode);
+                console.log("Remote files loaded successfully");
+            } catch (error) {
+                console.warn("Error loading remote files (continuing anyway):", error);
+            }
+        } else {
+            console.log("No remote files to load for this lesson");
+        }
+        
+        // Function to execute Python code and capture output
+        async function executePythonCode(code) {
+            try {
+                // Redirect Python stdout and stderr to capture print statements and warnings
+                await pyodide.runPythonAsync(`
+                    old_stdout = sys.stdout
+                    old_stderr = sys.stderr
+                    sys.stdout = mystdout = StringIO()
+                    sys.stderr = mystderr = StringIO()
+                `);
+
+                // Run the user code.
+                // We pass the code string via pyodide.globals to avoid JS-string escaping
+                // issues, then use Python's ast module to execute it.  The last expression
+                // (if any) is eval-ed inside Python so that repr() is called there —
+                // this means display settings such as np.set_printoptions() are always
+                // respected before the value crosses the Python→JS boundary.
+                // (Pyodide auto-converts numpy arrays to TypedArray, so String(result)
+                // would bypass numpy's formatting entirely.)
+                pyodide.globals.set('__cell_code__', code);
+                await pyodide.runPythonAsync(`
+import ast as _ast
+__cell_result__ = None
+try:
+    _tree = _ast.parse(__cell_code__)
+    if _tree.body and isinstance(_tree.body[-1], _ast.Expr):
+        _last = _tree.body.pop()
+        exec(compile(_ast.Module(body=_tree.body, type_ignores=[]), '<cell>', 'exec'), globals())
+        _val = eval(compile(_ast.Expression(body=_last.value), '<cell>', 'eval'), globals())
+        if _val is not None:
+            __cell_result__ = repr(_val)
+    else:
+        exec(compile(_tree, '<cell>', 'exec'), globals())
+finally:
+    for _k in ['_tree', '_last', '_val', '_ast']:
+        globals().pop(_k, None)
+    globals().pop('__cell_code__', None)
+`);
+
+                // Get the captured stdout and stderr
+                let stdout = await pyodide.runPythonAsync(`
+                    sys.stdout = old_stdout
+                    sys.stderr = old_stderr
+                    mystdout.getvalue()
+                `);
+
+                const stderr = await pyodide.runPythonAsync(`mystderr.getvalue()`);
+                if (stderr) {
+                    if (stdout) stdout += "\n";
+                    stdout += stderr;
+                }
+
+                // Retrieve the Python-side repr string (already formatted correctly)
+                const resultRepr = await pyodide.runPythonAsync(`
+_r = __cell_result__
+del __cell_result__
+_r
+`);
+
+                // Check for matplotlib figures only if matplotlib was loaded
+                const lessonPackages = window.LESSON_PACKAGES || [];
+                if (lessonPackages.includes('matplotlib')) {
+                    const hasFigures = await pyodide.runPythonAsync(`
+                        import matplotlib.pyplot as plt
+                        len(plt.get_fignums()) > 0
+                    `);
+
+                    if (hasFigures) {
+                        const figureHtml = await pyodide.runPythonAsync(`capture_matplotlib()`);
+                        if (stdout) stdout += "\n";
+                        stdout += figureHtml;
+                    }
+                }
+
+                // Combine stdout and result repr
+                let output = stdout;
+                if (resultRepr !== undefined && resultRepr !== null && String(resultRepr).trim() !== '') {
+                    if (output) output += "\n";
+                    output += String(resultRepr);
+                }
+                
+                return { success: true, output: output || "Code executed successfully (no output)" };
+                
+            } catch (error) {
+                // Attempt to restore stdout/stderr even on failure
+                try {
+                    await pyodide.runPythonAsync(`
+                        if 'old_stdout' in dir(): sys.stdout = old_stdout
+                        if 'old_stderr' in dir(): sys.stderr = old_stderr
+                    `);
+                } catch (_) {}
+                // Re-run through Python's traceback machinery to get a clean error message
+                let tracebackStr = '';
+                try {
+                    pyodide.globals.set('_traceback_code', code);
+                    await pyodide.runPythonAsync(`
+                        import traceback as _tb
+                        from io import StringIO as _SIO
+                        _trace_result = None
+                        _saved_io = (sys.stdout, sys.stderr)
+                        sys.stdout = sys.stderr = _SIO()
+                        try:
+                            exec(compile(_traceback_code, '<exec>', 'exec'), globals())
+                        except Exception:
+                            _trace_result = _tb.format_exc()
+                        finally:
+                            sys.stdout, sys.stderr = _saved_io
+                    `);
+                    const tbVal = await pyodide.runPythonAsync('_trace_result');
+                    if (tbVal) tracebackStr = tbVal;
+                } catch (_) {}
+                let displayMsg;
+                if (tracebackStr && tracebackStr.includes('File "<exec>"')) {
+                    const lines = tracebackStr.split('\n');
+                    let execIdx = -1;
+                    for (let i = lines.length - 1; i >= 0; i--) {
+                        if (lines[i].includes('File "<exec>"')) { execIdx = i; break; }
+                    }
+                    displayMsg = execIdx !== -1
+                        ? lines.slice(execIdx).join('\n').trim()
+                        : tracebackStr.trim();
+                } else {
+                    displayMsg = (error.message || '').trim() || error.type || String(error);
+                }
+                return { success: false, output: 'Error:\n' + displayMsg };
+            }
+        }
+        
+        // Execute all hidden code blocks first (for setup code like imports)
+        const hiddenCodeBlocks = Array.from(document.querySelectorAll('.hidden-code textarea'));
+        console.log(`Found ${hiddenCodeBlocks.length} hidden code blocks`);
+
+        for (const textarea of hiddenCodeBlocks) {
+            const code = textarea.value.trim();
+            if (!code) continue;
+            
+            console.log(`Executing hidden code block: ${textarea.id}`);
+            console.log(`Hidden code content: ${code.substring(0, 100)}...`);
+            const result = await executePythonCode(code);
+            
+            if (!result.success) {
+                console.error(`Error in hidden code block ${textarea.id}:`, result.output);
+            } else {
+                console.log(`Hidden code block ${textarea.id} executed successfully`);
+                console.log(`Result: ${result.output}`);
+            }
+        }
+
+        console.log("All hidden code blocks executed");
+        
+        // Get all fixed code blocks in document order
+        const fixedCodeBlocks = Array.from(document.querySelectorAll('.code-fixed textarea'));
+        
+        // Setup and execute fixed code blocks sequentially
+        for (const textarea of fixedCodeBlocks) {
+            const code = textarea.value.trim();
+            if (!code) continue;
+            
+            // Set up CodeMirror editor (read-only)
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: "python",
+                theme: "pastel-on-dark",
+                lineNumbers: true,
+                readOnly: true,
+                viewportMargin: Infinity
+            });
+            
+            // Find corresponding output element
+            const outputId = textarea.id + '-output';
+            const outputElement = document.getElementById(outputId);
+            
+            if (outputElement) {
+                outputElement.textContent = "Running code...";
+                outputElement.classList.add("loading-message");
+                
+                // Execute the code (this maintains state for subsequent blocks)
+                const result = await executePythonCode(code);
+                
+                // Display the output - check if it's HTML
+                const trimmedOutput = result.output.trim();
+                console.log('Output length:', trimmedOutput.length);
+                console.log('Output starts with:', trimmedOutput.substring(0, 100));
+                
+                if (trimmedOutput.includes('<script') && trimmedOutput.includes('Plotly')) {
+                    // It's Plotly HTML output - extract just the body content
+                    console.log('Rendering as Plotly HTML');
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(result.output, 'text/html');
+                    // Clear the output element and append the body content
+                    outputElement.innerHTML = '';
+                    
+                    // Find and load external scripts first (like Plotly CDN)
+                    const externalScripts = Array.from(doc.querySelectorAll('script[src]'));
+                    const inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+                    
+                    // Append non-script content first
+                    Array.from(doc.body.children).forEach(child => {
+                        if (child.tagName !== 'SCRIPT') {
+                            outputElement.appendChild(child.cloneNode(true));
+                        }
+                    });
+                    
+                    // Load external scripts sequentially
+                    const loadScript = (src) => {
+                        return new Promise((resolve, reject) => {
+                            const script = document.createElement('script');
+                            script.src = src;
+                            script.onload = resolve;
+                            script.onerror = reject;
+                            document.head.appendChild(script);
+                        });
+                    };
+                    
+                    // Load all external scripts first
+                    Promise.all(externalScripts.map(s => loadScript(s.src)))
+                        .then(() => {
+                            console.log('External scripts loaded, executing inline scripts');
+                            // Now execute inline scripts
+                            inlineScripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                newScript.textContent = oldScript.textContent;
+                                outputElement.appendChild(newScript);
+                            });
+                            console.log('Output element after processing:', outputElement.children.length, 'children');
+                        })
+                        .catch(err => {
+                            console.error('Failed to load external scripts:', err);
+                            outputElement.textContent = 'Error loading Plotly: ' + err.message;
+                        });
+                } else if (trimmedOutput.startsWith('<!DOCTYPE') || 
+                           trimmedOutput.startsWith('<html') ||
+                            trimmedOutput.startsWith('<div') ||
+                            trimmedOutput.startsWith('<img')) {
+                    console.log('Rendering as generic HTML');
+                    outputElement.innerHTML = result.output;
+                    console.log('Output element after innerHTML:', outputElement.children.length, 'children');
+                } else {
+                    console.log('Rendering as plain text');
+                    outputElement.textContent = result.output;
+                }
+                outputElement.classList.remove("loading-message");
+                if (result.success) {
+                    outputElement.classList.add("success-message");
+                    outputElement.classList.remove("error-message");
+                } else {
+                    outputElement.classList.add("error-message");
+                    outputElement.classList.remove("success-message");
+                }
+            }
+            
+            // Small delay to show progression
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        
+        // Set flag to indicate all FIXED cells have been executed
+        // This is used by PDF generation to ensure all outputs are ready
+        window.allCellsExecuted = true;
+        console.log("All FIXED cells executed successfully");
+        
+        // Setup all editable code blocks (but don't execute them)
+        document.querySelectorAll('.code-editor textarea').forEach((textarea) => {
+            // Set up CodeMirror editor (editable)
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: "python",
+                theme: "pastel-on-dark",
+                lineNumbers: true,
+                viewportMargin: Infinity
+            });
+            
+            // Find corresponding run button and output element
+            const baseId = textarea.id;
+            const runButtonId = 'run-' + baseId;
+            const outputId = baseId + '-output';
+            
+            const runButton = document.getElementById(runButtonId);
+            const outputElement = document.getElementById(outputId);
+            
+            if (runButton && outputElement) {
+                // Set initial state
+                outputElement.textContent = "Ready to run code!";
+                outputElement.classList.remove("loading-message");
+                
+                runButton.addEventListener("click", async () => {
+                    const code = editor.getValue().trim();
+                    if (!code) {
+                        outputElement.textContent = "No code to run";
+                        return;
+                    }
+                    
+                    outputElement.textContent = "Running...";
+                    outputElement.classList.remove("error-message", "success-message");
+                    outputElement.classList.add("loading-message");
+                    
+                    // Execute the code (this also maintains state for future blocks)
+                    const result = await executePythonCode(code);
+                    
+                    // Display the output - check if it's HTML
+                    const trimmedOutput = result.output.trim();
+                    console.log('Output length:', trimmedOutput.length);
+                    console.log('Output starts with:', trimmedOutput.substring(0, 100));
+                    
+                    if (trimmedOutput.includes('<script') && trimmedOutput.includes('Plotly')) {
+                        // It's Plotly HTML output - extract just the body content
+                        console.log('Rendering as Plotly HTML');
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(result.output, 'text/html');
+                        // Clear the output element and append the body content
+                        outputElement.innerHTML = '';
+                        
+                        // Find and load external scripts first (like Plotly CDN)
+                        const externalScripts = Array.from(doc.querySelectorAll('script[src]'));
+                        const inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+                        
+                        // Append non-script content first
+                        Array.from(doc.body.children).forEach(child => {
+                            if (child.tagName !== 'SCRIPT') {
+                                outputElement.appendChild(child.cloneNode(true));
+                            }
+                        });
+                        
+                        // Load external scripts sequentially
+                        const loadScript = (src) => {
+                            return new Promise((resolve, reject) => {
+                                const script = document.createElement('script');
+                                script.src = src;
+                                script.onload = resolve;
+                                script.onerror = reject;
+                                document.head.appendChild(script);
+                            });
+                        };
+                        
+                        // Load all external scripts first
+                        Promise.all(externalScripts.map(s => loadScript(s.src)))
+                            .then(() => {
+                                console.log('External scripts loaded, executing inline scripts');
+                                // Now execute inline scripts
+                                inlineScripts.forEach(oldScript => {
+                                    const newScript = document.createElement('script');
+                                    newScript.textContent = oldScript.textContent;
+                                    outputElement.appendChild(newScript);
+                                });
+                                console.log('Output element after processing:', outputElement.children.length, 'children');
+                            })
+                            .catch(err => {
+                                console.error('Failed to load external scripts:', err);
+                                outputElement.textContent = 'Error loading Plotly: ' + err.message;
+                            });
+                    } else if (trimmedOutput.startsWith('<!DOCTYPE') || 
+                               trimmedOutput.startsWith('<html') ||
+                               trimmedOutput.startsWith('<div') ||
+                               trimmedOutput.startsWith('<img')) {
+                        outputElement.innerHTML = result.output;
+                    } else {
+                        outputElement.textContent = result.output;
+                    }
+                    outputElement.classList.remove("loading-message");
+                    if (result.success) {
+                        outputElement.classList.add("success-message");
+                        outputElement.classList.remove("error-message");
+                    } else {
+                        outputElement.classList.add("error-message");
+                        outputElement.classList.remove("success-message");
+                    }
+                });
+            }
+        });
+        
+        console.log("All code blocks initialised successfully");
+
+        // Set flag to indicate Pyodide is fully ready
+        window.pyodideReady = true;
+        console.log("Pyodide fully ready");
+        
+    } catch (error) {
+        console.error("Failed to initialise Pyodide:", error);
+        document.querySelectorAll(".output").forEach(el => {
+            el.textContent = "Error loading Pyodide: " + error.message;
+            el.classList.remove("loading-message");
+            el.classList.add("error-message");
+        });
+    }
+}
+
+// Start the application when DOM is loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', main);
+} else {
+    main();
+}
+    </script>
+    
+</body>
+</html>
