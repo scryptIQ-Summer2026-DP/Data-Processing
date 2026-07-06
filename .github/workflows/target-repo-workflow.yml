@@ -13,7 +13,7 @@ jobs:
   run-composite-action:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout caller repository
+      - name: Checkout the caller repository
         uses: actions/checkout@v6
       
       - name: Checkout parchmentIQ repository  
