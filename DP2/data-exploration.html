@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- MathJax for mathematical notation -->
+    <script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$']],
+            displayMath: [['$$', '$$']],
+            processEscapes: true
+        },
+        svg: {
+            fontCache: 'global'
+        }
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    
+    <!-- Pyodide and CodeMirror -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/theme/pastel-on-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/mode/python/python.min.js"></script>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="../assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../assets/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="../assets/android-chrome-512x512.png">
+
+    <!-- Core Stylesheets -->
+    <link rel="stylesheet" href=../assets/colours.css>
+    <link rel="stylesheet" href="../assets/shared-styles.css">
+    <link rel="stylesheet" href="../assets/nav-bar.css">
+    <link rel="stylesheet" href="../assets/module_card.css">
+    <link rel="stylesheet" href="../assets/learning_outcomes.css">
+    <link rel="stylesheet" href="../assets/learning_lists.css">
+    <link rel="stylesheet" href="../assets/box_styles.css">
+    <link rel="stylesheet" href="../assets/code_styles.css">
+    
+    <!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>scryptIQ - DP2 - Data Exploration</title>
+    <script>
+        window.LESSON_FILES = [
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/refs/heads/main/dp/cortex_nuclear.csv", filename: "cortex_nuclear.csv", is_binary: false}
+        ];
+        window.LESSON_PACKAGES = ['numpy', 'pandas', 'scipy'];
+    </script>
+</head>
+<body>
+    
+    <!-- Sidebar Navigation -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <a href="../homepage.html" style="text-decoration: none; display: inline-block;">
+                <img src="../assets/scryptIQ_logo_dark.png" alt="scryptIQ Logo" class="sidebar-logo">
+            </a>
+        </div>
+
+        <h3>Content</h3>
+        <ul>
+            <li><a href="./introduction.html" class="">Introduction</a></li>
+            <li>
+                <div class="nav-toggle active" data-target="expandable-section-1">
+                    Data Exploration
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <ul class="nested-nav expanded" id="expandable-section-1"><li><a href="#introduction">Introduction</a></li><li><a href="#the-proteomics-dataset">The Proteomics Dataset</a></li><li><a href="#exploring-missing-values">Exploring missing values</a></li><li><a href="#univariate-statistics">Univariate statistics</a></li><li><a href="#outliers">Outliers</a></li><li><a href="#comparing-outliers">Comparing outliers</a></li><li><a href="#summary---quiz">Summary & Quiz</a></li>
+                </ul>
+            </li><li><a href="./basic-plots.html">Basic Plotting</a></li><li><a href="./data-transformation.html">Data Transformation</a></li><li><a href="./feature-relationships.html">Feature Relationships</a></li><li><a href="./seaborn.html">Seaborn</a></li><li><a href="./assignment.html">Assignment</a></li><li><a href="./feedback.html">Feedback</a></li>
+        </ul>
+
+        <h3 class="collapsible-header collapsed">
+            Resources
+            <span class="collapse-icon">►</span>
+        </h3>
+        <div class="collapsible-content collapsed">
+            <ul>
+                <li><a href="./glossary.html">Glossary</a></li><li><a href="./downloads.html">Downloads</a></li><li><a href="../HB/introduction.html">Handbook</a></li>
+            </ul>
+        </div>
+
+        <h3 class="collapsible-header collapsed">
+            Previous Modules
+            <span class="collapse-icon">►</span>
+        </h3>
+        <div class="collapsible-content collapsed">
+            <ul>
+            <li><a href="../DP1/introduction.html">DP1</a></li>
+        </ul>
+        </div>
+
+        <h3>
+            <li><a href="./report-issue.html">Report an Issue</a></li>
+        </h3>
+    </div>
+
+    <!-- Sidebar Toggle Button -->
+    <button id="sidebar-toggle" class="sidebar-toggle">❮</button>
+
+    <!-- Main Content Area -->
+    <div id="main-content" class="main-content">
+        <!-- Top Navigation Bar -->
+        <div class="top-navbar">
+            <h1 class="page-title">Data Processing 2</h1>
+            <div class="nav-actions">
+                <a href="../homepage.html" class="text-button" title="Materials homepage">
+                    Homepage
+                </a>
+                <a href="https://scryptiq.ai/my-cohorts/" class="text-button scryptiq-button" title="Find out more about us">
+                    scryptIQ
+                </a>
+            </div>
+        </div>
+
+        
+            <div class="module-card" id="introduction">
+                <div class="module-header">
+                    Data Exploration <span class="module-tag">DP2</span>
+                </div>
+                <div class="module-body">
+                    <h3>Learning Objectives</h3>
+                    <div class="learning-outcomes">
+                        <div class="outcome-item">
+                    <span class="outcome-number">1</span>
+                    <span class="outcome-text">How to gain an overview of your data</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">2</span>
+                    <span class="outcome-text">How to understand the basic statistics</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">3</span>
+                    <span class="outcome-text">How to check for outliers</span>
+                </div>
+                    </div>
+                    <h3>Introduction</h3>
+                    <p>Understanding the data in your research is the first step in the analytical path. Python - through Pandas, NumPy, and various plotting packages - provides an easy, interactive toolkit for viewing the underlying statistics and shape of data, both on their own (univariate) and against others (bivariate). As much as LLM tools can generate extensive code, having the skills to isolate, interrogate, and understand your data inside your research context is still a valuable skill.</p>
+                </div>
+            </div>
+            
+            <div class="module-card" id="the-proteomics-dataset">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>The Proteomics Dataset</h3>
+                        <p>For this workflow we will be using a mouse proteomics dataset that contains the expression levels of <strong>77</strong> proteins from the cerebral cortex in both wild type (control) and trisomic (Down syndrome) mice. The dataset was made available by <em>Higuera, C., Gardiner, K., &amp; Cios, K. (2015): <a href="https://doi.org/10.24432/C50S3Z">Mice Protein Expression</a></em>.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-1">import numpy as np 
+import pandas as pd</textarea>
+            </div>
+            <div id="code-cell-1-output" class="output" style="display: none;"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-2">df = pd.read_csv(&quot;./data/cortex_nuclear.csv&quot;)
+
+df.head(3)</textarea>
+            </div>
+            <div id="code-cell-2-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="the-proteomics-dataset">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>1.</strong></p>
+                <p>Before we delve into the new techniques, use the skills from the previous lesson to find out:<ul class="nested-list"><li>The shape of the new dataset</li><br><li>What columns there are</li><br><li>What are their dtypes?</li></ul></p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-3">df</textarea>
+            </div>
+            <button id="run-code-cell-3" class="run-button">Run Code</button>
+            <div id="code-cell-3-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="exploring-missing-values">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Exploring missing values</h3>
+                        <p>Before taking a look at the summary statistics of each column, you should always check for any <strong>missing values</strong>. Following the steps we demonstrated last lesson we can see that a few of them do have missing data.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-4">df.isnull().any()</textarea>
+            </div>
+            <div id="code-cell-4-output" class="output"></div>
+        </div>
+        <p>As we have a lot of columns the full series of features can not be seen, however, using it as a boolean mask can allow us to <em>pull</em> out the columns with NaN values. Working this way, without any explicit naming of columns, just indexing, is the <em>Pythonic</em> way to write your code, once you automate. However, don&#x27;t feel like an imposter if during data exploration you are copying and pasting column names into a filter!</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-5"># Store the columns as a variable
+col = df.columns
+
+# And the same for the mask
+bool_mask = df.isnull().any()
+
+# Use [] to call the indexing mask
+nan_cols = col[bool_mask]
+
+nan_cols</textarea>
+            </div>
+            <div id="code-cell-5-output" class="output"></div>
+        </div>
+        <p>Using one of the names from this list you can narrow down on the <em>NaN</em> values in specific features by using a combination of filtering with the <code>.isnull()</code> method:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-6">print(f&quot;Filter by column: {nan_cols[0]}&quot;)
+
+df[df[nan_cols[0]].isnull()]</textarea>
+            </div>
+            <div id="code-cell-6-output" class="output"></div>
+        </div>
+        <p>From this subset, it can be seen that a few rows are missing some protein measurements, although not all.<br><br>Have a look at how the missing values are distributed across the rows by exploring a few different columns from <code>nan_cols</code>. Replace the empty brackets in the cell below with a column name from <code>nan_cols</code> (e.g. <code>nan_cols[1]</code>, <code>nan_cols[5]</code>) to check whether the same rows are affected across different proteins.</p>
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-7"># Add other columns with NaN values here
+
+df[df[].isnull()]</textarea>
+            </div>
+            <button id="run-code-cell-7" class="run-button">Run Code</button>
+            <div id="code-cell-7-output" class="output"></div>
+        </div>
+        <p>Dropping all of the rows with NaN values almost reduces our dataset in half. For this reason, we will keep all the rows to retain the information for the features that are still present, dealing with any issues as they arise.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-8">print(f&quot;Pre dropna: {len(df)}&quot;)
+print(f&quot;Post dropna: {len(df.dropna())}&quot;)</textarea>
+            </div>
+            <div id="code-cell-8-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="univariate-statistics">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Univariate statistics</h3>
+                        <p>To gain a simple overview of your data, you can use the <code>.describe()</code> method, which will produce a set of summary statistics for any column that contains <strong>numerical</strong> data.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-9">description = df.describe()
+description</textarea>
+            </div>
+            <div id="code-cell-9-output" class="output"></div>
+        </div>
+        <p>The describe method produces a new DataFrame (here assigned to <code>description</code>) that contains the number of samples, the mean, the standard deviation, 25th, 50th, 75th percentile, and the minimum and maximum values for each column of the data.<br><br>One thing worth noting immediately is that the <strong>count</strong> row is not uniform across all columns. For instance, <code>BAD_N</code> reports 867 observations and <code>BCL2_N</code> only 795, while <code>SYP_N</code> has the full 1080. This reflects the missing values identified earlier, as <code>.describe()</code> silently excludes NaN values from its calculations. The mean, standard deviation, and percentiles for those columns are therefore computed on a reduced sample, which is worth bearing in mind when comparing columns to one another.</p><p>Of note, the indices of the rows have now been replaced by strings, when previously we were used to integers. This can be an extension of the index column for any dataset, replacing uninformative numbers with descriptive strings.<br><br>To access a given row, use the <code>.loc</code> method. For example, in order to access the mean of the <strong>pCREB_N</strong> concentrations from the description:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-10">description.loc[&#x27;mean&#x27;, &#x27;pCREB_N&#x27;]</textarea>
+            </div>
+            <div id="code-cell-10-output" class="output"></div>
+        </div>
+        <p>Or all of the means:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-11">description.loc[&#x27;mean&#x27;]</textarea>
+            </div>
+            <div id="code-cell-11-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="univariate-statistics">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>2.</strong></p>
+                <p>Using the <code>description</code> DataFrame:<ul class="nested-list"><li>Extract all of the max values and find the largest one</li><br><li>Use <code>.loc</code> to extract just the <code>min</code> and <code>max</code> rows for the first five protein columns.</li></ul></p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-12"></textarea>
+            </div>
+            <button id="run-code-cell-12" class="run-button">Run Code</button>
+            <div id="code-cell-12-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="pandas-individual-statistics">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Pandas Individual Statistics</h3>
+                        <p>The describe method can be useful in situations where you want a quick overview of your data, although in situations like we have here where there are many columns it can become quite cluttered. An alternative is to compute the statistics directly, using the specific methods for Pandas DataFrames.<br><br>These methods include <code>.sum()</code>, <code>.mean()</code>, <code>.std()</code>, <code>.max()</code>, <code>.min()</code>. Unlike <code>.describe()</code>, these methods do not filter out categorical columns automatically. Running <code>.max()</code> on the full DataFrame will not throw an error, instead it will return a mixed-type result with strings for the categorical columns and floats for the numerical ones, which is generally not what you want:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-13">df.max()</textarea>
+            </div>
+            <div id="code-cell-13-output" class="output"></div>
+        </div>
+        <p>Instead, you should filter the dataset to only include numerical columns or columns of interest, which will return a Pandas series:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-14">df[[&quot;DYRK1A_N&quot;, &quot;ITSN1_N&quot;, &quot;BDNF_N&quot;]].max()</textarea>
+            </div>
+            <div id="code-cell-14-output" class="output"></div>
+        </div>
+        <p>Likewise, you can call the statistical method on a singular column to get a single value. Or you can use the NumPy functions that were introduced in the previous lesson:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-15">print(df[&quot;DYRK1A_N&quot;].mean())
+
+print(&quot;&quot;)
+
+print(np.mean(df[&#x27;DYRK1A_N&#x27;]))</textarea>
+            </div>
+            <div id="code-cell-15-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="pandas-individual-statistics">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>3.</strong></p>
+                <p>In the previous lesson we introduced <code>.value_counts()</code> and <code>.groupby()</code> as tools for understanding categorical data. Use both to do the following:<ul class="nested-list"><li>Find the distribution of the categories in the <strong>class</strong> feature.</li><br><li>Find the mean, min, and max of each of the three provided proteins (<code>proteins</code>), grouped by the <strong>class</strong> feature.</li><br><li>To do this, write a function that takes a DataFrame and a feature (protein) as arguments, and uses <code>.groupby()</code> with <code>.agg()</code> to return the result.</li><br><li>Call the function 3 times with each feature</li></ul></p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-16">proteins = [&quot;pCREB_N&quot;, &quot;H3AcK18_N&quot;, &quot;pELK_N&quot;]</textarea>
+            </div>
+            <button id="run-code-cell-16" class="run-button">Run Code</button>
+            <div id="code-cell-16-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="outliers">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Outliers</h3>
+                        <p>Biological measurements are prone to extreme values, sometimes due to the variety seen in the measured system, but also from errors in the hardware measuring the event. It is therefore prudent to check for any values that are suspicious, removing them if you understand them to be aberrations, rather than biological fact.<br><br>This step can be a crucial one for machine learning, as the model will build its &quot;understanding&quot; of your phenomenon from all the measurements you give it for training. If some are incorrect, the models predictions will reflect this!</p><p>Looking back at the information from <code>.describe()</code> it is already noticeable that the first two columns have max values that are far larger than the <strong>75% quartile</strong> boundary.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-17">description</textarea>
+            </div>
+            <div id="code-cell-17-output" class="output"></div>
+        </div>
+        <p>We will utilise the column <strong>ITSN1_N</strong> to explore two methods for identifying outliers:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-18">outlier_col = &quot;ITSN1_N&quot;
+
+description[outlier_col]</textarea>
+            </div>
+            <div id="code-cell-18-output" class="output"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-19">it_df = df[[outlier_col]].copy()
+
+it_df.head(3)</textarea>
+            </div>
+            <div id="code-cell-19-output" class="output"></div>
+        </div>
+        <h4>Interquartile Range</h4><p>The description DataFrame already provides us with the <strong>25% (Q1)</strong> and <strong>75% (Q3)</strong> quartile values — the points below which 25% and 75% of the data fall, respectively.<br><br>The difference between them is the <strong>interquartile range (IQR)</strong>, which spans the middle 50% of the distribution. Values that fall more than 1.5 × IQR beyond either quartile are conventionally flagged as potential outliers:<br><br>$$\text{lower bound} = Q1 - 1.5 \times IQR$$<br>$$\text{upper bound} = Q3 + 1.5 \times IQR$$</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-20">IQR = description[outlier_col].loc[&quot;75%&quot;] - description[outlier_col].loc[&quot;25%&quot;]</textarea>
+            </div>
+            <div id="code-cell-20-output" class="output" style="display: none;"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-21">low_bound = description[outlier_col].loc[&quot;25%&quot;] - (1.5 * IQR)
+
+up_bound = description[outlier_col].loc[&quot;75%&quot;] + (1.5 * IQR)
+
+print(f&quot;The lower boundary is: {low_bound}&quot;)
+print(&quot;&quot;)
+print(f&quot;The upper boundary is: {up_bound}&quot;)</textarea>
+            </div>
+            <div id="code-cell-21-output" class="output"></div>
+        </div>
+        <p>It is suspected that the data&#x27;s outliers are at the upper end due to the max values we pointed out earlier, therefore we will focus only on values above the upper boundary.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-22"># create a boolean array with the upper bound value
+it_df[&#x27;&gt;_upper&#x27;] = it_df[outlier_col] &gt; up_bound 
+
+# Filter the DataFrame to only have values above the upper bound
+iqr_outliers = it_df[it_df[&#x27;&gt;_upper&#x27;] == True]
+
+print(f&quot;There are {len(iqr_outliers)} outliers out of {len(it_df)}&quot;)
+
+iqr_outliers.head(10)</textarea>
+            </div>
+            <div id="code-cell-22-output" class="output"></div>
+        </div>
+        <p>This method calculates there to be <strong>44</strong> values outside of the IQR, which is rather a lot. From this calculation we would likely leave them all in, as there are enough measurements above the threshold to signify it could be biologically true.</p><h4>Z-score</h4><p>A <strong>Z-score</strong> remaps each data point to the number of standard deviations it lies from the feature mean. For example, a value of 0 is the mean; +2 sits <strong>two</strong> standard deviations above it.<br><br>The formula is:<br><br>$$z = \frac{x - \mu}{\sigma}$$<br><br>where $x$ is the individual value, $\mu$ is the column mean, and $\sigma$ is the standard deviation.</p><p>A key <em>assumption</em> for the z-score is that the data be normally distributed (gaussian) or at least approximating it (bell-shaped). Gaussian distributions are symmetric around the mean with one peak, they can have differing variance (the width around the mean) and centre, but they must follow the shape seen below.<br><br>A standard (unit) normal distribution is a special case where the mean ($\mu$) is <strong>0</strong> and the standard deviation ($\sigma$) is <strong>1</strong>.</p><p><img src="./images/z_scores.png" alt="Z-Score" class="notebook-image"></p><p>A threshold of <strong>±3</strong> is the conventional cutoff, as under a normal distribution approximately 99.7% of values fall within three standard deviations of the mean. Anything beyond that is statistically <em>unusual</em>.</p><h4>Z-score in Python</h4><p>To calculate the Z-score we will import a the stats module from the Python package <a href="https://docs.scipy.org/doc/scipy/index.html">scipy</a>, which is a common toolbox for all statistical functions in Python.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-23">from scipy import stats</textarea>
+            </div>
+            <div id="code-cell-23-output" class="output" style="display: none;"></div>
+        </div>
+        <p>Scipy&#x27;s Z-score</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-24"># Calculate Z-scores
+it_df[&#x27;z_score&#x27;] = stats.zscore(it_df[outlier_col], nan_policy=&quot;omit&quot;)
+
+it_df.head(10)</textarea>
+            </div>
+            <div id="code-cell-24-output" class="output"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-25"># Identify outliers
+# Use abs() so we can compare positive and negative values
+outliers = it_df[abs(it_df[&#x27;z_score&#x27;]) &gt; 3]
+print(outliers)</textarea>
+            </div>
+            <div id="code-cell-25-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="comparing-outliers">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Comparing outliers</h3>
+                        <p>The two approaches catch different kinds of outliers and rest on different assumptions:<br><br></p><table class="markdown-table">
+<thead>
+<tr>
+<th></th>
+<th>IQR</th>
+<th>Z-score</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Assumption</strong></td>
+<td>None (distribution-free)</td>
+<td>Approximate normality</td>
+</tr>
+<tr>
+<td><strong>Sensitivity</strong></td>
+<td>Robust to skewed data</td>
+<td>Can underestimate extremity in skewed distributions</td>
+</tr>
+<tr>
+<td><strong>Best suited for</strong></td>
+<td>Biological or heavily skewed measurements</td>
+<td>Roughly normal data</td>
+</tr>
+<tr>
+<td><strong>Threshold</strong></td>
+<td>1.5 × IQR (strict: 3 × IQR)</td>
+<td>Typically ±3</td>
+</tr>
+</tbody>
+</table><p><br><br>This is partly reflected in the fact that the Z-score is influenced by the outliers themselves when computing the <em>mean</em> and <em>standard deviation</em>. Extreme values inflate and pull the <em>mean</em> upward, making themselves appear less extreme than they are.<br><br>For an ML pipeline, the choice matters. Some models are sensitive to feature scale and can be heavily distorted by outliers.</p><p>In this case the IQR method flagged <strong>44</strong> values while the Z-score approach flagged fewer — <strong>15</strong>. Part of this gap comes from the Z-score being influenced by the very outliers you are using it to catch: extreme values pull the mean upwards, which shrinks the Z-score of the largest values and makes them appear less extreme than they are. This is not necessarily a bad thing here — <strong>44</strong> was arguably too many, and the Z-score still isolates several values with very large scores that are clear candidates for removal. The shrinking effect is felt most by the <em>borderline</em> values, which are the hardest to judge in most cases and are usually worth retaining.<br><br>However, as stated, Z-score assumes a normal distribution - something we have not checked for and one that could be affecting our result. To rectify this we will need to observe the shape and distribution of the data, which we will explore in next and third <strong>data transformation</strong> section.</p><h4>Handling Outliers</h4><p>Once identified, you have three main options:<br><br><strong>Remove them</strong> — Drop the rows entirely. Appropriate when you have strong reason to believe the value is a measurement error (instrument failure, data entry mistake). Be cautious unless working with large datasets, as an extreme value may reflect genuine biology, not noise.<br><br><strong>Clipping</strong> — Replace values beyond the threshold with the threshold value itself. This retains the row and all its other measurements while preventing the outlier from dominating. This is common in machine learning: you scale your data to a standard normal distribution, then clip the outliers to a threshold. This both controls the scale of the data and dampens the effect of extreme values.<br><br><strong>Retain them with justification</strong> — If, as here, the elevated values cluster within specific experimental groups and the biological plausibility supports them, it is reasonable to keep them.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="comparing-outliers">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>4.</strong></p>
+                <p>Before removing anything from this dataset, it is worth checking whether the outliers (from <em>ITSN1_N</em>) cluster within particular categories. Use masking to select for values above the upper boundary and find their count <code>.value_counts()</code>, calculating the ratio of outliers across the categories of the <code>class</code> feature, using each method in turn:<ul class="nested-list"><li>IQR</li><br><li>Z-score</li></ul></p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-26">df</textarea>
+            </div>
+            <button id="run-code-cell-26" class="run-button">Run Code</button>
+            <div id="code-cell-26-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="summary---quiz">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Summary & Quiz</h3>
+                        <p>In this section we took our first proper look at the proteomics dataset. We checked for missing values and learnt to pull out the affected columns with a boolean mask, then summarised each feature using <code>.describe()</code> and the individual Pandas statistics. Finally we explored two approaches to spotting outliers — the interquartile range and the Z-score — noting that the Z-score assumes roughly normal data and can mislead on skewed features. Whether to keep or remove those values is ultimately a judgement call, informed by biological context.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="summary---quiz">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Summary & Quiz</h3>
+                        
+        <div class="quiz-box" id="quiz-1">
+            <div class="quiz-body">
+                <p class="quiz-intro">Attempt the questions below once you have finished. If you get any wrong, head back to that section to remind yourself of the reasoning/syntax behind the correct answer:</p>
+                
+            <div class="quiz-question" id="quiz-1-q0" data-quiz="quiz-1" data-topic-id="missing-data">
+                <span class="quiz-topic-tag">Missing Data</span>
+                <p class="quiz-question-text">Which expression returns only the columns of a DataFrame that contain at least one NaN value?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-1-q0" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">col[df.isnull().any()]</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q0" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">df.dropna(axis=1)</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q0" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">df.isnull().sum()</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q0" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">df.fillna(0).any()</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div><hr class="quiz-divider">
+            <div class="quiz-question" id="quiz-1-q1" data-quiz="quiz-1" data-topic-id="summary-statistics">
+                <span class="quiz-topic-tag">Summary Statistics</span>
+                <p class="quiz-question-text">How does `.describe()` treat NaN values when computing its statistics?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q1" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It raises an error</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-1-q1" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It silently excludes them from each column&#x27;s calculations</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q1" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It fills them with the column mean</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q1" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It counts them as zero</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div><hr class="quiz-divider">
+            <div class="quiz-question" id="quiz-1-q2" data-quiz="quiz-1" data-topic-id="pandas-statistics">
+                <span class="quiz-topic-tag">Pandas Statistics</span>
+                <p class="quiz-question-text">What happens if you call `.max()` on a DataFrame containing both numeric and text columns?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q2" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It throws a TypeError</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-1-q2" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It returns a mixed-type result, including strings for the text columns</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q2" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It returns only the numeric maxima</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q2" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It automatically ignores all object columns</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div><hr class="quiz-divider">
+            <div class="quiz-question" id="quiz-1-q3" data-quiz="quiz-1" data-topic-id="outliers--iqr">
+                <span class="quiz-topic-tag">Outliers (IQR)</span>
+                <p class="quiz-question-text">Under the IQR rule, a value is flagged as a potential outlier if it lies beyond:</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-1-q3" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">1.5 × IQR from the nearest quartile</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q3" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">3 standard deviations from the mean</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q3" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">the 90th percentile</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q3" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">2 × IQR from the median</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div><hr class="quiz-divider">
+            <div class="quiz-question" id="quiz-1-q4" data-quiz="quiz-1" data-topic-id="outliers--z-score">
+                <span class="quiz-topic-tag">Outliers (Z-score)</span>
+                <p class="quiz-question-text">Why can the Z-score under-flag outliers in a right-skewed feature?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q4" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">The mean is always zero</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-1-q4" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">Extreme values inflate the standard deviation, shrinking their own scores</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q4" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It ignores negative values</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-1-q4" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It requires the data to be sorted first</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+                
+            <div class="quiz-topics-footer">
+                <span class="quiz-topics-label">Topics covered</span>
+                <div class="quiz-topics-list">
+                    <span class="quiz-topic-pill" id="quiz-1-topic-missing-data">Missing Data</span><span class="quiz-topic-pill" id="quiz-1-topic-summary-statistics">Summary Statistics</span><span class="quiz-topic-pill" id="quiz-1-topic-pandas-statistics">Pandas Statistics</span><span class="quiz-topic-pill" id="quiz-1-topic-outliers--iqr">Outliers (IQR)</span><span class="quiz-topic-pill" id="quiz-1-topic-outliers--z-score">Outliers (Z-score)</span>
+                </div>
+            </div>
+            </div>
+        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+        <div class="page-navigation">
+            <a href="./introduction.html" class="nav-button prev">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                </svg>
+                Previous
+            </a>
+            <a href="./basic-plots.html" class="nav-button next">
+                Next
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </a></div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div>© All materials are copyright scryptIQ 2025</div>
+            <div>Powered by Pyodide</div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../assets/main.js"></script>
+    
+    <!-- Pyodide Initialisation Script -->
+    <script>
+
+// Generalisable Pyodide Initialisation Script
+// Variables and state build up naturally as code blocks execute in order
+
+async function main() {
+    // Show loading message for all output elements
+    document.querySelectorAll(".output").forEach(el => {
+        el.textContent = "Loading Pyodide...";
+        el.classList.add("loading-message");
+    });
+    
+    try {
+        // Load Pyodide
+        console.log("Loading Pyodide...");
+        const pyodideStartTime = performance.now();
+        let pyodide = await loadPyodide();
+        const pyodideLoadTime = performance.now() - pyodideStartTime;
+        console.log(`Pyodide loaded in ${pyodideLoadTime.toFixed(2)}ms`);
+        
+        // Load required packages only if specified
+        const lessonPackages = window.LESSON_PACKAGES || [];
+        
+        if (lessonPackages.length > 0) {
+            console.log("Loading required Python packages...");
+            const packagesStartTime = performance.now();
+            
+            // Separate built-in packages from PyPI packages
+            const builtInPackages = lessonPackages.filter(pkg => 
+                ['numpy', 'scipy', 'matplotlib', 'pandas', 'scikit-learn', 'pillow', 'regex'].includes(pkg)
+            );
+            
+            const micropipPackages = lessonPackages.filter(pkg => !builtInPackages.includes(pkg));
+            
+            // Load built-in packages (fast)
+            if (builtInPackages.length > 0) {
+                await pyodide.loadPackage(builtInPackages);
+                console.log(`Loaded built-in packages: ${builtInPackages.join(', ')}`);
+            }
+            
+            // Install PyPI packages (slower)
+            if (micropipPackages.length > 0) {
+                await pyodide.loadPackage(['micropip']);
+                const micropip = pyodide.pyimport('micropip');
+                await micropip.install(micropipPackages);
+                console.log(`Installed PyPI packages: ${micropipPackages.join(', ')}`);
+            }
+            
+            const packagesLoadTime = performance.now() - packagesStartTime;
+            console.log(`Packages loaded in ${packagesLoadTime.toFixed(2)}ms`);
+            console.log(`Total initialisation time: ${(pyodideLoadTime + packagesLoadTime).toFixed(2)}ms`);
+        } else {
+            console.log("No packages to load for this lesson");
+            console.log(`Total initialisation time: ${pyodideLoadTime.toFixed(2)}ms`);
+        }
+
+        // Only set up basic Python environment - no pre-loaded variables
+        await pyodide.runPythonAsync(`
+            import sys
+            from io import StringIO
+        `);
+
+        // Only set up matplotlib if it's in the loaded packages
+        if (lessonPackages.includes('matplotlib')) {
+            await pyodide.runPythonAsync(`
+                # Set up matplotlib for web rendering
+                import matplotlib
+                matplotlib.use('AGG')
+                import matplotlib.pyplot as plt
+                import io
+                import base64
+                
+                def capture_matplotlib():
+                    """Capture current matplotlib figure as HTML img tag"""
+                    buf = io.BytesIO()
+                    plt.savefig(buf, format='png', bbox_inches='tight', dpi=100)
+                    buf.seek(0)
+                    img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+                    plt.close()
+                    return f'<img src="data:image/png;base64,{img_base64}" style="max-width: 100%; height: auto;" />'
+
+                # Silence the "FigureCanvasAgg is non-interactive" warning that
+                # occurs when notebook code calls plt.show().  In this environment
+                # figures are captured automatically via capture_matplotlib(), so
+                # plt.show() should simply be a no-op.
+                plt.show = lambda *args, **kwargs: None
+            `);
+            console.log('Matplotlib capture function set up');
+        }
+        
+        console.log("Pyodide loaded successfully");
+        
+        // Load remote files if URLs are specified
+        const lessonFiles = window.LESSON_FILES || [];
+        
+        if (lessonFiles.length > 0) {
+            try {
+                console.log(`Checking for ${lessonFiles.length} remote file(s) to load...`);
+                
+                // Build Python code to load all files dynamically
+                let pythonCode = `
+from pyodide.http import pyfetch
+import os
+
+# Create data directory if it doesn't exist
+os.makedirs('./data', exist_ok=True)
+`;
+                
+                // Add loading code for each file
+                for (const file of lessonFiles) {
+                    if (file.is_binary) {
+                        // Binary files (images, etc.) - use bytes
+                        pythonCode += `
+# Load ${file.filename} (binary)
+try:
+    response = await pyfetch("${file.url}")
+    content = await response.bytes()
+    with open('./data/${file.filename}', 'wb') as f:
+        f.write(bytes(content))
+    print("Loaded: ${file.filename}")
+except Exception as e:
+    print(f"Could not load ${file.filename}: {e}")
+`;
+                    } else {
+                        // Text files (CSV, etc.) - use string
+                        pythonCode += `
+# Load ${file.filename} (text)
+try:
+    response = await pyfetch("${file.url}")
+    content = await response.string()
+    with open('./data/${file.filename}', 'w') as f:
+        f.write(content)
+    print("Loaded: ${file.filename}")
+except Exception as e:
+    print(f"Could not load ${file.filename}: {e}")
+`;
+                    }
+                }
+                
+                await pyodide.runPythonAsync(pythonCode);
+                console.log("Remote files loaded successfully");
+            } catch (error) {
+                console.warn("Error loading remote files (continuing anyway):", error);
+            }
+        } else {
+            console.log("No remote files to load for this lesson");
+        }
+        
+        // Function to execute Python code and capture output
+        async function executePythonCode(code) {
+            try {
+                // Redirect Python stdout and stderr to capture print statements and warnings
+                await pyodide.runPythonAsync(`
+                    old_stdout = sys.stdout
+                    old_stderr = sys.stderr
+                    sys.stdout = mystdout = StringIO()
+                    sys.stderr = mystderr = StringIO()
+                `);
+
+                // Run the user code.
+                // We pass the code string via pyodide.globals to avoid JS-string escaping
+                // issues, then use Python's ast module to execute it.  The last expression
+                // (if any) is eval-ed inside Python so that repr() is called there —
+                // this means display settings such as np.set_printoptions() are always
+                // respected before the value crosses the Python→JS boundary.
+                // (Pyodide auto-converts numpy arrays to TypedArray, so String(result)
+                // would bypass numpy's formatting entirely.)
+                pyodide.globals.set('__cell_code__', code);
+                await pyodide.runPythonAsync(`
+import ast as _ast
+__cell_result__ = None
+try:
+    _tree = _ast.parse(__cell_code__)
+    if _tree.body and isinstance(_tree.body[-1], _ast.Expr):
+        _last = _tree.body.pop()
+        exec(compile(_ast.Module(body=_tree.body, type_ignores=[]), '<cell>', 'exec'), globals())
+        _val = eval(compile(_ast.Expression(body=_last.value), '<cell>', 'eval'), globals())
+        if _val is not None:
+            __cell_result__ = repr(_val)
+    else:
+        exec(compile(_tree, '<cell>', 'exec'), globals())
+finally:
+    for _k in ['_tree', '_last', '_val', '_ast']:
+        globals().pop(_k, None)
+    globals().pop('__cell_code__', None)
+`);
+
+                // Get the captured stdout and stderr
+                let stdout = await pyodide.runPythonAsync(`
+                    sys.stdout = old_stdout
+                    sys.stderr = old_stderr
+                    mystdout.getvalue()
+                `);
+
+                const stderr = await pyodide.runPythonAsync(`mystderr.getvalue()`);
+                if (stderr) {
+                    if (stdout) stdout += "\n";
+                    stdout += stderr;
+                }
+
+                // Retrieve the Python-side repr string (already formatted correctly)
+                const resultRepr = await pyodide.runPythonAsync(`
+_r = __cell_result__
+del __cell_result__
+_r
+`);
+
+                // Check for matplotlib figures only if matplotlib was loaded
+                const lessonPackages = window.LESSON_PACKAGES || [];
+                if (lessonPackages.includes('matplotlib')) {
+                    const hasFigures = await pyodide.runPythonAsync(`
+                        import matplotlib.pyplot as plt
+                        len(plt.get_fignums()) > 0
+                    `);
+
+                    if (hasFigures) {
+                        const figureHtml = await pyodide.runPythonAsync(`capture_matplotlib()`);
+                        if (stdout) stdout += "\n";
+                        stdout += figureHtml;
+                    }
+                }
+
+                // Combine stdout and result repr
+                let output = stdout;
+                if (resultRepr !== undefined && resultRepr !== null && String(resultRepr).trim() !== '') {
+                    if (output) output += "\n";
+                    output += String(resultRepr);
+                }
+                
+                return { success: true, output: output || "Code executed successfully (no output)" };
+                
+            } catch (error) {
+                // Attempt to restore stdout/stderr even on failure
+                try {
+                    await pyodide.runPythonAsync(`
+                        if 'old_stdout' in dir(): sys.stdout = old_stdout
+                        if 'old_stderr' in dir(): sys.stderr = old_stderr
+                    `);
+                } catch (_) {}
+                // Re-run through Python's traceback machinery to get a clean error message
+                let tracebackStr = '';
+                try {
+                    pyodide.globals.set('_traceback_code', code);
+                    await pyodide.runPythonAsync(`
+                        import traceback as _tb
+                        from io import StringIO as _SIO
+                        _trace_result = None
+                        _saved_io = (sys.stdout, sys.stderr)
+                        sys.stdout = sys.stderr = _SIO()
+                        try:
+                            exec(compile(_traceback_code, '<exec>', 'exec'), globals())
+                        except Exception:
+                            _trace_result = _tb.format_exc()
+                        finally:
+                            sys.stdout, sys.stderr = _saved_io
+                    `);
+                    const tbVal = await pyodide.runPythonAsync('_trace_result');
+                    if (tbVal) tracebackStr = tbVal;
+                } catch (_) {}
+                let displayMsg;
+                if (tracebackStr && tracebackStr.includes('File "<exec>"')) {
+                    const lines = tracebackStr.split('\n');
+                    let execIdx = -1;
+                    for (let i = lines.length - 1; i >= 0; i--) {
+                        if (lines[i].includes('File "<exec>"')) { execIdx = i; break; }
+                    }
+                    displayMsg = execIdx !== -1
+                        ? lines.slice(execIdx).join('\n').trim()
+                        : tracebackStr.trim();
+                } else {
+                    displayMsg = (error.message || '').trim() || error.type || String(error);
+                }
+                return { success: false, output: 'Error:\n' + displayMsg };
+            }
+        }
+        
+        // Execute all hidden code blocks first (for setup code like imports)
+        const hiddenCodeBlocks = Array.from(document.querySelectorAll('.hidden-code textarea'));
+        console.log(`Found ${hiddenCodeBlocks.length} hidden code blocks`);
+
+        for (const textarea of hiddenCodeBlocks) {
+            const code = textarea.value.trim();
+            if (!code) continue;
+            
+            console.log(`Executing hidden code block: ${textarea.id}`);
+            console.log(`Hidden code content: ${code.substring(0, 100)}...`);
+            const result = await executePythonCode(code);
+            
+            if (!result.success) {
+                console.error(`Error in hidden code block ${textarea.id}:`, result.output);
+            } else {
+                console.log(`Hidden code block ${textarea.id} executed successfully`);
+                console.log(`Result: ${result.output}`);
+            }
+        }
+
+        console.log("All hidden code blocks executed");
+        
+        // Get all fixed code blocks in document order
+        const fixedCodeBlocks = Array.from(document.querySelectorAll('.code-fixed textarea'));
+        
+        // Setup and execute fixed code blocks sequentially
+        for (const textarea of fixedCodeBlocks) {
+            const code = textarea.value.trim();
+            if (!code) continue;
+            
+            // Set up CodeMirror editor (read-only)
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: "python",
+                theme: "pastel-on-dark",
+                lineNumbers: true,
+                readOnly: true,
+                viewportMargin: Infinity
+            });
+            
+            // Find corresponding output element
+            const outputId = textarea.id + '-output';
+            const outputElement = document.getElementById(outputId);
+            
+            if (outputElement) {
+                outputElement.textContent = "Running code...";
+                outputElement.classList.add("loading-message");
+                
+                // Execute the code (this maintains state for subsequent blocks)
+                const result = await executePythonCode(code);
+                
+                // Display the output - check if it's HTML
+                const trimmedOutput = result.output.trim();
+                console.log('Output length:', trimmedOutput.length);
+                console.log('Output starts with:', trimmedOutput.substring(0, 100));
+                
+                if (trimmedOutput.includes('<script') && trimmedOutput.includes('Plotly')) {
+                    // It's Plotly HTML output - extract just the body content
+                    console.log('Rendering as Plotly HTML');
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(result.output, 'text/html');
+                    // Clear the output element and append the body content
+                    outputElement.innerHTML = '';
+                    
+                    // Find and load external scripts first (like Plotly CDN)
+                    const externalScripts = Array.from(doc.querySelectorAll('script[src]'));
+                    const inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+                    
+                    // Append non-script content first
+                    Array.from(doc.body.children).forEach(child => {
+                        if (child.tagName !== 'SCRIPT') {
+                            outputElement.appendChild(child.cloneNode(true));
+                        }
+                    });
+                    
+                    // Load external scripts sequentially
+                    const loadScript = (src) => {
+                        return new Promise((resolve, reject) => {
+                            const script = document.createElement('script');
+                            script.src = src;
+                            script.onload = resolve;
+                            script.onerror = reject;
+                            document.head.appendChild(script);
+                        });
+                    };
+                    
+                    // Load all external scripts first
+                    Promise.all(externalScripts.map(s => loadScript(s.src)))
+                        .then(() => {
+                            console.log('External scripts loaded, executing inline scripts');
+                            // Now execute inline scripts
+                            inlineScripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                newScript.textContent = oldScript.textContent;
+                                outputElement.appendChild(newScript);
+                            });
+                            console.log('Output element after processing:', outputElement.children.length, 'children');
+                        })
+                        .catch(err => {
+                            console.error('Failed to load external scripts:', err);
+                            outputElement.textContent = 'Error loading Plotly: ' + err.message;
+                        });
+                } else if (trimmedOutput.startsWith('<!DOCTYPE') || 
+                           trimmedOutput.startsWith('<html') ||
+                            trimmedOutput.startsWith('<div') ||
+                            trimmedOutput.startsWith('<img')) {
+                    console.log('Rendering as generic HTML');
+                    outputElement.innerHTML = result.output;
+                    console.log('Output element after innerHTML:', outputElement.children.length, 'children');
+                } else {
+                    console.log('Rendering as plain text');
+                    outputElement.textContent = result.output;
+                }
+                outputElement.classList.remove("loading-message");
+                if (result.success) {
+                    outputElement.classList.add("success-message");
+                    outputElement.classList.remove("error-message");
+                } else {
+                    outputElement.classList.add("error-message");
+                    outputElement.classList.remove("success-message");
+                }
+            }
+            
+            // Small delay to show progression
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        
+        // Set flag to indicate all FIXED cells have been executed
+        // This is used by PDF generation to ensure all outputs are ready
+        window.allCellsExecuted = true;
+        console.log("All FIXED cells executed successfully");
+        
+        // Setup all editable code blocks (but don't execute them)
+        document.querySelectorAll('.code-editor textarea').forEach((textarea) => {
+            // Set up CodeMirror editor (editable)
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: "python",
+                theme: "pastel-on-dark",
+                lineNumbers: true,
+                viewportMargin: Infinity
+            });
+            
+            // Find corresponding run button and output element
+            const baseId = textarea.id;
+            const runButtonId = 'run-' + baseId;
+            const outputId = baseId + '-output';
+            
+            const runButton = document.getElementById(runButtonId);
+            const outputElement = document.getElementById(outputId);
+            
+            if (runButton && outputElement) {
+                // Set initial state
+                outputElement.textContent = "Ready to run code!";
+                outputElement.classList.remove("loading-message");
+                
+                runButton.addEventListener("click", async () => {
+                    const code = editor.getValue().trim();
+                    if (!code) {
+                        outputElement.textContent = "No code to run";
+                        return;
+                    }
+                    
+                    outputElement.textContent = "Running...";
+                    outputElement.classList.remove("error-message", "success-message");
+                    outputElement.classList.add("loading-message");
+                    
+                    // Execute the code (this also maintains state for future blocks)
+                    const result = await executePythonCode(code);
+                    
+                    // Display the output - check if it's HTML
+                    const trimmedOutput = result.output.trim();
+                    console.log('Output length:', trimmedOutput.length);
+                    console.log('Output starts with:', trimmedOutput.substring(0, 100));
+                    
+                    if (trimmedOutput.includes('<script') && trimmedOutput.includes('Plotly')) {
+                        // It's Plotly HTML output - extract just the body content
+                        console.log('Rendering as Plotly HTML');
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(result.output, 'text/html');
+                        // Clear the output element and append the body content
+                        outputElement.innerHTML = '';
+                        
+                        // Find and load external scripts first (like Plotly CDN)
+                        const externalScripts = Array.from(doc.querySelectorAll('script[src]'));
+                        const inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+                        
+                        // Append non-script content first
+                        Array.from(doc.body.children).forEach(child => {
+                            if (child.tagName !== 'SCRIPT') {
+                                outputElement.appendChild(child.cloneNode(true));
+                            }
+                        });
+                        
+                        // Load external scripts sequentially
+                        const loadScript = (src) => {
+                            return new Promise((resolve, reject) => {
+                                const script = document.createElement('script');
+                                script.src = src;
+                                script.onload = resolve;
+                                script.onerror = reject;
+                                document.head.appendChild(script);
+                            });
+                        };
+                        
+                        // Load all external scripts first
+                        Promise.all(externalScripts.map(s => loadScript(s.src)))
+                            .then(() => {
+                                console.log('External scripts loaded, executing inline scripts');
+                                // Now execute inline scripts
+                                inlineScripts.forEach(oldScript => {
+                                    const newScript = document.createElement('script');
+                                    newScript.textContent = oldScript.textContent;
+                                    outputElement.appendChild(newScript);
+                                });
+                                console.log('Output element after processing:', outputElement.children.length, 'children');
+                            })
+                            .catch(err => {
+                                console.error('Failed to load external scripts:', err);
+                                outputElement.textContent = 'Error loading Plotly: ' + err.message;
+                            });
+                    } else if (trimmedOutput.startsWith('<!DOCTYPE') || 
+                               trimmedOutput.startsWith('<html') ||
+                               trimmedOutput.startsWith('<div') ||
+                               trimmedOutput.startsWith('<img')) {
+                        outputElement.innerHTML = result.output;
+                    } else {
+                        outputElement.textContent = result.output;
+                    }
+                    outputElement.classList.remove("loading-message");
+                    if (result.success) {
+                        outputElement.classList.add("success-message");
+                        outputElement.classList.remove("error-message");
+                    } else {
+                        outputElement.classList.add("error-message");
+                        outputElement.classList.remove("success-message");
+                    }
+                });
+            }
+        });
+        
+        console.log("All code blocks initialised successfully");
+
+        // Set flag to indicate Pyodide is fully ready
+        window.pyodideReady = true;
+        console.log("Pyodide fully ready");
+        
+    } catch (error) {
+        console.error("Failed to initialise Pyodide:", error);
+        document.querySelectorAll(".output").forEach(el => {
+            el.textContent = "Error loading Pyodide: " + error.message;
+            el.classList.remove("loading-message");
+            el.classList.add("error-message");
+        });
+    }
+}
+
+// Start the application when DOM is loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', main);
+} else {
+    main();
+}
+    </script>
+    
+</body>
+</html>

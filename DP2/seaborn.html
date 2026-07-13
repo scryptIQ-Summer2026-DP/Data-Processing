@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- MathJax for mathematical notation -->
+    <script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$']],
+            displayMath: [['$$', '$$']],
+            processEscapes: true
+        },
+        svg: {
+            fontCache: 'global'
+        }
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    
+    <!-- Pyodide and CodeMirror -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/theme/pastel-on-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/mode/python/python.min.js"></script>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="../assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../assets/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="../assets/android-chrome-512x512.png">
+
+    <!-- Core Stylesheets -->
+    <link rel="stylesheet" href=../assets/colours.css>
+    <link rel="stylesheet" href="../assets/shared-styles.css">
+    <link rel="stylesheet" href="../assets/nav-bar.css">
+    <link rel="stylesheet" href="../assets/module_card.css">
+    <link rel="stylesheet" href="../assets/learning_outcomes.css">
+    <link rel="stylesheet" href="../assets/learning_lists.css">
+    <link rel="stylesheet" href="../assets/box_styles.css">
+    <link rel="stylesheet" href="../assets/code_styles.css">
+    
+    <!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>scryptIQ - DP2 - Seaborn</title>
+    <script>
+        window.LESSON_FILES = [
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/refs/heads/main/dp/penguins_cleaned.csv", filename: "penguins_cleaned.csv", is_binary: false},
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/refs/heads/main/dp/cortex_nuclear.csv", filename: "cortex_nuclear.csv", is_binary: false}
+        ];
+        window.LESSON_PACKAGES = ['numpy', 'pandas', 'matplotlib', 'seaborn', 'scipy'];
+    </script>
+</head>
+<body>
+    
+    <!-- Sidebar Navigation -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <a href="../homepage.html" style="text-decoration: none; display: inline-block;">
+                <img src="../assets/scryptIQ_logo_dark.png" alt="scryptIQ Logo" class="sidebar-logo">
+            </a>
+        </div>
+
+        <h3>Content</h3>
+        <ul>
+            <li><a href="./introduction.html" class="">Introduction</a></li><li><a href="./data-exploration.html">Data Exploration</a></li><li><a href="./basic-plots.html">Basic Plotting</a></li><li><a href="./data-transformation.html">Data Transformation</a></li><li><a href="./feature-relationships.html">Feature Relationships</a></li>
+            <li>
+                <div class="nav-toggle active" data-target="expandable-section-5">
+                    Seaborn
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <ul class="nested-nav expanded" id="expandable-section-5"><li><a href="#introduction">Introduction</a></li><li><a href="#seaborn-syntax">seaborn Syntax</a></li><li><a href="#exploring-feature-relationships">Exploring feature relationships</a></li><li><a href="#heatmaps">Heatmaps</a></li><li><a href="#summary">Summary</a></li>
+                </ul>
+            </li><li><a href="./assignment.html">Assignment</a></li><li><a href="./feedback.html">Feedback</a></li>
+        </ul>
+
+        <h3 class="collapsible-header collapsed">
+            Resources
+            <span class="collapse-icon">►</span>
+        </h3>
+        <div class="collapsible-content collapsed">
+            <ul>
+                <li><a href="./glossary.html">Glossary</a></li><li><a href="./downloads.html">Downloads</a></li><li><a href="../HB/introduction.html">Handbook</a></li>
+            </ul>
+        </div>
+
+        <h3 class="collapsible-header collapsed">
+            Previous Modules
+            <span class="collapse-icon">►</span>
+        </h3>
+        <div class="collapsible-content collapsed">
+            <ul>
+            <li><a href="../DP1/introduction.html">DP1</a></li>
+        </ul>
+        </div>
+
+        <h3>
+            <li><a href="./report-issue.html">Report an Issue</a></li>
+        </h3>
+    </div>
+
+    <!-- Sidebar Toggle Button -->
+    <button id="sidebar-toggle" class="sidebar-toggle">❮</button>
+
+    <!-- Main Content Area -->
+    <div id="main-content" class="main-content">
+        <!-- Top Navigation Bar -->
+        <div class="top-navbar">
+            <h1 class="page-title">Data Processing 2</h1>
+            <div class="nav-actions">
+                <a href="../homepage.html" class="text-button" title="Materials homepage">
+                    Homepage
+                </a>
+                <a href="https://scryptiq.ai/my-cohorts/" class="text-button scryptiq-button" title="Find out more about us">
+                    scryptIQ
+                </a>
+            </div>
+        </div>
+
+        
+            <div class="module-card" id="introduction">
+                <div class="module-header">
+                    Seaborn <span class="module-tag">DP2</span>
+                </div>
+                <div class="module-body">
+                    <h3>Learning Objectives</h3>
+                    <div class="learning-outcomes">
+                        <div class="outcome-item">
+                    <span class="outcome-number">1</span>
+                    <span class="outcome-text">What is seaborn and its uses</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">2</span>
+                    <span class="outcome-text">How to recreate the previous plots in seaborn</span>
+                </div>
+                    </div>
+                    <h3>Introduction</h3>
+                    <p>Matplotlib has been a staple of mathematical plotting in Python for many years. Its greatest strength, the level of control you as the user have, is also one of its weaknesses; as you have to write a few lines of code at minimum - even for a basic plot. Python, if anything, is a language of abstraction through its large swathe of third-party packages. And in this spirit a collection of people have built <a href="https://seaborn.pydata.org/index.html">seaborn</a>, a visualisation library built on top of matplotlib, that can create visually appealing plots from a single line of code.<br><br>In this quick section we will demonstrate how to make the plots we created in the previous sections, to demonstrate its usefulness. This is a bit of bonus material, that will be expanded upon in <strong>DP4</strong>.</p>
+                </div>
+            </div>
+            
+            <div class="module-card" id="seaborn-syntax">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>seaborn Syntax</h3>
+                        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-104">import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+import seaborn as sns</textarea>
+            </div>
+            <div id="code-cell-104-output" class="output" style="display: none;"></div>
+        </div>
+        <p><em>seaborn</em> is typically imported with the alias <strong>sns</strong>, and with it, it has many plotting functions that will create all the basic plots covered, plus many more! Head to their gallery <a href="https://seaborn.pydata.org/examples/index.html">here</a> for some visual inspiration from their toolbox.<br><br>As well as being built from matplotlib, <em>seaborn</em> is built to integrate seamlessly with <em>pandas</em>. The first argument you pass to a seaborn plotting function is a pandas dataframe, the function can then take further arguments for styling.<br><br>Below, we have recreated the <a href="https://seaborn.pydata.org/generated/seaborn.boxplot.html">box plot</a> of all the proteins, as was done at the start:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-105">df = pd.read_csv(&quot;./data/cortex_nuclear.csv&quot;)
+
+sns.boxplot(df); # ; suppresses the text output</textarea>
+            </div>
+            <div id="code-cell-105-output" class="output"></div>
+        </div>
+        <p>To create a boxplot of just a few columns you will need to filter the dataframe down to just those that you need:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-106">plot_cols = [&quot;DYRK1A_N&quot;, &quot;ITSN1_N&quot;, &quot;S6_N&quot;]</textarea>
+            </div>
+            <div id="code-cell-106-output" class="output" style="display: none;"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-107">sns.boxplot(df[plot_cols]);</textarea>
+            </div>
+            <div id="code-cell-107-output" class="output"></div>
+        </div>
+        <p>So far <strong>seaborn</strong> looks useful, but not that much easier. However, it&#x27;s greatest strength comes from the <strong>hue</strong> argument, that is available in most plotting functions. To <strong>hue</strong> you pass the name of a column, one that has categorical data (such as <code>&quot;Genotype&quot;</code>), which will then split the plotted data into those categories. Saving you from having to do the filter yourself.<br><br>Below we recreate the <a href="https://seaborn.pydata.org/generated/seaborn.histplot.html">histogram</a> split by <strong>Genotype</strong>:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-108">sns.histplot(df, x=&quot;DYRK1A_N&quot;, hue=&quot;Genotype&quot;, bins=50)</textarea>
+            </div>
+            <div id="code-cell-108-output" class="output"></div>
+        </div>
+        <p>As <em>seaborn</em> is built on top of matplotlib, all the additional tools are still available for you to customise your plots and figure. A common example is that <em>seaborn</em> doesn&#x27;t natively provide the option for a subplot, so you have to use matplotlib&#x27;s <code>plt.subplots()</code> and pass the axes to the <code>ax</code> argument.<br><br>Below we have recreated the 3 plot subplot of histograms, condensing the code down further by adding each plot to the figure using a <code>for loop</code>.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-109">fig, axes = plt.subplots(figsize=(10,4), ncols=3, sharey=True, layout=&quot;constrained&quot;)
+
+for c, col in enumerate(plot_cols):
+    sns.histplot(df, x=col, hue=&quot;Genotype&quot;, bins=50, ax=axes[c])
+
+# Add the title to the figure
+fig.suptitle(&#x27;Histograms of Protein Expression by genotype&#x27;, fontsize=16);</textarea>
+            </div>
+            <div id="code-cell-109-output" class="output"></div>
+        </div>
+        <p>As a bonus - and a demonstration of <em>seaborn</em> - we can create a <a href="https://seaborn.pydata.org/generated/seaborn.kdeplot.html">KDE</a> (Kernel Density Estimate) plot which is a variation on the histogram. Instead of binning the data, a continuous, smoothed curve is fitted to the data to visualise the probability distribution. This can often be a much more visually appealing way to present your data distribution in a figure.<br><br>Try changing <code>bw_adjust</code> in the cell below to see how it affects the shape: 0 = less smooth, <em>to infinity</em> = smooth and uniform</p>
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-110">fig, axes = plt.subplots(figsize=(10,4), ncols=3, sharey=True, layout=&quot;constrained&quot;)
+
+for c, col in enumerate(plot_cols):
+                                     # adjusts the smoothness     # change the colour scheme
+    sns.kdeplot(df, x=col, hue=&quot;Genotype&quot;, bw_adjust=1, fill=True, palette=&quot;dark&quot;, ax=axes[c]);
+
+fig.suptitle(&#x27;KDEs of Protein Expression by genotype&#x27;, fontsize=16);</textarea>
+            </div>
+            <button id="run-code-cell-110" class="run-button">Run Code</button>
+            <div id="code-cell-110-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="seaborn-syntax">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>11.</strong></p>
+                <p>Using the code above, plot the box plots of each column in <strong>plot_cols</strong>:<ul class="nested-list"><li>Give to the argument <strong>y</strong> the column label</li><br><li>Set the <strong>hue</strong> to &quot;Genotype&quot;</li><br><li>Give it an appropriate figure title</li></ul></p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-111"></textarea>
+            </div>
+            <button id="run-code-cell-111" class="run-button">Run Code</button>
+            <div id="code-cell-111-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="exploring-feature-relationships">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Exploring feature relationships</h3>
+                        <p>In the previous section we explored feature relationships through the <a href="https://seaborn.pydata.org/generated/seaborn.scatterplot.html">scatter plots</a> and correlation matrices. As with creating a histogram, the code that we used previously can be reduced down to a single line:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-112">fig, ax = plt.subplots()
+
+ctrl = df[df[&#x27;Genotype&#x27;]==&#x27;Control&#x27;]
+tri = df[df[&#x27;Genotype&#x27;]==&#x27;Ts65Dn&#x27;]
+
+ax.scatter(x=ctrl[&quot;ITSN1_N&quot;], y=ctrl[&quot;NR2A_N&quot;], alpha=0.5, label=&#x27;Control&#x27;)
+
+# Add the second data to a new scatter
+ax.scatter(x=tri[&quot;ITSN1_N&quot;], y=tri[&quot;NR2A_N&quot;], alpha=0.5, label=&#x27;Ts65Dn&#x27;)
+
+ax.set(xlabel=&quot;ITSN1_N&quot;, ylabel=&quot;NR2A_N&quot;)
+ax.legend()
+
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-112-output" class="output"></div>
+        </div>
+        <p>Have a play with the plot below, using extra arguments as seen from their <a href="https://seaborn.pydata.org/generated/seaborn.scatterplot.html">documentation</a>. Here we have added an extra split by styling the markers by another categorical column <code>&quot;Treatment&quot;</code>:</p>
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-113">sns.scatterplot(df, x=&quot;ITSN1_N&quot;, y=&quot;NR2A_N&quot;, hue=&quot;Genotype&quot;, alpha=0.5, style=&quot;Treatment&quot;);</textarea>
+            </div>
+            <button id="run-code-cell-113" class="run-button">Run Code</button>
+            <div id="code-cell-113-output" class="output"></div>
+        </div>
+        <p>However, if we want to recreate the log transformation plots, you will have to add the transformations as new columns to the dataframe:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-114">cols = [&quot;ITSN1_N&quot;, &quot;NR2A_N&quot;]
+
+log_df = df[cols + [&quot;Genotype&quot;]].copy()
+
+for col in cols:
+
+    log_df[f&quot;log_{col}&quot;] = np.log(log_df[col])
+
+log_df</textarea>
+            </div>
+            <div id="code-cell-114-output" class="output"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-115">sns.scatterplot(log_df, x=&quot;log_ITSN1_N&quot;, y=&quot;log_NR2A_N&quot;, hue=&quot;Genotype&quot;, alpha=0.5);</textarea>
+            </div>
+            <div id="code-cell-115-output" class="output"></div>
+        </div>
+        <p>Our dataset is very wide, in that it has many columns (features), which makes viewing every pairing long winded and potentially visually unappealing. seaborn solves this with the <a href="https://seaborn.pydata.org/generated/seaborn.pairplot.html">pairplot</a> function, that will create a matrix of $N$ dimensions, where $N$ is the number of numerical columns. This matrix, like the correlation matrix, is symmetrical with each unique pair having a scatter plot. On the diagonal there is a KDE plot, as it is plotting just that feature. When combined with a <strong>hue</strong> the pair plot becomes the go to tool to get a quick overview of how your data is distributed and related.<br><br>To reduce the size of the plot we have just selected the first 5 features, adding back the <em>Genotype</em> column for the <em>hue</em>.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-116"># Get our selected columns as a list
+
+pair_cols = df.columns[1:6].tolist() + [&quot;Genotype&quot;]
+
+pair_cols</textarea>
+            </div>
+            <div id="code-cell-116-output" class="output"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-117"># Select only those columns
+
+pair_df = df.loc[:, pair_cols]</textarea>
+            </div>
+            <div id="code-cell-117-output" class="output" style="display: none;"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-118">sns.pairplot(pair_df, hue=&quot;Genotype&quot;);</textarea>
+            </div>
+            <div id="code-cell-118-output" class="output"></div>
+        </div>
+        <p>Just from this plot alone, you can straight away see the control group is more likely to have outliers away from the main clusters.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="exploring-feature-relationships">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>12.</strong></p>
+                <p>Load in the penguins dataset we used in <strong>DP1</strong>. Following the cleaning steps we did it is now saved under the name <code>&quot;penguins_cleaned.csv&quot;</code> in the data folder.<ol class="nested-list"><li>Load in the data with pandas</li><br><li>Drop the column <code>&quot;year&quot;</code></li><br><li>Make a pair plot, set the <strong>hue</strong> to <code>&quot;species&quot;</code></li></ol></p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-119"></textarea>
+            </div>
+            <button id="run-code-cell-119" class="run-button">Run Code</button>
+            <div id="code-cell-119-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="heatmaps">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Heatmaps</h3>
+                        <p>As with the others, <a href="https://seaborn.pydata.org/generated/seaborn.heatmap.html">heatmaps</a> can easily be created in seaborn too:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-120">corr_full = df.corr(numeric_only=True)</textarea>
+            </div>
+            <div id="code-cell-120-output" class="output" style="display: none;"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-121">sns.heatmap(corr_full, vmin=-1, vmax=1, cmap=&quot;crest&quot;);</textarea>
+            </div>
+            <div id="code-cell-121-output" class="output"></div>
+        </div>
+        <p>An extension of the heatmap is the <a href="https://seaborn.pydata.org/examples/structured_heatmap.html">clustermap</a>, which will hierarchically cluster the values in your heatmap. This can be very useful in quickly understanding how your features group, possibly indicating which can be dropped before machine learning.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-122">g = sns.clustermap(corr_full, center=0, cmap=&quot;vlag&quot;,
+                   dendrogram_ratio=(.1, .2),
+                   cbar_pos=(.02, .32, .03, .2),
+                   vmax=1, vmin=-1,
+                   linewidths=.75, 
+                   figsize=(12, 13))
+
+# Removes the clustering lines from the row side
+g.ax_row_dendrogram.remove()</textarea>
+            </div>
+            <div id="code-cell-122-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="summary">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Summary</h3>
+                        <p>As a bonus, we recreated our earlier plots in seaborn, a library built on Matplotlib that produces attractive statistical graphics from a single line. Its <code>hue</code> argument splits data by category automatically, saving the manual filtering we did before, while functions like <code>pairplot</code>, KDE plots, heatmaps, and clustermaps give quick, rich overviews of how features are distributed and related. Because seaborn sits on top of Matplotlib, all the customisation tools we already know still apply.</p>
+                    </div>
+                </div>
+            </div>
+            
+
+        <div class="page-navigation">
+            <a href="./feature-relationships.html" class="nav-button prev">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                </svg>
+                Previous
+            </a>
+            <a href="./assignment.html" class="nav-button next">
+                Next
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </a></div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div>© All materials are copyright scryptIQ 2025</div>
+            <div>Powered by Pyodide</div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../assets/main.js"></script>
+    
+    <!-- Pyodide Initialisation Script -->
+    <script>
+
+// Generalisable Pyodide Initialisation Script
+// Variables and state build up naturally as code blocks execute in order
+
+async function main() {
+    // Show loading message for all output elements
+    document.querySelectorAll(".output").forEach(el => {
+        el.textContent = "Loading Pyodide...";
+        el.classList.add("loading-message");
+    });
+    
+    try {
+        // Load Pyodide
+        console.log("Loading Pyodide...");
+        const pyodideStartTime = performance.now();
+        let pyodide = await loadPyodide();
+        const pyodideLoadTime = performance.now() - pyodideStartTime;
+        console.log(`Pyodide loaded in ${pyodideLoadTime.toFixed(2)}ms`);
+        
+        // Load required packages only if specified
+        const lessonPackages = window.LESSON_PACKAGES || [];
+        
+        if (lessonPackages.length > 0) {
+            console.log("Loading required Python packages...");
+            const packagesStartTime = performance.now();
+            
+            // Separate built-in packages from PyPI packages
+            const builtInPackages = lessonPackages.filter(pkg => 
+                ['numpy', 'scipy', 'matplotlib', 'pandas', 'scikit-learn', 'pillow', 'regex'].includes(pkg)
+            );
+            
+            const micropipPackages = lessonPackages.filter(pkg => !builtInPackages.includes(pkg));
+            
+            // Load built-in packages (fast)
+            if (builtInPackages.length > 0) {
+                await pyodide.loadPackage(builtInPackages);
+                console.log(`Loaded built-in packages: ${builtInPackages.join(', ')}`);
+            }
+            
+            // Install PyPI packages (slower)
+            if (micropipPackages.length > 0) {
+                await pyodide.loadPackage(['micropip']);
+                const micropip = pyodide.pyimport('micropip');
+                await micropip.install(micropipPackages);
+                console.log(`Installed PyPI packages: ${micropipPackages.join(', ')}`);
+            }
+            
+            const packagesLoadTime = performance.now() - packagesStartTime;
+            console.log(`Packages loaded in ${packagesLoadTime.toFixed(2)}ms`);
+            console.log(`Total initialisation time: ${(pyodideLoadTime + packagesLoadTime).toFixed(2)}ms`);
+        } else {
+            console.log("No packages to load for this lesson");
+            console.log(`Total initialisation time: ${pyodideLoadTime.toFixed(2)}ms`);
+        }
+
+        // Only set up basic Python environment - no pre-loaded variables
+        await pyodide.runPythonAsync(`
+            import sys
+            from io import StringIO
+        `);
+
+        // Only set up matplotlib if it's in the loaded packages
+        if (lessonPackages.includes('matplotlib')) {
+            await pyodide.runPythonAsync(`
+                # Set up matplotlib for web rendering
+                import matplotlib
+                matplotlib.use('AGG')
+                import matplotlib.pyplot as plt
+                import io
+                import base64
+                
+                def capture_matplotlib():
+                    """Capture current matplotlib figure as HTML img tag"""
+                    buf = io.BytesIO()
+                    plt.savefig(buf, format='png', bbox_inches='tight', dpi=100)
+                    buf.seek(0)
+                    img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+                    plt.close()
+                    return f'<img src="data:image/png;base64,{img_base64}" style="max-width: 100%; height: auto;" />'
+
+                # Silence the "FigureCanvasAgg is non-interactive" warning that
+                # occurs when notebook code calls plt.show().  In this environment
+                # figures are captured automatically via capture_matplotlib(), so
+                # plt.show() should simply be a no-op.
+                plt.show = lambda *args, **kwargs: None
+            `);
+            console.log('Matplotlib capture function set up');
+        }
+        
+        console.log("Pyodide loaded successfully");
+        
+        // Load remote files if URLs are specified
+        const lessonFiles = window.LESSON_FILES || [];
+        
+        if (lessonFiles.length > 0) {
+            try {
+                console.log(`Checking for ${lessonFiles.length} remote file(s) to load...`);
+                
+                // Build Python code to load all files dynamically
+                let pythonCode = `
+from pyodide.http import pyfetch
+import os
+
+# Create data directory if it doesn't exist
+os.makedirs('./data', exist_ok=True)
+`;
+                
+                // Add loading code for each file
+                for (const file of lessonFiles) {
+                    if (file.is_binary) {
+                        // Binary files (images, etc.) - use bytes
+                        pythonCode += `
+# Load ${file.filename} (binary)
+try:
+    response = await pyfetch("${file.url}")
+    content = await response.bytes()
+    with open('./data/${file.filename}', 'wb') as f:
+        f.write(bytes(content))
+    print("Loaded: ${file.filename}")
+except Exception as e:
+    print(f"Could not load ${file.filename}: {e}")
+`;
+                    } else {
+                        // Text files (CSV, etc.) - use string
+                        pythonCode += `
+# Load ${file.filename} (text)
+try:
+    response = await pyfetch("${file.url}")
+    content = await response.string()
+    with open('./data/${file.filename}', 'w') as f:
+        f.write(content)
+    print("Loaded: ${file.filename}")
+except Exception as e:
+    print(f"Could not load ${file.filename}: {e}")
+`;
+                    }
+                }
+                
+                await pyodide.runPythonAsync(pythonCode);
+                console.log("Remote files loaded successfully");
+            } catch (error) {
+                console.warn("Error loading remote files (continuing anyway):", error);
+            }
+        } else {
+            console.log("No remote files to load for this lesson");
+        }
+        
+        // Function to execute Python code and capture output
+        async function executePythonCode(code) {
+            try {
+                // Redirect Python stdout and stderr to capture print statements and warnings
+                await pyodide.runPythonAsync(`
+                    old_stdout = sys.stdout
+                    old_stderr = sys.stderr
+                    sys.stdout = mystdout = StringIO()
+                    sys.stderr = mystderr = StringIO()
+                `);
+
+                // Run the user code.
+                // We pass the code string via pyodide.globals to avoid JS-string escaping
+                // issues, then use Python's ast module to execute it.  The last expression
+                // (if any) is eval-ed inside Python so that repr() is called there —
+                // this means display settings such as np.set_printoptions() are always
+                // respected before the value crosses the Python→JS boundary.
+                // (Pyodide auto-converts numpy arrays to TypedArray, so String(result)
+                // would bypass numpy's formatting entirely.)
+                pyodide.globals.set('__cell_code__', code);
+                await pyodide.runPythonAsync(`
+import ast as _ast
+__cell_result__ = None
+try:
+    _tree = _ast.parse(__cell_code__)
+    if _tree.body and isinstance(_tree.body[-1], _ast.Expr):
+        _last = _tree.body.pop()
+        exec(compile(_ast.Module(body=_tree.body, type_ignores=[]), '<cell>', 'exec'), globals())
+        _val = eval(compile(_ast.Expression(body=_last.value), '<cell>', 'eval'), globals())
+        if _val is not None:
+            __cell_result__ = repr(_val)
+    else:
+        exec(compile(_tree, '<cell>', 'exec'), globals())
+finally:
+    for _k in ['_tree', '_last', '_val', '_ast']:
+        globals().pop(_k, None)
+    globals().pop('__cell_code__', None)
+`);
+
+                // Get the captured stdout and stderr
+                let stdout = await pyodide.runPythonAsync(`
+                    sys.stdout = old_stdout
+                    sys.stderr = old_stderr
+                    mystdout.getvalue()
+                `);
+
+                const stderr = await pyodide.runPythonAsync(`mystderr.getvalue()`);
+                if (stderr) {
+                    if (stdout) stdout += "\n";
+                    stdout += stderr;
+                }
+
+                // Retrieve the Python-side repr string (already formatted correctly)
+                const resultRepr = await pyodide.runPythonAsync(`
+_r = __cell_result__
+del __cell_result__
+_r
+`);
+
+                // Check for matplotlib figures only if matplotlib was loaded
+                const lessonPackages = window.LESSON_PACKAGES || [];
+                if (lessonPackages.includes('matplotlib')) {
+                    const hasFigures = await pyodide.runPythonAsync(`
+                        import matplotlib.pyplot as plt
+                        len(plt.get_fignums()) > 0
+                    `);
+
+                    if (hasFigures) {
+                        const figureHtml = await pyodide.runPythonAsync(`capture_matplotlib()`);
+                        if (stdout) stdout += "\n";
+                        stdout += figureHtml;
+                    }
+                }
+
+                // Combine stdout and result repr
+                let output = stdout;
+                if (resultRepr !== undefined && resultRepr !== null && String(resultRepr).trim() !== '') {
+                    if (output) output += "\n";
+                    output += String(resultRepr);
+                }
+                
+                return { success: true, output: output || "Code executed successfully (no output)" };
+                
+            } catch (error) {
+                // Attempt to restore stdout/stderr even on failure
+                try {
+                    await pyodide.runPythonAsync(`
+                        if 'old_stdout' in dir(): sys.stdout = old_stdout
+                        if 'old_stderr' in dir(): sys.stderr = old_stderr
+                    `);
+                } catch (_) {}
+                // Re-run through Python's traceback machinery to get a clean error message
+                let tracebackStr = '';
+                try {
+                    pyodide.globals.set('_traceback_code', code);
+                    await pyodide.runPythonAsync(`
+                        import traceback as _tb
+                        from io import StringIO as _SIO
+                        _trace_result = None
+                        _saved_io = (sys.stdout, sys.stderr)
+                        sys.stdout = sys.stderr = _SIO()
+                        try:
+                            exec(compile(_traceback_code, '<exec>', 'exec'), globals())
+                        except Exception:
+                            _trace_result = _tb.format_exc()
+                        finally:
+                            sys.stdout, sys.stderr = _saved_io
+                    `);
+                    const tbVal = await pyodide.runPythonAsync('_trace_result');
+                    if (tbVal) tracebackStr = tbVal;
+                } catch (_) {}
+                let displayMsg;
+                if (tracebackStr && tracebackStr.includes('File "<exec>"')) {
+                    const lines = tracebackStr.split('\n');
+                    let execIdx = -1;
+                    for (let i = lines.length - 1; i >= 0; i--) {
+                        if (lines[i].includes('File "<exec>"')) { execIdx = i; break; }
+                    }
+                    displayMsg = execIdx !== -1
+                        ? lines.slice(execIdx).join('\n').trim()
+                        : tracebackStr.trim();
+                } else {
+                    displayMsg = (error.message || '').trim() || error.type || String(error);
+                }
+                return { success: false, output: 'Error:\n' + displayMsg };
+            }
+        }
+        
+        // Execute all hidden code blocks first (for setup code like imports)
+        const hiddenCodeBlocks = Array.from(document.querySelectorAll('.hidden-code textarea'));
+        console.log(`Found ${hiddenCodeBlocks.length} hidden code blocks`);
+
+        for (const textarea of hiddenCodeBlocks) {
+            const code = textarea.value.trim();
+            if (!code) continue;
+            
+            console.log(`Executing hidden code block: ${textarea.id}`);
+            console.log(`Hidden code content: ${code.substring(0, 100)}...`);
+            const result = await executePythonCode(code);
+            
+            if (!result.success) {
+                console.error(`Error in hidden code block ${textarea.id}:`, result.output);
+            } else {
+                console.log(`Hidden code block ${textarea.id} executed successfully`);
+                console.log(`Result: ${result.output}`);
+            }
+        }
+
+        console.log("All hidden code blocks executed");
+        
+        // Get all fixed code blocks in document order
+        const fixedCodeBlocks = Array.from(document.querySelectorAll('.code-fixed textarea'));
+        
+        // Setup and execute fixed code blocks sequentially
+        for (const textarea of fixedCodeBlocks) {
+            const code = textarea.value.trim();
+            if (!code) continue;
+            
+            // Set up CodeMirror editor (read-only)
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: "python",
+                theme: "pastel-on-dark",
+                lineNumbers: true,
+                readOnly: true,
+                viewportMargin: Infinity
+            });
+            
+            // Find corresponding output element
+            const outputId = textarea.id + '-output';
+            const outputElement = document.getElementById(outputId);
+            
+            if (outputElement) {
+                outputElement.textContent = "Running code...";
+                outputElement.classList.add("loading-message");
+                
+                // Execute the code (this maintains state for subsequent blocks)
+                const result = await executePythonCode(code);
+                
+                // Display the output - check if it's HTML
+                const trimmedOutput = result.output.trim();
+                console.log('Output length:', trimmedOutput.length);
+                console.log('Output starts with:', trimmedOutput.substring(0, 100));
+                
+                if (trimmedOutput.includes('<script') && trimmedOutput.includes('Plotly')) {
+                    // It's Plotly HTML output - extract just the body content
+                    console.log('Rendering as Plotly HTML');
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(result.output, 'text/html');
+                    // Clear the output element and append the body content
+                    outputElement.innerHTML = '';
+                    
+                    // Find and load external scripts first (like Plotly CDN)
+                    const externalScripts = Array.from(doc.querySelectorAll('script[src]'));
+                    const inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+                    
+                    // Append non-script content first
+                    Array.from(doc.body.children).forEach(child => {
+                        if (child.tagName !== 'SCRIPT') {
+                            outputElement.appendChild(child.cloneNode(true));
+                        }
+                    });
+                    
+                    // Load external scripts sequentially
+                    const loadScript = (src) => {
+                        return new Promise((resolve, reject) => {
+                            const script = document.createElement('script');
+                            script.src = src;
+                            script.onload = resolve;
+                            script.onerror = reject;
+                            document.head.appendChild(script);
+                        });
+                    };
+                    
+                    // Load all external scripts first
+                    Promise.all(externalScripts.map(s => loadScript(s.src)))
+                        .then(() => {
+                            console.log('External scripts loaded, executing inline scripts');
+                            // Now execute inline scripts
+                            inlineScripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                newScript.textContent = oldScript.textContent;
+                                outputElement.appendChild(newScript);
+                            });
+                            console.log('Output element after processing:', outputElement.children.length, 'children');
+                        })
+                        .catch(err => {
+                            console.error('Failed to load external scripts:', err);
+                            outputElement.textContent = 'Error loading Plotly: ' + err.message;
+                        });
+                } else if (trimmedOutput.startsWith('<!DOCTYPE') || 
+                           trimmedOutput.startsWith('<html') ||
+                            trimmedOutput.startsWith('<div') ||
+                            trimmedOutput.startsWith('<img')) {
+                    console.log('Rendering as generic HTML');
+                    outputElement.innerHTML = result.output;
+                    console.log('Output element after innerHTML:', outputElement.children.length, 'children');
+                } else {
+                    console.log('Rendering as plain text');
+                    outputElement.textContent = result.output;
+                }
+                outputElement.classList.remove("loading-message");
+                if (result.success) {
+                    outputElement.classList.add("success-message");
+                    outputElement.classList.remove("error-message");
+                } else {
+                    outputElement.classList.add("error-message");
+                    outputElement.classList.remove("success-message");
+                }
+            }
+            
+            // Small delay to show progression
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        
+        // Set flag to indicate all FIXED cells have been executed
+        // This is used by PDF generation to ensure all outputs are ready
+        window.allCellsExecuted = true;
+        console.log("All FIXED cells executed successfully");
+        
+        // Setup all editable code blocks (but don't execute them)
+        document.querySelectorAll('.code-editor textarea').forEach((textarea) => {
+            // Set up CodeMirror editor (editable)
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: "python",
+                theme: "pastel-on-dark",
+                lineNumbers: true,
+                viewportMargin: Infinity
+            });
+            
+            // Find corresponding run button and output element
+            const baseId = textarea.id;
+            const runButtonId = 'run-' + baseId;
+            const outputId = baseId + '-output';
+            
+            const runButton = document.getElementById(runButtonId);
+            const outputElement = document.getElementById(outputId);
+            
+            if (runButton && outputElement) {
+                // Set initial state
+                outputElement.textContent = "Ready to run code!";
+                outputElement.classList.remove("loading-message");
+                
+                runButton.addEventListener("click", async () => {
+                    const code = editor.getValue().trim();
+                    if (!code) {
+                        outputElement.textContent = "No code to run";
+                        return;
+                    }
+                    
+                    outputElement.textContent = "Running...";
+                    outputElement.classList.remove("error-message", "success-message");
+                    outputElement.classList.add("loading-message");
+                    
+                    // Execute the code (this also maintains state for future blocks)
+                    const result = await executePythonCode(code);
+                    
+                    // Display the output - check if it's HTML
+                    const trimmedOutput = result.output.trim();
+                    console.log('Output length:', trimmedOutput.length);
+                    console.log('Output starts with:', trimmedOutput.substring(0, 100));
+                    
+                    if (trimmedOutput.includes('<script') && trimmedOutput.includes('Plotly')) {
+                        // It's Plotly HTML output - extract just the body content
+                        console.log('Rendering as Plotly HTML');
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(result.output, 'text/html');
+                        // Clear the output element and append the body content
+                        outputElement.innerHTML = '';
+                        
+                        // Find and load external scripts first (like Plotly CDN)
+                        const externalScripts = Array.from(doc.querySelectorAll('script[src]'));
+                        const inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+                        
+                        // Append non-script content first
+                        Array.from(doc.body.children).forEach(child => {
+                            if (child.tagName !== 'SCRIPT') {
+                                outputElement.appendChild(child.cloneNode(true));
+                            }
+                        });
+                        
+                        // Load external scripts sequentially
+                        const loadScript = (src) => {
+                            return new Promise((resolve, reject) => {
+                                const script = document.createElement('script');
+                                script.src = src;
+                                script.onload = resolve;
+                                script.onerror = reject;
+                                document.head.appendChild(script);
+                            });
+                        };
+                        
+                        // Load all external scripts first
+                        Promise.all(externalScripts.map(s => loadScript(s.src)))
+                            .then(() => {
+                                console.log('External scripts loaded, executing inline scripts');
+                                // Now execute inline scripts
+                                inlineScripts.forEach(oldScript => {
+                                    const newScript = document.createElement('script');
+                                    newScript.textContent = oldScript.textContent;
+                                    outputElement.appendChild(newScript);
+                                });
+                                console.log('Output element after processing:', outputElement.children.length, 'children');
+                            })
+                            .catch(err => {
+                                console.error('Failed to load external scripts:', err);
+                                outputElement.textContent = 'Error loading Plotly: ' + err.message;
+                            });
+                    } else if (trimmedOutput.startsWith('<!DOCTYPE') || 
+                               trimmedOutput.startsWith('<html') ||
+                               trimmedOutput.startsWith('<div') ||
+                               trimmedOutput.startsWith('<img')) {
+                        outputElement.innerHTML = result.output;
+                    } else {
+                        outputElement.textContent = result.output;
+                    }
+                    outputElement.classList.remove("loading-message");
+                    if (result.success) {
+                        outputElement.classList.add("success-message");
+                        outputElement.classList.remove("error-message");
+                    } else {
+                        outputElement.classList.add("error-message");
+                        outputElement.classList.remove("success-message");
+                    }
+                });
+            }
+        });
+        
+        console.log("All code blocks initialised successfully");
+
+        // Set flag to indicate Pyodide is fully ready
+        window.pyodideReady = true;
+        console.log("Pyodide fully ready");
+        
+    } catch (error) {
+        console.error("Failed to initialise Pyodide:", error);
+        document.querySelectorAll(".output").forEach(el => {
+            el.textContent = "Error loading Pyodide: " + error.message;
+            el.classList.remove("loading-message");
+            el.classList.add("error-message");
+        });
+    }
+}
+
+// Start the application when DOM is loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', main);
+} else {
+    main();
+}
+    </script>
+    
+</body>
+</html>

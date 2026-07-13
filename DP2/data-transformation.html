@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- MathJax for mathematical notation -->
+    <script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$']],
+            displayMath: [['$$', '$$']],
+            processEscapes: true
+        },
+        svg: {
+            fontCache: 'global'
+        }
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    
+    <!-- Pyodide and CodeMirror -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/theme/pastel-on-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/mode/python/python.min.js"></script>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="../assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../assets/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="../assets/android-chrome-512x512.png">
+
+    <!-- Core Stylesheets -->
+    <link rel="stylesheet" href=../assets/colours.css>
+    <link rel="stylesheet" href="../assets/shared-styles.css">
+    <link rel="stylesheet" href="../assets/nav-bar.css">
+    <link rel="stylesheet" href="../assets/module_card.css">
+    <link rel="stylesheet" href="../assets/learning_outcomes.css">
+    <link rel="stylesheet" href="../assets/learning_lists.css">
+    <link rel="stylesheet" href="../assets/box_styles.css">
+    <link rel="stylesheet" href="../assets/code_styles.css">
+    
+    <!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>scryptIQ - DP2 - Data Transformation</title>
+    <script>
+        window.LESSON_FILES = [
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/refs/heads/main/dp/cortex_nuclear.csv", filename: "cortex_nuclear.csv", is_binary: false},
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/refs/heads/main/dp/obesity_dataset.csv", filename: "obesity_dataset.csv", is_binary: false}
+        ];
+        window.LESSON_PACKAGES = ['numpy', 'pandas', 'matplotlib', 'scipy', 'scikit-learn'];
+    </script>
+</head>
+<body>
+    
+    <!-- Sidebar Navigation -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <a href="../homepage.html" style="text-decoration: none; display: inline-block;">
+                <img src="../assets/scryptIQ_logo_dark.png" alt="scryptIQ Logo" class="sidebar-logo">
+            </a>
+        </div>
+
+        <h3>Content</h3>
+        <ul>
+            <li><a href="./introduction.html" class="">Introduction</a></li><li><a href="./data-exploration.html">Data Exploration</a></li><li><a href="./basic-plots.html">Basic Plotting</a></li>
+            <li>
+                <div class="nav-toggle active" data-target="expandable-section-3">
+                    Data Transformation
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <ul class="nested-nav expanded" id="expandable-section-3"><li><a href="#introduction">Introduction</a></li><li><a href="#setup">Setup</a></li><li><a href="#normalising---log">Normalising - log</a></li><li><a href="#normalising---yeo">Normalising - Yeo</a></li><li><a href="#z-score-with-normalisation">Z-Score with Normalisation</a></li><li><a href="#summary---quiz">Summary & Quiz</a></li>
+                </ul>
+            </li><li><a href="./feature-relationships.html">Feature Relationships</a></li><li><a href="./seaborn.html">Seaborn</a></li><li><a href="./assignment.html">Assignment</a></li><li><a href="./feedback.html">Feedback</a></li>
+        </ul>
+
+        <h3 class="collapsible-header collapsed">
+            Resources
+            <span class="collapse-icon">►</span>
+        </h3>
+        <div class="collapsible-content collapsed">
+            <ul>
+                <li><a href="./glossary.html">Glossary</a></li><li><a href="./downloads.html">Downloads</a></li><li><a href="../HB/introduction.html">Handbook</a></li>
+            </ul>
+        </div>
+
+        <h3 class="collapsible-header collapsed">
+            Previous Modules
+            <span class="collapse-icon">►</span>
+        </h3>
+        <div class="collapsible-content collapsed">
+            <ul>
+            <li><a href="../DP1/introduction.html">DP1</a></li>
+        </ul>
+        </div>
+
+        <h3>
+            <li><a href="./report-issue.html">Report an Issue</a></li>
+        </h3>
+    </div>
+
+    <!-- Sidebar Toggle Button -->
+    <button id="sidebar-toggle" class="sidebar-toggle">❮</button>
+
+    <!-- Main Content Area -->
+    <div id="main-content" class="main-content">
+        <!-- Top Navigation Bar -->
+        <div class="top-navbar">
+            <h1 class="page-title">Data Processing 2</h1>
+            <div class="nav-actions">
+                <a href="../homepage.html" class="text-button" title="Materials homepage">
+                    Homepage
+                </a>
+                <a href="https://scryptiq.ai/my-cohorts/" class="text-button scryptiq-button" title="Find out more about us">
+                    scryptIQ
+                </a>
+            </div>
+        </div>
+
+        
+            <div class="module-card" id="introduction">
+                <div class="module-header">
+                    Data Transformation <span class="module-tag">DP2</span>
+                </div>
+                <div class="module-body">
+                    <h3>Learning Objectives</h3>
+                    <div class="learning-outcomes">
+                        <div class="outcome-item">
+                    <span class="outcome-number">1</span>
+                    <span class="outcome-text">Understand why and when transforming data is useful</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">2</span>
+                    <span class="outcome-text">How to apply a log transform and choose an appropriate base</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">3</span>
+                    <span class="outcome-text">How to apply a Yeo-Johnson transform when the underlying scale is unknown</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">4</span>
+                    <span class="outcome-text">Understand what standardisation adds on top of a transformation</span>
+                </div>
+                    </div>
+                    <h3>Introduction</h3>
+                    <p>In this section we will work through the <strong>ITSN1_N</strong> expression data that we discovered was rightwards skewed after our attempts to remove outliers using <em>Z-score</em> analysis. Here we will address how to transform this type of data into a more normal distribution, both through an interpretable method — log transformation — and a distribution-agnostic method — Yeo-Johnson transformation.</p>
+                </div>
+            </div>
+            
+            <div class="module-card" id="setup">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Setup</h3>
+                        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-57">import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+df = pd.read_csv(&quot;./data/cortex_nuclear.csv&quot;)
+
+outlier_col = &quot;ITSN1_N&quot;</textarea>
+            </div>
+            <div id="code-cell-57-output" class="output" style="display: none;"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-58">fig, ax = plt.subplots()
+
+n_bins = 30
+
+ax.hist(df[outlier_col], bins=n_bins, color=&#x27;green&#x27;)
+ax.set(xlabel=outlier_col, ylabel=&#x27;Count&#x27;)
+
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-58-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="normalising---log">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Normalising - log</h3>
+                        <p>As expression counts change as fold-changes rather than absolute amounts (multiplicative), and are also bounded below by zero, it is more natural to work on a log scale. By doing so the changes along the unit axis become fold-changes rather than absolute, the distribution becomes more symmetrical (approximating normality better), and the variance becomes more stable across the range of values. This matters because some tools either assume normality or behave better under it.<br><br>For example, take Z-score from the first section. When interpreting the scores we would say anything $\pm3$ units would be an outlier as that contains 99.7% of the values. This assumption does not hold true when applied to right-skewed data, as a higher percentage would be outside this boundary.</p><p>Examples of when a tool <strong>assumes</strong> the data is normally distributed:<br><ul class="nested-list"><li>Confidence intervals around the mean</li><br><li>Parametric P-value tests: T-test, ANOVA</li><br><li>Gaussian Naive Bayes (supervised ML)</li><br><li>Gaussian Mixture Models (unsupervised ML)</li></ul></p><p>Examples of when a tool <strong>performs better</strong> when the data is normally distributed:<br><ul class="nested-list"><li>Principal Component Analysis (dimensionality reduction)</li><br><li>k-nearest neighbours (supervised ML)</li><br><li>support vector machines (supervised ML)</li><br><li>neural networks (supervised ML)</li></ul></p><p>We will be covering the machine learning models in the Classical ML and AI module.</p>
+        <div class="info-box key-terms-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                KEY TERMS
+            </div>
+            <div class="box-content">
+                <p><strong>Logarithmic</strong>: Describes a relationship where values change by <em>multiplication</em> rather than <em>addition</em>. On a logarithmic scale, each equal step represents a constant fold-change (e.g. ×10) rather than a constant amount. A quantity is said to be &quot;logarithmic&quot; or &quot;log-normal&quot; when it varies naturally as ratios.<br><br><strong>Log-scale</strong>: An axis or transformation where the data are represented by their logarithms, so that equal distances correspond to equal <em>ratios</em> rather than equal <em>differences</em>.</p>
+            </div>
+        </div>
+        <h4>Transforming with log</h4><p>To <em>transform</em> a log-normal set of data, you need to apply a logarithm to all elements. The standard one to use is <strong>natural log</strong> or log in base <em>e</em> ($log_e$). Alternatively, you can use <strong>$log_2$</strong> or <strong>$log_{10}$</strong>. Each one describes the fold change in terms of their base, i.e. with $log_2$ &amp; $log_{10}$ each unit step describes a 2- or 10-fold change respectively. For $log_e$, each step is an <em>e-fold</em> change, i.e. ~2.718 times.<br><br>To demonstrate we will apply all of them to our data below using <a href="https://numpy.org/doc/stable/reference/generated/numpy.log.html">NumPy log functions</a>:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-59">data = df[outlier_col].dropna().to_numpy()
+
+loge_data = np.log(data)
+log2_data = np.log2(data)
+log10_data = np.log10(data)</textarea>
+            </div>
+            <div id="code-cell-59-output" class="output" style="display: none;"></div>
+        </div>
+        <p>From plotting each distribution it can be seen that they are all shifted to the left, and have a bell-shaped curve. Negative values are obtained due to most of the expression values being <strong>between 0 &amp; 1</strong> which will produce values &lt; 0.<br><br>Additionally, the values at the end of the tail to the right have also been drawn closer to the bulk of the distribution.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-60">fig, ax = plt.subplots()
+
+ax.hist(data, bins=n_bins, alpha = 0.75, label=&quot;untransformed&quot;)
+ax.hist(loge_data, bins=n_bins, alpha = 0.75, label=&quot;natural log transformed&quot;)
+ax.hist(log2_data, bins=n_bins, alpha = 0.75, label=&quot;log2 transformed&quot;)
+ax.hist(log10_data, bins=n_bins, alpha = 0.75, label=&quot;log10 transformed&quot;)
+
+ax.legend()
+
+ax.set(xlabel=outlier_col, ylabel=&quot;Count&quot;);
+
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-60-output" class="output"></div>
+        </div>
+        <p>The width of each distribution is an inverse of the size of the fold change it represents, with base 10 having the smallest range as many more values fall within each step increase, as greater increases are needed to have a fold-change of 10.<br><br>However, plotting them on their own scales (below) it can be seen that the shapes are still identical; it is just their scale (x-axis) that differs.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-61">fig, axes = plt.subplots(figsize=(10,4), ncols=3, layout=&quot;constrained&quot;)
+
+axes[0].hist(loge_data, bins=n_bins, color=&quot;orange&quot;, label=&quot;natural log transformed&quot;)
+axes[1].hist(log2_data, bins=n_bins, color=&quot;green&quot;, label=&quot;log2 transformed&quot;)
+axes[2].hist(log10_data, bins=n_bins, color=&quot;red&quot;, label=&quot;log10 transformed&quot;)
+
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-61-output" class="output"></div>
+        </div>
+        <p>One caveat to log transformations is that <strong>0</strong> can not be transformed and will instead return <em>negative infinity</em> and a <em>Runtime Warning</em> with the NumPy function.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-62">np.log(0)</textarea>
+            </div>
+            <div id="code-cell-62-output" class="output"></div>
+        </div>
+        <p>Zeroes are common in biological datasets, especially when cleaned for background noise. If you have <em>zeroes</em>, to counter the data being lost you can add a <em>pseudocount</em> to the data to bring them above 0. The standard addition is <strong>1</strong>. NumPy has a function <code>np.log1p()</code> that automatically adds 1 before applying a <em>natural log</em>. However, if you want to use $log_2$ or $log_{10}$ you can simply add 1 to the data yourself.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-63">log1p_data = np.log1p(data)
+log2_1_data = np.log2(data + 1)</textarea>
+            </div>
+            <div id="code-cell-63-output" class="output"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-64">fig, ax = plt.subplots()
+
+n_bins = 20
+
+# bins
+ax.hist(data, bins=n_bins, alpha = 0.15, label=&quot;untransformed&quot;)
+ax.hist(loge_data, bins=n_bins, alpha = 0.5, label=&quot;natural log transformed&quot;)
+ax.hist(log2_data, bins=n_bins, alpha = 0.5, label=&quot;log2 transformed&quot;)
+ax.hist(log10_data, bins=n_bins, alpha = 0.5, label=&quot;log10 transformed&quot;)
+ax.hist(log1p_data, bins=n_bins, alpha = 0.75, label=&quot;Natural log + 1&quot;)
+ax.hist(log2_1_data, bins=n_bins, alpha = 0.75, label=&quot;log2 + 1&quot;)
+
+ax.legend()
+
+ax.set(xlabel=outlier_col, ylabel=&quot;Count&quot;);
+
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-64-output" class="output"></div>
+        </div>
+        <p>Adding 1 actually <em>bunches up</em> much more of the lower values, as an increase of 1 for smaller values is much greater than those above them, recapitulating slightly the steep increase just after zero seen in the untransformed data. This is because adding 1 puts everything into the <strong>1-2</strong> range where log is nearly linear, thus not transforming it much at all.<br><br>One thing to note: when transforming data due to the necessity of the downstream tool - such as machine learning tools - the base is irrelevant. All that matters is that the distribution is more normal to fit the tools <em>assumptions</em>. The base matters when you want the data to be more interpretable for humans, such as $log_2$ for expression data, as doubling every step is inherently easy for a human to understand visually.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="normalising---yeo">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Normalising - Yeo</h3>
+                        <p>Log is useful when we <em>know</em> the underlying mathematics of the data, i.e. it should follow a logarithmic scale. Yet, this information is not always known and we <em>still</em> need to transform the data to be approximately normal, such as in supervised machine learning.<br><br>One tool (of many) is the <strong>Yeo-Johnson</strong> transformation, which - like log transformation - stabilises the variance across the range of values and pulls the distribution towards symmetry. However, unlike the log transform, Yeo-Johnson makes no strong assumption about the underlying scale of the data. In fact, the tool will find the value $\lambda$ that best transforms the data to normal through a process called <strong>maximum likelihood</strong> which we will explore in the Classical ML and AI module. For now, it is a method that estimates the best parameter (in this case $\lambda$) that will give you your desired result (in this case a normalised set of data) through an iterative process.</p>
+        <div class="info-box fact-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                FACT
+            </div>
+            <div class="box-content">
+                <p>Yeo-Johnson is a generalisation of the Box-Cox transformation. The difference being that it can handle positive <strong>and</strong> negative values, unlike the latter.</p>
+            </div>
+        </div>
+        <p>We will be implementing the transformation in two ways:<br><ol class="nested-list"><li>As standard using <strong>scipy&#x27;s</strong> Yeo-Johnson function</li><br><li>With scikit-learn&#x27;s PowerTransformer function which also scales the data to have a mean of zero and standard deviation of 1 (unit normal distribution)</li></ol></p>
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p><a href="https://scikit-learn.org/stable/index.html">scikit-learn</a> is an all-encompassing machine learning package in Python. We will be exploring it in much greater detail in the Classical ML and AI module.</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-65">from scipy import stats
+from sklearn.preprocessing import PowerTransformer</textarea>
+            </div>
+            <div id="code-cell-65-output" class="output" style="display: none;"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-66"># The function returns two variables, the data and the found lambda
+yeo_data, yeo_lambda = stats.yeojohnson(data)
+
+yeo_lambda</textarea>
+            </div>
+            <div id="code-cell-66-output" class="output"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-67">pt = PowerTransformer()
+with_scaling = pt.fit_transform(data.reshape(-1, 1))
+
+pt.lambdas_</textarea>
+            </div>
+            <div id="code-cell-67-output" class="output" style="display: none;"></div>
+        </div>
+        <p>Both return effectively the same $\lambda$, confirming they implement the same underlying method — the only difference is that <code>PowerTransformer</code> also standardises the output to a <em>standard normal distribution</em>. Plotting them side-by-side you can see the implementation without scaling is tightly clustered just above zero in contrast to the scaled data which has the majority of its data (68%) between -1 and 1.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-68">fig, ax = plt.subplots()
+
+n_bins = 20
+
+# bins
+ax.hist(log2_data, bins=n_bins, alpha = 0.75, label=&quot;Log2 transformed&quot;)
+ax.hist(with_scaling, bins=n_bins, alpha = 0.75, color=&#x27;pink&#x27;, label=&quot;Scaled Yeo-Johnson transformed&quot;)
+ax.hist(yeo_data, bins=n_bins, alpha = 0.75, color=&#x27;red&#x27;, label=&quot;Yeo-Johnson transformed&quot;)
+
+ax.legend()
+
+ax.set(xlabel=outlier_col, ylabel=&quot;Count&quot;);
+
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-68-output" class="output"></div>
+        </div>
+        <p>Placing them onto separate axes to prevent the visual squashing you can now see that their shape is exactly the same - just as we saw with the log values - it is just the range they occupy that is different. This is a <em>key</em> observation: the data shape is not changed by the scaling, it is just shifted and rescaled to fit a standard range.<br><br>Standardising puts every feature onto a common scale (in standard-deviation units), so that no single feature dominates a model simply because its raw values happen to be larger. This makes features of varying scales and shapes much more comparable and equitable inside the model&#x27;s training.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-69">fig, axes = plt.subplots(ncols=2, sharey=True)
+
+n_bins = 20
+
+# bins
+axes[0].hist(yeo_data, bins=n_bins, alpha = 0.75, 
+                    color=&#x27;red&#x27;)
+axes[1].hist(with_scaling, bins=n_bins, alpha = 0.75, 
+                color=&#x27;pink&#x27;)
+
+axes[0].set(xlabel=&quot;Yeo-Johnson transformed&quot;)
+axes[1].set(xlabel=&quot;Scaled Yeo-Johnson transformed&quot;, ylabel=&quot;Count&quot;);
+
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-69-output" class="output"></div>
+        </div>
+        <p>The decision of when to log transform versus using a tool agnostic of the underlying principles lies in your use case. If you want to retain interpretability, use log, as the values remain meaningful as fold-changes. Something like Yeo-Johnson, by contrast, trades all interpretability for automatic normalisation, to help downstream tools perform correctly or better.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="z-score-with-normalisation">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Z-Score with Normalisation</h3>
+                        <p>We can now close the loop on the outlier detection from the first section. Back then we applied the Z-score directly to the raw, right-skewed ITSN1_N and noted that the $\pm3$ rule is unreliable on skewed data. Here we compare the outliers flagged on the <strong>raw</strong> feature against those flagged after a <strong>Yeo-Johnson scaled transformation</strong>, to see how addressing the skew changes what the rule catches.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-70">it_df = df[[outlier_col]].dropna().copy()
+it_df[&#x27;transformed&#x27;] = with_scaling</textarea>
+            </div>
+            <div id="code-cell-70-output" class="output" style="display: none;"></div>
+        </div>
+        <p>Find the Z-score for both the original and transformed data:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-71"># Calculate Z-scores
+it_df[&#x27;transformed_z_score&#x27;] = stats.zscore(it_df[&#x27;transformed&#x27;])
+it_df[&#x27;original_z_score&#x27;] = stats.zscore(it_df[outlier_col])
+
+it_df.head(3)</textarea>
+            </div>
+            <div id="code-cell-71-output" class="output"></div>
+        </div>
+        <p>Identify those that are outside 3 standard deviations:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-72"># Identify outliers
+it_df[&#x27;transformed_z_score_bool&#x27;] = abs(it_df[&#x27;transformed_z_score&#x27;]) &gt; 3
+it_df[&#x27;original_z_score_bool&#x27;] = abs(it_df[&#x27;original_z_score&#x27;]) &gt; 3</textarea>
+            </div>
+            <div id="code-cell-72-output" class="output" style="display: none;"></div>
+        </div>
+        <p>We can now filter the dataset to where the Z-score is above 3 in <em>either</em> the transformed or original case:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-73">it_df[(it_df[&#x27;transformed_z_score_bool&#x27;] == True) | (it_df[&#x27;original_z_score_bool&#x27;] == True)]</textarea>
+            </div>
+            <div id="code-cell-73-output" class="output"></div>
+        </div>
+        <p>Comparing the two boolean columns reveals the effect of the transform: all values that were classed as beyond 3 in the original are now within the $\pm3$ boundary once the skew is removed. In other words, points that looked like extreme outliers on the raw, right-skewed feature are revealed to be part of the distribution&#x27;s natural upper tail once it is made symmetric. Interestingly, <em>three</em> values on the lower end, around 0.25, are now classed as outliers as the mean is shifted rightwards. These could be indicative of baseline, background noise values.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="summary---quiz">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Summary & Quiz</h3>
+                        <p>This section tackled skewed features and why normality matters for so many statistical and machine-learning tools. The log transform suits strictly positive, multiplicative data and keeps values interpretable as fold-changes, while the Yeo-Johnson transform normalises without assuming an underlying scale and copes with zero and negative values. We also saw how standardisation rescales a feature to zero mean and unit standard deviation, and revisited our Z-score outliers now that the skew had been addressed.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="summary---quiz">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Summary & Quiz</h3>
+                        
+        <div class="quiz-box" id="quiz-3">
+            <div class="quiz-body">
+                <p class="quiz-intro">Attempt the questions below once you have finished. If you get any wrong, head back to that section to remind yourself of the reasoning/syntax behind the correct answer:</p>
+                
+            <div class="quiz-question" id="quiz-3-q0" data-quiz="quiz-3" data-topic-id="log-transform">
+                <span class="quiz-topic-tag">Log Transform</span>
+                <p class="quiz-question-text">When is a log transform most appropriate?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-3-q0" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">For any dataset, regardless of shape</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-3-q0" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">For strictly positive, multiplicative (fold-change) data</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-3-q0" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">Only for data containing zeros</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-3-q0" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">For categorical features</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div><hr class="quiz-divider">
+            <div class="quiz-question" id="quiz-3-q1" data-quiz="quiz-3" data-topic-id="log-transform">
+                <span class="quiz-topic-tag">Log Transform</span>
+                <p class="quiz-question-text">Why can a value of 0 not be log-transformed directly?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-3-q1" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It returns 1</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-3-q1" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">log(0) is negative infinity</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-3-q1" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It raises a TypeError</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-3-q1" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It returns 0</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div><hr class="quiz-divider">
+            <div class="quiz-question" id="quiz-3-q2" data-quiz="quiz-3" data-topic-id="pseudocount">
+                <span class="quiz-topic-tag">Pseudocount</span>
+                <p class="quiz-question-text">What does adding a pseudocount (e.g. +1) before a log achieve?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-3-q2" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It removes outliers</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-3-q2" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It brings zeroes above 0 so they can be logged</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-3-q2" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It normalises the variance</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-3-q2" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It standardises the data</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div><hr class="quiz-divider">
+            <div class="quiz-question" id="quiz-3-q3" data-quiz="quiz-3" data-topic-id="yeo-johnson">
+                <span class="quiz-topic-tag">Yeo-Johnson</span>
+                <p class="quiz-question-text">What is the key advantage of Yeo-Johnson over the Box-Cox transformation?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-3-q3" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It is faster to compute</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-3-q3" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It handles zero and negative values</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-3-q3" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It keeps values interpretable as fold-changes</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-3-q3" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">It requires no parameter</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div><hr class="quiz-divider">
+            <div class="quiz-question" id="quiz-3-q4" data-quiz="quiz-3" data-topic-id="standardisation">
+                <span class="quiz-topic-tag">Standardisation</span>
+                <p class="quiz-question-text">Standardising a feature rescales it to have:</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-3-q4" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">A minimum of 0 and a maximum of 1</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-3-q4" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">A mean of 0 and a standard deviation of 1</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-3-q4" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">A median of 0</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-3-q4" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">All values falling exactly between −1 and 1</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+                
+            <div class="quiz-topics-footer">
+                <span class="quiz-topics-label">Topics covered</span>
+                <div class="quiz-topics-list">
+                    <span class="quiz-topic-pill" id="quiz-3-topic-log-transform">Log Transform</span><span class="quiz-topic-pill" id="quiz-3-topic-pseudocount">Pseudocount</span><span class="quiz-topic-pill" id="quiz-3-topic-yeo-johnson">Yeo-Johnson</span><span class="quiz-topic-pill" id="quiz-3-topic-standardisation">Standardisation</span>
+                </div>
+            </div>
+            </div>
+        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+        <div class="page-navigation">
+            <a href="./basic-plots.html" class="nav-button prev">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                </svg>
+                Previous
+            </a>
+            <a href="./feature-relationships.html" class="nav-button next">
+                Next
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </a></div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div>© All materials are copyright scryptIQ 2025</div>
+            <div>Powered by Pyodide</div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../assets/main.js"></script>
+    
+    <!-- Pyodide Initialisation Script -->
+    <script>
+
+// Generalisable Pyodide Initialisation Script
+// Variables and state build up naturally as code blocks execute in order
+
+async function main() {
+    // Show loading message for all output elements
+    document.querySelectorAll(".output").forEach(el => {
+        el.textContent = "Loading Pyodide...";
+        el.classList.add("loading-message");
+    });
+    
+    try {
+        // Load Pyodide
+        console.log("Loading Pyodide...");
+        const pyodideStartTime = performance.now();
+        let pyodide = await loadPyodide();
+        const pyodideLoadTime = performance.now() - pyodideStartTime;
+        console.log(`Pyodide loaded in ${pyodideLoadTime.toFixed(2)}ms`);
+        
+        // Load required packages only if specified
+        const lessonPackages = window.LESSON_PACKAGES || [];
+        
+        if (lessonPackages.length > 0) {
+            console.log("Loading required Python packages...");
+            const packagesStartTime = performance.now();
+            
+            // Separate built-in packages from PyPI packages
+            const builtInPackages = lessonPackages.filter(pkg => 
+                ['numpy', 'scipy', 'matplotlib', 'pandas', 'scikit-learn', 'pillow', 'regex'].includes(pkg)
+            );
+            
+            const micropipPackages = lessonPackages.filter(pkg => !builtInPackages.includes(pkg));
+            
+            // Load built-in packages (fast)
+            if (builtInPackages.length > 0) {
+                await pyodide.loadPackage(builtInPackages);
+                console.log(`Loaded built-in packages: ${builtInPackages.join(', ')}`);
+            }
+            
+            // Install PyPI packages (slower)
+            if (micropipPackages.length > 0) {
+                await pyodide.loadPackage(['micropip']);
+                const micropip = pyodide.pyimport('micropip');
+                await micropip.install(micropipPackages);
+                console.log(`Installed PyPI packages: ${micropipPackages.join(', ')}`);
+            }
+            
+            const packagesLoadTime = performance.now() - packagesStartTime;
+            console.log(`Packages loaded in ${packagesLoadTime.toFixed(2)}ms`);
+            console.log(`Total initialisation time: ${(pyodideLoadTime + packagesLoadTime).toFixed(2)}ms`);
+        } else {
+            console.log("No packages to load for this lesson");
+            console.log(`Total initialisation time: ${pyodideLoadTime.toFixed(2)}ms`);
+        }
+
+        // Only set up basic Python environment - no pre-loaded variables
+        await pyodide.runPythonAsync(`
+            import sys
+            from io import StringIO
+        `);
+
+        // Only set up matplotlib if it's in the loaded packages
+        if (lessonPackages.includes('matplotlib')) {
+            await pyodide.runPythonAsync(`
+                # Set up matplotlib for web rendering
+                import matplotlib
+                matplotlib.use('AGG')
+                import matplotlib.pyplot as plt
+                import io
+                import base64
+                
+                def capture_matplotlib():
+                    """Capture current matplotlib figure as HTML img tag"""
+                    buf = io.BytesIO()
+                    plt.savefig(buf, format='png', bbox_inches='tight', dpi=100)
+                    buf.seek(0)
+                    img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+                    plt.close()
+                    return f'<img src="data:image/png;base64,{img_base64}" style="max-width: 100%; height: auto;" />'
+
+                # Silence the "FigureCanvasAgg is non-interactive" warning that
+                # occurs when notebook code calls plt.show().  In this environment
+                # figures are captured automatically via capture_matplotlib(), so
+                # plt.show() should simply be a no-op.
+                plt.show = lambda *args, **kwargs: None
+            `);
+            console.log('Matplotlib capture function set up');
+        }
+        
+        console.log("Pyodide loaded successfully");
+        
+        // Load remote files if URLs are specified
+        const lessonFiles = window.LESSON_FILES || [];
+        
+        if (lessonFiles.length > 0) {
+            try {
+                console.log(`Checking for ${lessonFiles.length} remote file(s) to load...`);
+                
+                // Build Python code to load all files dynamically
+                let pythonCode = `
+from pyodide.http import pyfetch
+import os
+
+# Create data directory if it doesn't exist
+os.makedirs('./data', exist_ok=True)
+`;
+                
+                // Add loading code for each file
+                for (const file of lessonFiles) {
+                    if (file.is_binary) {
+                        // Binary files (images, etc.) - use bytes
+                        pythonCode += `
+# Load ${file.filename} (binary)
+try:
+    response = await pyfetch("${file.url}")
+    content = await response.bytes()
+    with open('./data/${file.filename}', 'wb') as f:
+        f.write(bytes(content))
+    print("Loaded: ${file.filename}")
+except Exception as e:
+    print(f"Could not load ${file.filename}: {e}")
+`;
+                    } else {
+                        // Text files (CSV, etc.) - use string
+                        pythonCode += `
+# Load ${file.filename} (text)
+try:
+    response = await pyfetch("${file.url}")
+    content = await response.string()
+    with open('./data/${file.filename}', 'w') as f:
+        f.write(content)
+    print("Loaded: ${file.filename}")
+except Exception as e:
+    print(f"Could not load ${file.filename}: {e}")
+`;
+                    }
+                }
+                
+                await pyodide.runPythonAsync(pythonCode);
+                console.log("Remote files loaded successfully");
+            } catch (error) {
+                console.warn("Error loading remote files (continuing anyway):", error);
+            }
+        } else {
+            console.log("No remote files to load for this lesson");
+        }
+        
+        // Function to execute Python code and capture output
+        async function executePythonCode(code) {
+            try {
+                // Redirect Python stdout and stderr to capture print statements and warnings
+                await pyodide.runPythonAsync(`
+                    old_stdout = sys.stdout
+                    old_stderr = sys.stderr
+                    sys.stdout = mystdout = StringIO()
+                    sys.stderr = mystderr = StringIO()
+                `);
+
+                // Run the user code.
+                // We pass the code string via pyodide.globals to avoid JS-string escaping
+                // issues, then use Python's ast module to execute it.  The last expression
+                // (if any) is eval-ed inside Python so that repr() is called there —
+                // this means display settings such as np.set_printoptions() are always
+                // respected before the value crosses the Python→JS boundary.
+                // (Pyodide auto-converts numpy arrays to TypedArray, so String(result)
+                // would bypass numpy's formatting entirely.)
+                pyodide.globals.set('__cell_code__', code);
+                await pyodide.runPythonAsync(`
+import ast as _ast
+__cell_result__ = None
+try:
+    _tree = _ast.parse(__cell_code__)
+    if _tree.body and isinstance(_tree.body[-1], _ast.Expr):
+        _last = _tree.body.pop()
+        exec(compile(_ast.Module(body=_tree.body, type_ignores=[]), '<cell>', 'exec'), globals())
+        _val = eval(compile(_ast.Expression(body=_last.value), '<cell>', 'eval'), globals())
+        if _val is not None:
+            __cell_result__ = repr(_val)
+    else:
+        exec(compile(_tree, '<cell>', 'exec'), globals())
+finally:
+    for _k in ['_tree', '_last', '_val', '_ast']:
+        globals().pop(_k, None)
+    globals().pop('__cell_code__', None)
+`);
+
+                // Get the captured stdout and stderr
+                let stdout = await pyodide.runPythonAsync(`
+                    sys.stdout = old_stdout
+                    sys.stderr = old_stderr
+                    mystdout.getvalue()
+                `);
+
+                const stderr = await pyodide.runPythonAsync(`mystderr.getvalue()`);
+                if (stderr) {
+                    if (stdout) stdout += "\n";
+                    stdout += stderr;
+                }
+
+                // Retrieve the Python-side repr string (already formatted correctly)
+                const resultRepr = await pyodide.runPythonAsync(`
+_r = __cell_result__
+del __cell_result__
+_r
+`);
+
+                // Check for matplotlib figures only if matplotlib was loaded
+                const lessonPackages = window.LESSON_PACKAGES || [];
+                if (lessonPackages.includes('matplotlib')) {
+                    const hasFigures = await pyodide.runPythonAsync(`
+                        import matplotlib.pyplot as plt
+                        len(plt.get_fignums()) > 0
+                    `);
+
+                    if (hasFigures) {
+                        const figureHtml = await pyodide.runPythonAsync(`capture_matplotlib()`);
+                        if (stdout) stdout += "\n";
+                        stdout += figureHtml;
+                    }
+                }
+
+                // Combine stdout and result repr
+                let output = stdout;
+                if (resultRepr !== undefined && resultRepr !== null && String(resultRepr).trim() !== '') {
+                    if (output) output += "\n";
+                    output += String(resultRepr);
+                }
+                
+                return { success: true, output: output || "Code executed successfully (no output)" };
+                
+            } catch (error) {
+                // Attempt to restore stdout/stderr even on failure
+                try {
+                    await pyodide.runPythonAsync(`
+                        if 'old_stdout' in dir(): sys.stdout = old_stdout
+                        if 'old_stderr' in dir(): sys.stderr = old_stderr
+                    `);
+                } catch (_) {}
+                // Re-run through Python's traceback machinery to get a clean error message
+                let tracebackStr = '';
+                try {
+                    pyodide.globals.set('_traceback_code', code);
+                    await pyodide.runPythonAsync(`
+                        import traceback as _tb
+                        from io import StringIO as _SIO
+                        _trace_result = None
+                        _saved_io = (sys.stdout, sys.stderr)
+                        sys.stdout = sys.stderr = _SIO()
+                        try:
+                            exec(compile(_traceback_code, '<exec>', 'exec'), globals())
+                        except Exception:
+                            _trace_result = _tb.format_exc()
+                        finally:
+                            sys.stdout, sys.stderr = _saved_io
+                    `);
+                    const tbVal = await pyodide.runPythonAsync('_trace_result');
+                    if (tbVal) tracebackStr = tbVal;
+                } catch (_) {}
+                let displayMsg;
+                if (tracebackStr && tracebackStr.includes('File "<exec>"')) {
+                    const lines = tracebackStr.split('\n');
+                    let execIdx = -1;
+                    for (let i = lines.length - 1; i >= 0; i--) {
+                        if (lines[i].includes('File "<exec>"')) { execIdx = i; break; }
+                    }
+                    displayMsg = execIdx !== -1
+                        ? lines.slice(execIdx).join('\n').trim()
+                        : tracebackStr.trim();
+                } else {
+                    displayMsg = (error.message || '').trim() || error.type || String(error);
+                }
+                return { success: false, output: 'Error:\n' + displayMsg };
+            }
+        }
+        
+        // Execute all hidden code blocks first (for setup code like imports)
+        const hiddenCodeBlocks = Array.from(document.querySelectorAll('.hidden-code textarea'));
+        console.log(`Found ${hiddenCodeBlocks.length} hidden code blocks`);
+
+        for (const textarea of hiddenCodeBlocks) {
+            const code = textarea.value.trim();
+            if (!code) continue;
+            
+            console.log(`Executing hidden code block: ${textarea.id}`);
+            console.log(`Hidden code content: ${code.substring(0, 100)}...`);
+            const result = await executePythonCode(code);
+            
+            if (!result.success) {
+                console.error(`Error in hidden code block ${textarea.id}:`, result.output);
+            } else {
+                console.log(`Hidden code block ${textarea.id} executed successfully`);
+                console.log(`Result: ${result.output}`);
+            }
+        }
+
+        console.log("All hidden code blocks executed");
+        
+        // Get all fixed code blocks in document order
+        const fixedCodeBlocks = Array.from(document.querySelectorAll('.code-fixed textarea'));
+        
+        // Setup and execute fixed code blocks sequentially
+        for (const textarea of fixedCodeBlocks) {
+            const code = textarea.value.trim();
+            if (!code) continue;
+            
+            // Set up CodeMirror editor (read-only)
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: "python",
+                theme: "pastel-on-dark",
+                lineNumbers: true,
+                readOnly: true,
+                viewportMargin: Infinity
+            });
+            
+            // Find corresponding output element
+            const outputId = textarea.id + '-output';
+            const outputElement = document.getElementById(outputId);
+            
+            if (outputElement) {
+                outputElement.textContent = "Running code...";
+                outputElement.classList.add("loading-message");
+                
+                // Execute the code (this maintains state for subsequent blocks)
+                const result = await executePythonCode(code);
+                
+                // Display the output - check if it's HTML
+                const trimmedOutput = result.output.trim();
+                console.log('Output length:', trimmedOutput.length);
+                console.log('Output starts with:', trimmedOutput.substring(0, 100));
+                
+                if (trimmedOutput.includes('<script') && trimmedOutput.includes('Plotly')) {
+                    // It's Plotly HTML output - extract just the body content
+                    console.log('Rendering as Plotly HTML');
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(result.output, 'text/html');
+                    // Clear the output element and append the body content
+                    outputElement.innerHTML = '';
+                    
+                    // Find and load external scripts first (like Plotly CDN)
+                    const externalScripts = Array.from(doc.querySelectorAll('script[src]'));
+                    const inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+                    
+                    // Append non-script content first
+                    Array.from(doc.body.children).forEach(child => {
+                        if (child.tagName !== 'SCRIPT') {
+                            outputElement.appendChild(child.cloneNode(true));
+                        }
+                    });
+                    
+                    // Load external scripts sequentially
+                    const loadScript = (src) => {
+                        return new Promise((resolve, reject) => {
+                            const script = document.createElement('script');
+                            script.src = src;
+                            script.onload = resolve;
+                            script.onerror = reject;
+                            document.head.appendChild(script);
+                        });
+                    };
+                    
+                    // Load all external scripts first
+                    Promise.all(externalScripts.map(s => loadScript(s.src)))
+                        .then(() => {
+                            console.log('External scripts loaded, executing inline scripts');
+                            // Now execute inline scripts
+                            inlineScripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                newScript.textContent = oldScript.textContent;
+                                outputElement.appendChild(newScript);
+                            });
+                            console.log('Output element after processing:', outputElement.children.length, 'children');
+                        })
+                        .catch(err => {
+                            console.error('Failed to load external scripts:', err);
+                            outputElement.textContent = 'Error loading Plotly: ' + err.message;
+                        });
+                } else if (trimmedOutput.startsWith('<!DOCTYPE') || 
+                           trimmedOutput.startsWith('<html') ||
+                            trimmedOutput.startsWith('<div') ||
+                            trimmedOutput.startsWith('<img')) {
+                    console.log('Rendering as generic HTML');
+                    outputElement.innerHTML = result.output;
+                    console.log('Output element after innerHTML:', outputElement.children.length, 'children');
+                } else {
+                    console.log('Rendering as plain text');
+                    outputElement.textContent = result.output;
+                }
+                outputElement.classList.remove("loading-message");
+                if (result.success) {
+                    outputElement.classList.add("success-message");
+                    outputElement.classList.remove("error-message");
+                } else {
+                    outputElement.classList.add("error-message");
+                    outputElement.classList.remove("success-message");
+                }
+            }
+            
+            // Small delay to show progression
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        
+        // Set flag to indicate all FIXED cells have been executed
+        // This is used by PDF generation to ensure all outputs are ready
+        window.allCellsExecuted = true;
+        console.log("All FIXED cells executed successfully");
+        
+        // Setup all editable code blocks (but don't execute them)
+        document.querySelectorAll('.code-editor textarea').forEach((textarea) => {
+            // Set up CodeMirror editor (editable)
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: "python",
+                theme: "pastel-on-dark",
+                lineNumbers: true,
+                viewportMargin: Infinity
+            });
+            
+            // Find corresponding run button and output element
+            const baseId = textarea.id;
+            const runButtonId = 'run-' + baseId;
+            const outputId = baseId + '-output';
+            
+            const runButton = document.getElementById(runButtonId);
+            const outputElement = document.getElementById(outputId);
+            
+            if (runButton && outputElement) {
+                // Set initial state
+                outputElement.textContent = "Ready to run code!";
+                outputElement.classList.remove("loading-message");
+                
+                runButton.addEventListener("click", async () => {
+                    const code = editor.getValue().trim();
+                    if (!code) {
+                        outputElement.textContent = "No code to run";
+                        return;
+                    }
+                    
+                    outputElement.textContent = "Running...";
+                    outputElement.classList.remove("error-message", "success-message");
+                    outputElement.classList.add("loading-message");
+                    
+                    // Execute the code (this also maintains state for future blocks)
+                    const result = await executePythonCode(code);
+                    
+                    // Display the output - check if it's HTML
+                    const trimmedOutput = result.output.trim();
+                    console.log('Output length:', trimmedOutput.length);
+                    console.log('Output starts with:', trimmedOutput.substring(0, 100));
+                    
+                    if (trimmedOutput.includes('<script') && trimmedOutput.includes('Plotly')) {
+                        // It's Plotly HTML output - extract just the body content
+                        console.log('Rendering as Plotly HTML');
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(result.output, 'text/html');
+                        // Clear the output element and append the body content
+                        outputElement.innerHTML = '';
+                        
+                        // Find and load external scripts first (like Plotly CDN)
+                        const externalScripts = Array.from(doc.querySelectorAll('script[src]'));
+                        const inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+                        
+                        // Append non-script content first
+                        Array.from(doc.body.children).forEach(child => {
+                            if (child.tagName !== 'SCRIPT') {
+                                outputElement.appendChild(child.cloneNode(true));
+                            }
+                        });
+                        
+                        // Load external scripts sequentially
+                        const loadScript = (src) => {
+                            return new Promise((resolve, reject) => {
+                                const script = document.createElement('script');
+                                script.src = src;
+                                script.onload = resolve;
+                                script.onerror = reject;
+                                document.head.appendChild(script);
+                            });
+                        };
+                        
+                        // Load all external scripts first
+                        Promise.all(externalScripts.map(s => loadScript(s.src)))
+                            .then(() => {
+                                console.log('External scripts loaded, executing inline scripts');
+                                // Now execute inline scripts
+                                inlineScripts.forEach(oldScript => {
+                                    const newScript = document.createElement('script');
+                                    newScript.textContent = oldScript.textContent;
+                                    outputElement.appendChild(newScript);
+                                });
+                                console.log('Output element after processing:', outputElement.children.length, 'children');
+                            })
+                            .catch(err => {
+                                console.error('Failed to load external scripts:', err);
+                                outputElement.textContent = 'Error loading Plotly: ' + err.message;
+                            });
+                    } else if (trimmedOutput.startsWith('<!DOCTYPE') || 
+                               trimmedOutput.startsWith('<html') ||
+                               trimmedOutput.startsWith('<div') ||
+                               trimmedOutput.startsWith('<img')) {
+                        outputElement.innerHTML = result.output;
+                    } else {
+                        outputElement.textContent = result.output;
+                    }
+                    outputElement.classList.remove("loading-message");
+                    if (result.success) {
+                        outputElement.classList.add("success-message");
+                        outputElement.classList.remove("error-message");
+                    } else {
+                        outputElement.classList.add("error-message");
+                        outputElement.classList.remove("success-message");
+                    }
+                });
+            }
+        });
+        
+        console.log("All code blocks initialised successfully");
+
+        // Set flag to indicate Pyodide is fully ready
+        window.pyodideReady = true;
+        console.log("Pyodide fully ready");
+        
+    } catch (error) {
+        console.error("Failed to initialise Pyodide:", error);
+        document.querySelectorAll(".output").forEach(el => {
+            el.textContent = "Error loading Pyodide: " + error.message;
+            el.classList.remove("loading-message");
+            el.classList.add("error-message");
+        });
+    }
+}
+
+// Start the application when DOM is loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', main);
+} else {
+    main();
+}
+    </script>
+    
+</body>
+</html>

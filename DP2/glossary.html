@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="../assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../assets/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="../assets/android-chrome-512x512.png">
+    
+    <!-- Core Stylesheets -->
+    <link rel="stylesheet" href=../assets/colours.css>
+    <link rel="stylesheet" href="../assets/shared-styles.css">
+    <link rel="stylesheet" href="../assets/module_card.css">
+    
+    <!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>scryptIQ - DP2 - Glossary</title>
+    
+    <style>
+        /* Override sidebar styling since we're not using it */
+        body {
+            background-color: var(--background) !important;
+            color: var(--text-primary);
+            margin: 0 !important;
+            padding: 0 !important;
+            min-height: 100vh;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: flex-start !important;
+            flex-direction: column !important;
+        }
+
+        .main-content {
+            width: 100% !important;
+            max-width: 1200px !important;
+            padding: 0 20px !important;
+            box-sizing: border-box !important;
+            margin: 0 auto !important;
+            position: relative !important;
+            left: auto !important;
+            right: auto !important;
+            transform: none !important;
+        }
+
+        /* Additional centering overrides */
+        #main-content {
+            margin-left: auto !important;
+            margin-right: auto !important;
+            text-align: left !important;
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo-container img {
+            width: clamp(60px, 10vw, 120px);
+            height: clamp(60px, 10vw, 120px);
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .glossary-entry {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .glossary-entry:last-child {
+            border-bottom: none;
+        }
+
+        .glossary-term {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--remember);
+            margin-bottom: 8px;
+        }
+
+        .glossary-definition {
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .logo-container img {
+                height: 60px;
+            }
+            
+            .glossary-term {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="main-content" class="main-content">
+        <div class="top-navbar">
+            <div class="logo-container">
+                <h1 class="page-title">Data Processing 2 - Glossary</h1>
+            </div>
+        </div>
+
+        <div class="module-card">
+            <div class="module-header">
+                Glossary <span class="module-tag">DP2</span>
+            </div>
+            <div class="module-body">
+                
+                <div class="glossary-entry">
+                    <strong>Axes</strong>: The plotting area within a matplotlib figure, where the data is actually drawn. A single figure can hold several axes (for example, the panels of a subplot).
+                </div>
+                <div class="glossary-entry">
+                    <strong>Bivariate</strong>: Involving two variables at once. Bivariate analysis looks at how two features relate to one another, for example through a scatter plot or a correlation coefficient.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Box-Cox transformation</strong>: A power transformation used to make data more normally distributed. It only accepts strictly positive values, and is generalised by the Yeo-Johnson transformation.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Box plot</strong>: A plot summarising the spread of a feature through its quartiles, showing the median, the interquartile range, and values that fall outside the whiskers as potential outliers.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Clipping</strong>: An outlier-handling strategy that replaces any value beyond a chosen threshold with the threshold value itself, retaining the row while limiting the influence of the extreme value.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Clustermap</strong>: An extension of the heatmap that hierarchically clusters rows and columns, grouping similar features together to reveal structure in the data.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Correlation coefficient (Pearson&#x27;s r)</strong>: A measure of the strength and direction of the *linear* relationship between two variables, always between −1 and +1. It is the covariance normalised by the product of the two standard deviations.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Correlation matrix</strong>: A symmetric table giving the correlation coefficient between every pair of features, with 1 along the diagonal (each feature correlated with itself).
+                </div>
+                <div class="glossary-entry">
+                    <strong>Covariance</strong>: The raw, unnormalised measure of how two variables vary together. Unlike correlation it is unbounded, and its magnitude depends on the scale of the two variables.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Covariance matrix</strong>: A symmetric table of the pairwise covariances between features, with the variance of each feature along the diagonal.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Figure</strong>: The top-level container for a matplotlib plot. A figure holds one or more axes and controls overall properties such as size and resolution.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Heatmap</strong>: A plot that encodes the values of a matrix (such as a correlation matrix) as colours, making patterns across many features immediately visible.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Histogram</strong>: A plot that bins a feature&#x27;s values and counts how many fall into each bin, revealing the shape of its distribution, including skew, peaks, and tails.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Hue</strong>: A seaborn argument that splits a plot by the categories of a chosen column, colouring each group separately without the need to filter the data manually.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Interquartile range (IQR)</strong>: The difference between the 75th (Q3) and 25th (Q1) percentiles, spanning the middle 50% of the data. Values beyond 1.5 × IQR from either quartile are conventionally flagged as potential outliers.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Kernel Density Estimate (KDE)</strong>: A smoothed, continuous curve fitted to data to estimate its probability distribution, offering an alternative to the binned histogram.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Logarithmic</strong>: Describes a relationship where values change by *multiplication* rather than *addition*, so each equal step represents a constant fold-change (e.g. ×10) rather than a constant amount.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Log transformation</strong>: Applying a logarithm to every value in a feature. It stabilises variance and pulls a right-skewed, multiplicative distribution towards symmetry, while keeping values interpretable as fold-changes.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Magic command</strong>: A command specific to IPython (and therefore Jupyter notebooks) that provides special functionality, such as `%matplotlib inline` for rendering plots within the notebook.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Matplotlib</strong>: A comprehensive Python plotting package offering complete control over a figure, at the cost of a little more code. It underpins the plotting in both Pandas and seaborn.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Maximum likelihood</strong>: An iterative process that estimates the parameter value best fitting the data — for example, the λ that best normalises a feature in the Yeo-Johnson transformation.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Multivariate</strong>: Involving many variables at once, as opposed to univariate (one) or bivariate (two).
+                </div>
+                <div class="glossary-entry">
+                    <strong>Normal distribution (Gaussian)</strong>: A symmetric, single-peaked, bell-shaped distribution. A *standard* normal distribution is the special case with a mean of 0 and a standard deviation of 1.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Normalisation</strong>: Transforming a feature so that its distribution approaches normality, often as preparation for statistical tests or machine learning tools that assume or perform better on normal data.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Outlier</strong>: A value that lies suspiciously far from the bulk of a feature&#x27;s data. It may reflect genuine variation or a measurement error, and should only be removed once understood.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Pairplot</strong>: A seaborn matrix of plots showing a scatter for every pair of numerical features, with a distribution (KDE) on the diagonal — a quick overview of how features are distributed and related.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Pandas</strong>: A Python package for tabular data, providing the DataFrame and Series structures along with methods for exploring, summarising, and plotting data.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Percentile</strong>: The value below which a given percentage of the data falls. The 25th, 50th (median), and 75th percentiles are reported by `.describe()`.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Principal Component Analysis (PCA)</strong>: A dimensionality-reduction technique that relies on the covariance structure of the data. It performs better on standardised, roughly normal features.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Pseudocount</strong>: A small constant (commonly 1) added to data before a log transformation so that zeroes, which cannot be logged, are brought above zero.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Quartile</strong>: The three points (Q1, Q2, Q3) that divide ordered data into four equal parts, at the 25th, 50th, and 75th percentiles.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Scatter plot</strong>: A plot of one feature against another, with each point an observation, used to inspect the relationship between two variables.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Seaborn</strong>: A visualisation library built on top of matplotlib and integrated with Pandas, able to produce attractive statistical plots from a single line of code.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Skew</strong>: The asymmetry of a distribution. A right- (positively) skewed feature has a long tail towards high values, which can violate the assumptions of tools such as the Z-score.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Spearman&#x27;s rank correlation</strong>: A correlation measure that works on the *ranks* of the values rather than the raw values, making it robust to outliers and valid for any monotonic (not just linear) relationship.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Standard deviation</strong>: A measure of how spread out a feature&#x27;s values are around its mean; the square root of the variance.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Standardisation</strong>: Rescaling a feature to have a mean of 0 and a standard deviation of 1, placing every feature on a common scale so that none dominates a model simply because its raw values are larger.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Subplot</strong>: Multiple plots arranged on a single figure, created with the `ncols` and `nrows` arguments of `plt.subplots()`, allowing features to be compared side by side.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Univariate</strong>: Involving a single variable. Univariate analysis examines one feature on its own, for example its mean, spread, or distribution.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Variance</strong>: The average squared deviation of a feature&#x27;s values from its mean, quantifying how much the data vary across the population.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Yeo-Johnson transformation</strong>: A power transformation that pulls a distribution towards normality without assuming an underlying scale, and which (unlike Box-Cox) handles zero and negative values.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Z-score</strong>: The number of standard deviations a value lies from its feature&#x27;s mean. A threshold of ±3 is conventionally used to flag outliers, though this is unreliable on skewed data.
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div>© Built with parchmentIQ copyright of scryptIQ</div>
+            <div>© all materials are copyright of scryptIQ 2026</div>
+        </div>
+    </div>
+</body>
+</html>
+        

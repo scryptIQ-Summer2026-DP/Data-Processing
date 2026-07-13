@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- MathJax for mathematical notation -->
+    <script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$']],
+            displayMath: [['$$', '$$']],
+            processEscapes: true
+        },
+        svg: {
+            fontCache: 'global'
+        }
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    
+    <!-- Pyodide and CodeMirror -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/theme/pastel-on-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/mode/python/python.min.js"></script>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="../assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../assets/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="../assets/android-chrome-512x512.png">
+
+    <!-- Core Stylesheets -->
+    <link rel="stylesheet" href=../assets/colours.css>
+    <link rel="stylesheet" href="../assets/shared-styles.css">
+    <link rel="stylesheet" href="../assets/nav-bar.css">
+    <link rel="stylesheet" href="../assets/module_card.css">
+    <link rel="stylesheet" href="../assets/learning_outcomes.css">
+    <link rel="stylesheet" href="../assets/learning_lists.css">
+    <link rel="stylesheet" href="../assets/box_styles.css">
+    <link rel="stylesheet" href="../assets/code_styles.css">
+    
+    <!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>scryptIQ - DP2 - Feature Relationships</title>
+    <script>
+        window.LESSON_FILES = [
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/refs/heads/main/dp/cortex_nuclear.csv", filename: "cortex_nuclear.csv", is_binary: false},
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/refs/heads/main/dp/penguins_cleaned.csv", filename: "penguins_cleaned.csv", is_binary: false}
+        ];
+        window.LESSON_PACKAGES = ['numpy', 'pandas', 'matplotlib', 'scipy'];
+    </script>
+</head>
+<body>
+    
+    <!-- Sidebar Navigation -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <a href="../homepage.html" style="text-decoration: none; display: inline-block;">
+                <img src="../assets/scryptIQ_logo_dark.png" alt="scryptIQ Logo" class="sidebar-logo">
+            </a>
+        </div>
+
+        <h3>Content</h3>
+        <ul>
+            <li><a href="./introduction.html" class="">Introduction</a></li><li><a href="./data-exploration.html">Data Exploration</a></li><li><a href="./basic-plots.html">Basic Plotting</a></li><li><a href="./data-transformation.html">Data Transformation</a></li>
+            <li>
+                <div class="nav-toggle active" data-target="expandable-section-4">
+                    Feature Relationships
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <ul class="nested-nav expanded" id="expandable-section-4"><li><a href="#introduction">Introduction</a></li><li><a href="#scatter-plots">Scatter plots</a></li><li><a href="#identifying-clusters">Identifying clusters</a></li><li><a href="#the-correlation-coefficient">The Correlation Coefficient</a></li><li><a href="#numpy-correlation-matrix">NumPy Correlation Matrix</a></li><li><a href="#covariance">Covariance</a></li><li><a href="#heatmaps">Heatmaps</a></li><li><a href="#analysing-correlation">Analysing Correlation</a></li><li><a href="#summary---quiz">Summary & Quiz</a></li>
+                </ul>
+            </li><li><a href="./seaborn.html">Seaborn</a></li><li><a href="./assignment.html">Assignment</a></li><li><a href="./feedback.html">Feedback</a></li>
+        </ul>
+
+        <h3 class="collapsible-header collapsed">
+            Resources
+            <span class="collapse-icon">►</span>
+        </h3>
+        <div class="collapsible-content collapsed">
+            <ul>
+                <li><a href="./glossary.html">Glossary</a></li><li><a href="./downloads.html">Downloads</a></li><li><a href="../HB/introduction.html">Handbook</a></li>
+            </ul>
+        </div>
+
+        <h3 class="collapsible-header collapsed">
+            Previous Modules
+            <span class="collapse-icon">►</span>
+        </h3>
+        <div class="collapsible-content collapsed">
+            <ul>
+            <li><a href="../DP1/introduction.html">DP1</a></li>
+        </ul>
+        </div>
+
+        <h3>
+            <li><a href="./report-issue.html">Report an Issue</a></li>
+        </h3>
+    </div>
+
+    <!-- Sidebar Toggle Button -->
+    <button id="sidebar-toggle" class="sidebar-toggle">❮</button>
+
+    <!-- Main Content Area -->
+    <div id="main-content" class="main-content">
+        <!-- Top Navigation Bar -->
+        <div class="top-navbar">
+            <h1 class="page-title">Data Processing 2</h1>
+            <div class="nav-actions">
+                <a href="../homepage.html" class="text-button" title="Materials homepage">
+                    Homepage
+                </a>
+                <a href="https://scryptiq.ai/my-cohorts/" class="text-button scryptiq-button" title="Find out more about us">
+                    scryptIQ
+                </a>
+            </div>
+        </div>
+
+        
+            <div class="module-card" id="introduction">
+                <div class="module-header">
+                    Feature Relationships <span class="module-tag">DP2</span>
+                </div>
+                <div class="module-body">
+                    <h3>Learning Objectives</h3>
+                    <div class="learning-outcomes">
+                        <div class="outcome-item">
+                    <span class="outcome-number">1</span>
+                    <span class="outcome-text">How to implement a scatter plot</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">2</span>
+                    <span class="outcome-text">Understand and implement correlation and covariance</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">3</span>
+                    <span class="outcome-text">Create heatmaps of the correlation matrix</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">4</span>
+                    <span class="outcome-text">How to analyse correlation coefficients</span>
+                </div>
+                    </div>
+                    <h3>Introduction</h3>
+                    <p>When working with real-world datasets, the variables you measure rarely exist in isolation. Typically two (or more) features may rise and fall together as they are intangibly linked, something very common in biological systems that are fully integrated. Understanding these <strong>feature relationships</strong> is a foundational step in any data analysis pipeline, and an essential one before building machine learning (ML) models.</p>
+                </div>
+            </div>
+            
+            <div class="module-card" id="scatter-plots">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Scatter plots</h3>
+                        <p>The most common way to quantify a relationship between two variables is to measure how consistently they vary together. When one increases and the other tends to as well, they are positively related. When one increases as the other decreases, they are negatively related. When there is no consistent pattern, they are uncorrelated. This matters in ML for a practical reason: if two features are measuring essentially the same thing, they provide redundant information. Including both gives that signal disproportionate weight during training, potentially at the expense of other, more independent features. Identifying and addressing this kind of redundancy is a key part of feature selection.<br><br>In this section we will look at the main tools for exploring feature relationships: scatter plots for visual inspection, the Pearson correlation coefficient and covariance for quantification, and heatmaps for surveying relationships across many features at once.</p>
+        <div class="code-area">
+            <div class="code-collapse-header" onclick="toggleCodeCollapse('code-cell-74')">
+                <span class="code-collapse-icon">▶</span>
+                <span class="code-collapse-label">Show code</span>
+            </div>
+            <div class="code-container code-fixed code-collapsed" id="code-cell-74-container">
+                <textarea id="code-cell-74"># Setup the workspace as before
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
+df = pd.read_csv(&quot;./data/cortex_nuclear.csv&quot;)</textarea>
+            </div>
+            <div id="code-cell-74-output" class="output" style="display: none;"></div>
+        </div>
+        <p>The simplest method to explore the relationship between two features is to create a scatter plot using <code>.scatter()</code> with one feature on the <em>x-axis</em> and another on the <em>y-axis</em>.<br><br>Due to the density of the plotting points we can use two arguments:<ul class="nested-list"><li><strong>alpha</strong> (which we used previously for transparency)</li><br><li><strong>s</strong> an integer, that controls size</li></ul></p>
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-75">fig, ax = plt.subplots()
+
+ax.scatter(x=df[&quot;ITSN1_N&quot;], y=df[&quot;NR2A_N&quot;], 
+            alpha=0.5, # 50% transparent
+            s=20 # Change the argument to see the change
+            )
+
+ax.set(xlabel=&quot;ITSN1_N&quot;, ylabel=&quot;NR2A_N&quot;)
+
+plt.show()</textarea>
+            </div>
+            <button id="run-code-cell-75" class="run-button">Run Code</button>
+            <div id="code-cell-75-output" class="output"></div>
+        </div>
+        <p>The scatter plot immediately suggests a positive relationship between <code>ITSN1_N</code> and <code>NR2A_N</code>. However, it is heavily clustered in the lower end of the range of values, combined with some distinct outliers. We know that this is due to heavy <em>rightwards skew</em> from the last section, something we should also check for in <code>NR2A_N</code>.<br><br>Skewed data can violate the assumptions of correlation coefficients and make the scatter harder to read.</p>
+        <div class="info-box key-terms-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                KEY TERMS
+            </div>
+            <div class="box-content">
+                <p><strong>positive relationship:</strong> as one variable increases, the other tends to increase as well.<br><br><strong>negative relationship:</strong> as one variable increases, the other tends to decrease.</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-76">fig, axes = plt.subplots(figsize=(10,4), ncols=2, layout=&#x27;constrained&#x27;)
+
+n_bins = 20
+
+log_itsn = np.log(df[&quot;ITSN1_N&quot;])
+log_nr2a = np.log(df[&quot;NR2A_N&quot;])
+
+axes[0].hist(df[&quot;ITSN1_N&quot;], bins=n_bins, alpha=0.75, label=&quot;untransformed&quot;)
+axes[0].hist(log_itsn, bins=n_bins, alpha=0.75, label=&quot;log transformed&quot;)
+axes[0].set(xlabel=&quot;ITSN1_N&quot;, ylabel=&quot;Count&quot;)
+
+axes[1].hist(df[&quot;NR2A_N&quot;], bins=n_bins, alpha=0.75, label=&quot;untransformed&quot;)
+axes[1].hist(log_nr2a, bins=n_bins, alpha=0.75, label=&quot;log transformed&quot;)
+axes[1].set(xlabel=&quot;NR2A_N&quot;, ylabel=&quot;Count&quot;)
+axes[1].legend()
+
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-76-output" class="output"></div>
+        </div>
+        <p>Plotting a histogram of <strong>NR2A_N</strong> shows it to be roughly bell-shaped in its distribution. Applying a natural log transformation mostly shifts the distribution to have a narrower standard deviation, which is shifted left along the range of values.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-77">fig, axes = plt.subplots(figsize=(18, 4), ncols=3, layout=&#x27;constrained&#x27;)
+
+axes[0].scatter(x=df[&quot;ITSN1_N&quot;], y=df[&quot;NR2A_N&quot;], alpha=0.4, s=15)
+axes[0].set(xlabel=&quot;ITSN1_N&quot;, ylabel=&quot;NR2A_N&quot;, title=&quot;Original scale&quot;)
+
+axes[1].scatter(x=log_itsn, y=df[&quot;NR2A_N&quot;], alpha=0.4, s=15)
+axes[1].set(xlabel=&quot;log(ITSN1_N)&quot;, ylabel=&quot;NR2A_N&quot;, title=&quot;Log of ITSN1_N only&quot;)
+
+axes[2].scatter(x=log_itsn, y=log_nr2a, alpha=0.4, s=15)
+axes[2].set(xlabel=&quot;log(ITSN1_N)&quot;, ylabel=&quot;log(NR2A_N)&quot;, title=&quot;Log both axes&quot;)
+
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-77-output" class="output"></div>
+        </div>
+        <p>Creating a scatter plot with a combination of only <strong>log-ITSN1_N</strong> and with both features log transformed demonstrates how the data has been spread further in the lower ends and shrunk in the higher ends. Even though <strong>NR2A_N</strong> is bell-shaped, applying a log transformation in combination with <strong>log-ITSN1_N</strong> has the data appear much more positively correlated, moving from the bottom-left to top-right. This visual change in space between values highlights nicely how transformations can improve machine learning: as say, if we were to apply a <strong>linear regression</strong> model - one that predicts a continuous value given an input - the increased difference in points allows the model to better approximate it&#x27;s prediction in the state space.<br><br>Due to this we will stick with a log transformed version of both features.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="identifying-clusters">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Identifying clusters</h3>
+                        <p>If your data has categorical labels it is always beneficial to colour the scatter plot by the differing groups for a quick view of any distribution differences between the groups.<br><br>With matplotlib the data needs to be separated first and then applied to different <code>ax.scatter()</code> functions.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-78"># See the categories
+set(df[&#x27;Genotype&#x27;])</textarea>
+            </div>
+            <div id="code-cell-78-output" class="output"></div>
+        </div>
+        <p>First we will need to filter the data into our respective groups and then find the log values of each.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-79"># Filter by the genotypes
+ctrl = df[df[&#x27;Genotype&#x27;]==&#x27;Control&#x27;]
+tri = df[df[&#x27;Genotype&#x27;]==&#x27;Ts65Dn&#x27;]
+
+# Log transform both sets of data
+
+ctrl_is = np.log(ctrl[&#x27;ITSN1_N&#x27;])
+ctrl_nr2 = np.log(ctrl[&#x27;NR2A_N&#x27;])
+
+tri_is = np.log(tri[&#x27;ITSN1_N&#x27;])
+tri_nr2 = np.log(tri[&#x27;NR2A_N&#x27;])</textarea>
+            </div>
+            <div id="code-cell-79-output" class="output" style="display: none;"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-80">fig, ax = plt.subplots()
+
+ax.scatter(x=ctrl_is, y=ctrl_nr2, alpha=0.5, label=&#x27;Control&#x27;)
+
+# Add the second data to a new scatter
+ax.scatter(x=tri_is, y=tri_nr2, alpha=0.5, label=&#x27;Ts65Dn&#x27;)
+
+ax.set(xlabel=&quot;ITSN1_N&quot;, ylabel=&quot;NR2A_N&quot;)
+ax.legend()
+
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-80-output" class="output"></div>
+        </div>
+        <p>Colouring by genotype reveals that control and trisomic (Ts65Dn) mice occupy slightly different regions of the plot, with trisomic mice slightly shifted rightwards on the ITSN1_N axis. This is an important observation: if two groups have genuinely different distributions, computing a single correlation coefficient combining both can be misleading. Always consider whether your data contains meaningful subgroups before interpreting a global correlation.</p>
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p>The final section, <strong>seaborn</strong>, will demonstrate a method of recreating this plot in a much simpler manner.</p>
+            </div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="identifying-clusters">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>9.</strong></p>
+                <p><ul class="nested-list"><li>Choose two other protein columns and reproduce the three-panel scatter plot (original, log x-axis, log both axes). Do the log transformations improve the spread of the data as much as for <code>ITSN1_N</code> and <code>NR2A_N</code>?</li><br><li>Colour your scatter by genotype as in the final example. Does the relationship appear to differ between the control and trisomic groups?</li></ul></p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-81"></textarea>
+            </div>
+            <button id="run-code-cell-81" class="run-button">Run Code</button>
+            <div id="code-cell-81-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="the-correlation-coefficient">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>The Correlation Coefficient</h3>
+                        <p>The <a href="https://en.wikipedia.org/wiki/Pearson_correlation_coefficient">Pearson correlation coefficient</a> ($r$) quantifies the strength and direction of the <strong>linear relationship</strong> between two variables, always producing a value between −1 and +1.<br><ul class="nested-list"><li><strong>r = +1</strong>: a perfect positive linear relationship — as one variable increases, the other increases proportionally. All points in a scatter plot lie exactly on a straight line with a positive slope.</li><br><li><strong>r = −1</strong>: a perfect negative linear relationship — as one increases, the other decreases proportionally. All points lie on a straight line with a negative slope.</li><br><li><strong>r = 0</strong>: no linear relationship. The positive and negative contributions cancel out exactly.</li></ul></p><p>All real-world correlations fall somewhere in between. It is worth noting that $r = 0$ does not necessarily mean the two variables are unrelated, only that there is no <em>linear</em> pattern. A strong curved relationship, for instance, can still produce an $r$ close to zero.<br><br>Finally, $r$ is a <strong>symmetric</strong> measure: the correlation of X with Y is identical to the correlation of Y with X. There is no implied direction of influence between the two variables.</p>
+        <div class="code-area">
+            <div class="code-collapse-header" onclick="toggleCodeCollapse('code-cell-82')">
+                <span class="code-collapse-icon">▶</span>
+                <span class="code-collapse-label">Show code</span>
+            </div>
+            <div class="code-container code-fixed code-collapsed" id="code-cell-82-container">
+                <textarea id="code-cell-82"># A seed ensures the random number generator gives 
+# the same numbers each time
+rng = np.random.default_rng(42)
+n = 120
+
+# The r values to visualise, from strong positive to strong negative
+correlations = [0.9, 0.6, 0.3, 0.0, -0.3, -0.6, -0.9]
+
+fig, axes = plt.subplots(1, 7, figsize=(18, 3.5), layout=&#x27;constrained&#x27;)
+
+for ax, r in zip(axes, correlations):
+
+    # A 2x2 covariance matrix with variances of 1 and covariance equal to r
+    # When variances are both 1, covariance and correlation are numerically identical
+    cov = [[1, r], [r, 1]]
+
+    # Sample n points from a 2D normal distribution with the above covariance structure
+    # .T transposes the result so x and y are separate 1D arrays
+    x, y = rng.multivariate_normal([0, 0], cov, n).T
+
+    ax.scatter(x, y, alpha=0.5, s=18, color=&#x27;blue&#x27;)
+    ax.set_title(f&#x27;r = {r}&#x27;, fontsize=11)
+
+    # Remove axis ticks
+    ax.set_yticks([])
+
+plt.suptitle(&#x27;Pearson Correlation&#x27;, y=1.03, fontsize=12)
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-82-output" class="output"></div>
+        </div>
+        <p>To calculate the $r$ the <code>.corr()</code> method can be called on your DataFrame. For instance, here we will apply it just to the two features we explored visually previously:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-83">target_cols = [&#x27;ITSN1_N&#x27;, &#x27;NR2A_N&#x27;]
+
+corr_sample = df[target_cols].corr()
+
+corr_sample.round(3)</textarea>
+            </div>
+            <div id="code-cell-83-output" class="output"></div>
+        </div>
+        <p>The result is a $2 \times 2$ matrix, as we have two features. Along the diagonal (top left and bottom right) are the values for the comparison of a column to itself, which will always be <strong>1</strong> as they are identical.<br><br>The non-diagonal elements give the correlation coefficient between the two features, here <strong>0.426</strong>. Both the <em>ITSN1_N–NR2A_N</em> and <em>NR2A_N–ITSN1_N</em> entries appear, however because of the symmetry we would only need to report one out of the two.</p>
+        <div class="info-box important-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                IMPORTANT
+            </div>
+            <div class="box-content">
+                <p>The correlation method, by default, only works on numerical columns. If you were to attempt it on the whole proteomics DataFrame a <code>ValueError</code> will be thrown. This can be stopped by changing the <code>numeric_only</code> argument to <strong><code>True</code></strong>.</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-84">df.corr()</textarea>
+            </div>
+            <div id="code-cell-84-output" class="output"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-85">df.corr(numeric_only=True)</textarea>
+            </div>
+            <div id="code-cell-85-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="numpy-correlation-matrix">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>NumPy Correlation Matrix</h3>
+                        <p>Pandas&#x27; <code>.corr()</code> is convenient, but the same coefficients can be computed directly on NumPy arrays with <code>np.corrcoef()</code>. This is handy when working outside a DataFrame, and lets us quickly compare the correlation under different treatments — raw, log-transformed, and split by genotype — which we plot below.</p><p>First we extract the data as a NumPy array and log transform the values. It is important to drop any NaN values as these will throw an error.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-86"># filter  # drop NaN  # To NumPy
+stand_np = df[target_cols].dropna().to_numpy()
+log_np = np.log(df[target_cols].dropna().to_numpy())</textarea>
+            </div>
+            <div id="code-cell-86-output" class="output"></div>
+        </div>
+        <p>As our data features run along a columnar axis (0), rather than along the row (1) which is standard to NumPy, we need to tell the function where to look. To do so, set the <code>rowvar</code> argument to <code>False</code>.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-87">stand_corr = np.corrcoef(stand_np, rowvar=False)
+
+print(&quot;The same correlation matrix as previously:&quot;)
+stand_corr</textarea>
+            </div>
+            <div id="code-cell-87-output" class="output"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-88">log_corr = np.corrcoef(log_np, rowvar=False)
+
+print(&quot;The correlation matrix on log transformed data:&quot;)
+log_corr</textarea>
+            </div>
+            <div id="code-cell-88-output" class="output"></div>
+        </div>
+        <p>We can now pull out the values for just the sub-groups (<em>Control</em> &amp; <em>Ts65Dn</em>), log transform them and apply the correlation analysis:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-89">log_ctrl = np.log(df[target_cols][df[&#x27;Genotype&#x27;] == &#x27;Control&#x27;].dropna().to_numpy())
+log_tri = np.log(df[target_cols][df[&#x27;Genotype&#x27;] == &#x27;Ts65Dn&#x27;].dropna().to_numpy())</textarea>
+            </div>
+            <div id="code-cell-89-output" class="output" style="display: none;"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-90">corr_ctrl = np.corrcoef(log_ctrl, rowvar=False)
+
+print(&quot;The correlation matrix for Control on log transformed data:&quot;)
+corr_ctrl</textarea>
+            </div>
+            <div id="code-cell-90-output" class="output"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-91">corr_tri = np.corrcoef(log_tri, rowvar=False)
+
+print(&quot;The correlation matrix for Ts65Dn on log transformed data:&quot;)
+corr_tri</textarea>
+            </div>
+            <div id="code-cell-91-output" class="output"></div>
+        </div>
+        <p>To visually compare the $r$ values we can introduce the humble bar chart with matplotlib. Similar to previously, to call a bar chart simply use the <code>.bar()</code> method on an axes, passing to it first a list of the labels for each bar (x-axis), second a list/array of values to be plotted, and finally their colours. All left-to-right.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-92">fig, ax = plt.subplots(figsize=(12, 4))
+
+labels = [&#x27;Standard&#x27;, &#x27;Log-transformed&#x27;, &#x27;Control only (log)&#x27;, &#x27;Ts65Dn only (log)&#x27;]
+# Isolate the top right value in the correlation matrix
+counts = [stand_corr[0, 1], log_corr[0, 1], corr_ctrl[0, 1], corr_tri[0, 1]]
+
+ax.bar(labels, counts, color=[&#x27;blue&#x27;, &#x27;green&#x27;, &#x27;red&#x27;, &#x27;pink&#x27;])
+ax.set_ylabel(&#x27;r value&#x27;)
+
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-92-output" class="output"></div>
+        </div>
+        <p>When introducing the Pearson $r$ value it was stated that the range of the values lie between <strong>-1</strong> and <strong>1</strong>. It is always good practice to place your plots on an axis range that reflects the true span in that feature space. To do so use <code>ax.set_ylim()</code> (<code>.set_xlim()</code> for the x-axis) to restrict or expand the axis to your values in a tuple.<br><br>Additionally, a dotted line can be added horizontally to indicate the the reader where the values would switch from a positive to negative correlation with the <code>ax.axhline()</code> method. The line be stylised withthe arguments <code>linewidth</code> for <strong>width</strong> and <code>linestyle</code> to make it <strong>dotted</strong>.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-93">fig, ax = plt.subplots(figsize=(12, 4))
+
+labels = [&#x27;Standard&#x27;, &#x27;Log-transformed&#x27;, &#x27;Control only (log)&#x27;, &#x27;Ts65Dn only (log)&#x27;]
+counts = [stand_corr[0, 1], log_corr[0, 1], corr_ctrl[0, 1], corr_tri[0, 1]]
+
+ax.bar(labels, counts, color=[&#x27;blue&#x27;, &#x27;green&#x27;, &#x27;red&#x27;, &#x27;pink&#x27;])
+ax.set_ylabel(&#x27;Pearson r&#x27;)
+
+# The first value is the lower bound
+# The second value to the upper bound
+ax.set_ylim(-1, 1)
+
+# Add a line at 0 to reflect when it turns from a positive to negative corr
+ax.axhline(0, color=&#x27;black&#x27;, linewidth=0.8, linestyle=&#x27;--&#x27;)
+
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-93-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="covariance">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Covariance</h3>
+                        <p><strong>Covariance</strong> is the raw, unnormalised form of correlation. Whereas correlation is bounded between −1 and +1, covariance can be any real number, with its magnitude depending entirely on the scale of the two variables.</p><h4>Variance</h4><p>Covariance is also an extension of the <strong>variance</strong> metric, the measure of how much data points in a single feature vary across the population:<br><br>$$\sigma^2 = \frac{1}{n} \sum_{i=1}^{n} (x_i - \mu)^2$$<br><br>where $x$ is the data and $\mu$ is the mean of the data.<br><br>From this equation, you can see that variance is simply the average of how far every value deviates from the population mean $(x_i - \mu)$. The reason it is squared is to over-represent large deviations (outliers) in the final metric, and because a squared term is mathematically preferable to work with for many algorithms.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-94">x = np.array([4, 13 ,2 ,20, 1, 4, 6, 7, 3, 3, 12])
+
+variance = np.sum(  (x - np.mean(x))**2   )   /   len(x)
+
+variance</textarea>
+            </div>
+            <div id="code-cell-94-output" class="output"></div>
+        </div>
+        <h4>Covariance</h4><p>Covariance applies the idea of variance to <strong>two</strong> variables, not one. Finding the differences of one feature (x) from its mean and multiplying them by the differences of another feature (y) to their mean:<br><br>$$\text{Cov}(X, Y) = \frac{1}{n} \sum_{i=1}^{n} (x_i - \mu_x)(y_i - \mu_y)$$<br><br>A positive covariance means the variables tend to move together; negative means they move in opposite directions. A problem with covariance is interpretability: a covariance of 0.05 between two variables measured in milligrams is not directly comparable to a covariance of 0.05 between variables measured in kilograms.<br><br>The Pearson coefficient resolves this by dividing the covariance by the multiplication of the two standard deviations, effectively normalising it to the [−1, 1] scale:<br><br>$$r = \frac{\text{Cov}(X, Y)}{\sigma_X \cdot \sigma_Y}$$<br><br>In practice, you will almost always report correlation rather than covariance for interpretation. However, covariance is important internally for a lot of machine learning tools, such as <strong>principal component analysis (PCA)</strong>, which you will encounter in later modules.</p><h4>Creating a covariance matrix</h4>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-95">cols = [&#x27;DYRK1A_N&#x27;, &#x27;ITSN1_N&#x27;, &#x27;BDNF_N&#x27;, &#x27;NR1_N&#x27;, &#x27;NR2A_N&#x27;]
+
+# .cov() computes the pairwise covariance matrix
+cov_matrix = df[cols].cov()
+print(&quot;Covariance matrix:&quot;)
+print(cov_matrix.round(4))</textarea>
+            </div>
+            <div id="code-cell-95-output" class="output"></div>
+        </div>
+        <p>On the diagonal you will see the <strong>variance</strong>, as it is each feature against itself. Everywhere else is the covariance, which is symmetrical about the diagonal. You can therefore disregard the information on one side of the diagonal.<br><br>To programmatically obtain all of the covariances we can use the <a href="https://numpy.org/doc/stable/reference/generated/numpy.triu_indices.html">triu_indices</a> which return the indices for the upper triangle of a matrix.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-96"># Convert the DF to numpy
+cov_np = cov_matrix.to_numpy()
+
+# Get the indices by giving it the number of columns
+cov_idx = np.triu_indices(len(cols))
+
+covariances = cov_np[cov_idx]
+
+print(covariances.shape)
+
+covariances</textarea>
+            </div>
+            <div id="code-cell-96-output" class="output"></div>
+        </div>
+        <p>As standard the function will return the indices inclusive of the diagonal, which we don&#x27;t want on this occasion. This can be altered by using the <code>k</code> parameter. What we need is <code>k=1</code>, but try altering the value to gain an intuitive understanding of how it works.</p>
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-97"># K = 1 shifts the indices 1 diagonal up
+cov_idx = np.triu_indices(len(cols), k=1)
+
+covariances = cov_np[cov_idx]
+
+print(covariances.shape)
+
+covariances</textarea>
+            </div>
+            <button id="run-code-cell-97" class="run-button">Run Code</button>
+            <div id="code-cell-97-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="heatmaps">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Heatmaps</h3>
+                        <p>With 77 protein columns in this dataset, inspecting correlations pair by pair is impractical. The <strong>correlation matrix</strong> we have seen computed will return a Pearson coefficient between every pair of columns, where the diagonal is always 1 (every variable is perfectly correlated with itself).<br><br>A better way to visualise everything together is a <strong>heatmap</strong> where the coefficient values are encoded with colours, making structural patterns immediately visible. Clusters of co-regulated proteins appear as bright blocks; uncorrelated or inversely related pairs appear in contrasting colours.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-98">corr_full = df.corr(numeric_only=True)
+
+corr_full</textarea>
+            </div>
+            <div id="code-cell-98-output" class="output"></div>
+        </div>
+        <p>To plot the full correlation matrix use the method <code>ax.imshow()</code> which renders any input data as a colour image, effectively converting the number to a colour given a scale. To <code>ax.imshow()</code> you pass:<ul class="nested-list"><li>The values from a corrlation matrix in the form of a NumPy array</li><br><li>The colour scale: here we have used <strong>RdBu_r</strong> which is Red to Blue - see <a href="https://matplotlib.org/stable/users/explain/colors/colormaps.html">here</a> for the full list</li><br><li>The minimum and maximum values in the numerical range (<strong>vmin</strong> and <strong>vmax</strong>). This is important as the colour bar will scale to the data, giving you false ideas of absolute difference where the range is small.</li></ul></p><p>The labels on the x- &amp; y-axis are the same given it is symmetrical, therefore you should pass the same list of columns to <code>set_xticks</code> and &#x27;set_yticks&#x27;.</p><p>Lastly, you should always include a colour bar by adding it to the plot with <code>plt.colourbar()</code>. To this we pass:<ul class="nested-list"><li>The plot itself, here saved to the variable <code>im</code></li><br><li>The axes to plot to with <code>ax</code></li><br><li>It&#x27;s named label with <code>label</code></li><br><li>It&#x27;s size with <code>fraction</code></li><br><li>How far it is from the plot with <code>pad</code></li></ul></p><p>Run the cell below and have a play around changing and removing the arguments, to see how they affect the outcome.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-99">fig, ax = plt.subplots(figsize=(14, 12), layout=&quot;constrained&quot;)
+                                                                    # improves it visually
+im = ax.imshow(corr_full.to_numpy(), cmap=&#x27;RdBu_r&#x27;, vmin=-1, vmax=1, aspect=&#x27;auto&#x27;)
+
+ax.set_xticks(range(len(corr_full.columns)))
+ax.set_yticks(range(len(corr_full.columns)))
+
+                                 # make them horizontal
+ax.set_xticklabels(corr_full.columns, rotation=90, fontsize=7)
+ax.set_yticklabels(corr_full.columns, fontsize=7)
+
+plt.colorbar(im, ax=ax, label=&#x27;Pearson r&#x27;, fraction=0.03, pad=0.04)
+ax.set_title(&#x27;Protein Expression — Full Correlation Matrix&#x27;, fontsize=13)
+
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-99-output" class="output"></div>
+        </div>
+        <p>The heatmap reveals clear <strong>blocks</strong> of highly correlated proteins — clusters that likely correspond to proteins in the same downstream signalling pathway. When one is elevated, the others tend to be as well.<br><br>Note that the matrix is symmetric about the diagonal: the upper and lower triangles contain identical information.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="analysing-correlation">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Analysing Correlation</h3>
+                        <p>To programmatically extract the most (and least) correlated values we can create a function that extracts the unique values as we did previously with <code>np.triu_indices()</code>, which provides both the indices of the values, as well as those for the columns, as they occupy the same space.<br><br>From this, a DataFrame can be built where each feature is named to observe the correlation value for each pair. Sorting by the <em>absolute</em> value means the top $r$ values can be obtained with just <code>.head(10)</code>. To obtain the smallest values there is a niche Pandas method <code>.nsmallest()</code>, that given an integer and a column name will return the rows where the values are smallest in that column.<br><br>This has all been wrapped into a function:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-100">def get_top_corr(corr_df, top=True):
+    &quot;&quot;&quot;Print the 10 most or least correlated feature pairs from a correlation matrix.
+
+    Extracts the upper triangle of a correlation matrix (excluding the diagonal),
+    pairs each feature combination with its Pearson correlation coefficient, and
+    prints either the 10 pairs with the largest absolute correlation or the 10
+    pairs with the smallest absolute correlation.
+
+    :param corr_df: A square correlation matrix (e.g. from ``DataFrame.corr()``),
+        with feature names as both the row index and column labels.
+    :type corr_df: pandas.DataFrame
+    :param top: If ``True``, print the 10 most correlated pairs (by absolute
+        Pearson r). If ``False``, print the 10 least correlated pairs.
+    :type top: bool, optional
+    :returns: ``None``. Results are printed directly, not returned.
+    &quot;&quot;&quot;
+
+    cols = corr_df.columns
+
+    cov_idx = np.triu_indices(len(cols), k=1)
+    # Split index into rows and columns
+    row_idx, col_idx = cov_idx
+
+    # Get the values
+    corr_values = corr_df.to_numpy()[cov_idx]
+
+    # Make a dataframe with the column pairs and r value
+    corr_pairs = pd.DataFrame({
+        &#x27;feature_1&#x27;: cols[row_idx],
+        &#x27;feature_2&#x27;: cols[col_idx],
+        &#x27;pearson_r&#x27;: corr_values
+    })
+
+    # Find the absolute R value so neg &amp; pos are comparable
+    corr_pairs[&#x27;abs_r&#x27;] = abs(corr_pairs[&#x27;pearson_r&#x27;])
+    # Sort by the absolute value
+    corr_pairs.sort_values(&#x27;abs_r&#x27;, ascending=False, inplace=True)
+
+    # return corr_pairs
+    if top == True:
+
+        print(&quot;Top 10 most correlated pairs:&quot;)
+        print(&quot;&quot;)
+        print(corr_pairs.head(10).drop(columns=&#x27;abs_r&#x27;))
+
+    else:
+
+        print(&quot;10 least correlated pairs:&quot;)
+        print(&quot;&quot;)
+        # nsmallerst returns an dataframe of the smallest values given the int
+        print(corr_pairs.nsmallest(10, &#x27;abs_r&#x27;).drop(columns=&#x27;abs_r&#x27;))</textarea>
+            </div>
+            <div id="code-cell-100-output" class="output" style="display: none;"></div>
+        </div>
+        <p>Obtain the top 10 correlated pairs:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-101">get_top_corr(corr_full)</textarea>
+            </div>
+            <div id="code-cell-101-output" class="output"></div>
+        </div>
+        <p>Obtain the 10 least correlated pairs:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-102">get_top_corr(corr_full, top=False)</textarea>
+            </div>
+            <div id="code-cell-102-output" class="output"></div>
+        </div>
+        <p>Finding highly correlated pairs raises two important practical questions.<br><br><strong>What do we do with redundant features?</strong> In machine learning, two features with a correlation above roughly 0.9 carry nearly identical information. Including both does not add much to a model and can inflate feature importance scores or slow training. A common pre-processing step is to remove one column from each highly-correlated pair, retaining the one with a stronger relationship to your target variable.<br><br>A final caveat: Pearson only captures <em>linear</em> relationships and is sensitive to outliers and skew. Whilst it will work on non-normal distributed data, some implementations of Pearson&#x27;s will perform a statistical p-value test that the two samples are uncorrelated with the assumption they are normally distributed. If you want to use this or your data is extremely non-normal then a rank-based alternative such as <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.spearmanr.html"><strong>Spearman&#x27;s rank correlation</strong></a> is more robust, as it correlates the ranks of the values rather than the raw values themselves.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="analysing-correlation">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>10.</strong></p>
+                <p>Using the penguins (<code>&quot;penguins_cleaned.csv&quot;</code>) dataset find the correlation matrix for the given features (<code>correlation_cols</code>).<ul class="nested-list"><li>Find $r$ values using <code>.corr()</code></li><br><li>Extract the value &amp; columns indices using <code>np.triu_indices()</code></li><br><li>Create a DataFrame with columns feature_1, feature_2, pearson_r. As seen in the correlation function</li><br><li>Create a new column called <em>combined</em> that adds together the two feature names with an &quot;X&quot; between them, to use as plotting labels. Think back to string operations combined with columnar operations.</li><br><li>Plot the values and their labels on a bar chart by using <strong>ax.barh()</strong> rather than <strong>ax.bar()</strong></li><br><li>Limit the values to (-1, 1) on the <strong>x-axis</strong></li><br><li>Plot a vertical dotted where y is 0</li></ul></p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-103">penguins = pd.read_csv(&quot;./data/penguins_cleaned.csv&quot;)
+
+correlation_cols = penguins.columns[2:6]</textarea>
+            </div>
+            <button id="run-code-cell-103" class="run-button">Run Code</button>
+            <div id="code-cell-103-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="summary---quiz">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Summary & Quiz</h3>
+                        <p>In this section we quantified how features move together. Scatter plots gave a visual read, and colouring by category revealed subgroups that a single global statistic can hide. We introduced the Pearson correlation coefficient — a normalised, symmetric measure of <em>linear</em> association bounded between −1 and +1 — alongside covariance, its unbounded, scale-dependent basis. Heatmaps then let us survey the whole correlation matrix at once, highlighting blocks of co-regulated proteins and redundant feature pairs.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="summary---quiz">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Summary & Quiz</h3>
+                        
+        <div class="quiz-box" id="quiz-4">
+            <div class="quiz-body">
+                <p class="quiz-intro">Attempt the questions below once you have finished. If you get any wrong, head back to that section to remind yourself of the reasoning/syntax behind the correct answer:</p>
+                
+            <div class="quiz-question" id="quiz-4-q0" data-quiz="quiz-4" data-topic-id="correlation">
+                <span class="quiz-topic-tag">Correlation</span>
+                <p class="quiz-question-text">The Pearson correlation coefficient always falls between:</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-4-q0" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">0 and 1</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-4-q0" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">−1 and +1</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-4-q0" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">−∞ and +∞</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-4-q0" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">0 and 100</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div><hr class="quiz-divider">
+            <div class="quiz-question" id="quiz-4-q1" data-quiz="quiz-4" data-topic-id="correlation">
+                <span class="quiz-topic-tag">Correlation</span>
+                <p class="quiz-question-text">An r of 0 tells you that:</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-4-q1" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">The variables are completely independent</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-4-q1" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">There is no *linear* relationship, though a non-linear one may exist</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-4-q1" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">The two variables are identical</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-4-q1" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">One variable causes the other</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div><hr class="quiz-divider">
+            <div class="quiz-question" id="quiz-4-q2" data-quiz="quiz-4" data-topic-id="covariance">
+                <span class="quiz-topic-tag">Covariance</span>
+                <p class="quiz-question-text">How does covariance differ from correlation?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-4-q2" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">Covariance is always between −1 and 1</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-4-q2" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">Covariance depends on the variables&#x27; scale</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-4-q2" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">Covariance can only be positive</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-4-q2" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">They are identical measures</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div><hr class="quiz-divider">
+            <div class="quiz-question" id="quiz-4-q3" data-quiz="quiz-4" data-topic-id="covariance-matrix">
+                <span class="quiz-topic-tag">Covariance Matrix</span>
+                <p class="quiz-question-text">What sits along the diagonal of a covariance matrix?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-4-q3" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">Zeros</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-4-q3" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">The variance of each feature</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-4-q3" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">The correlation coefficients</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-4-q3" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">The feature means</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div><hr class="quiz-divider">
+            <div class="quiz-question" id="quiz-4-q4" data-quiz="quiz-4" data-topic-id="feature-redundancy">
+                <span class="quiz-topic-tag">Feature Redundancy</span>
+                <p class="quiz-question-text">Why are two features with a correlation above ~0.9 often problematic for machine learning?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-4-q4" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">They cannot be plotted</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-4-q4" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">They carry nearly identical information (redundancy)</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-4-q4" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">They must be normally distributed</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-4-q4" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">They increase the sample size</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+                
+            <div class="quiz-topics-footer">
+                <span class="quiz-topics-label">Topics covered</span>
+                <div class="quiz-topics-list">
+                    <span class="quiz-topic-pill" id="quiz-4-topic-correlation">Correlation</span><span class="quiz-topic-pill" id="quiz-4-topic-covariance">Covariance</span><span class="quiz-topic-pill" id="quiz-4-topic-covariance-matrix">Covariance Matrix</span><span class="quiz-topic-pill" id="quiz-4-topic-feature-redundancy">Feature Redundancy</span>
+                </div>
+            </div>
+            </div>
+        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+        <div class="page-navigation">
+            <a href="./data-transformation.html" class="nav-button prev">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                </svg>
+                Previous
+            </a>
+            <a href="./seaborn.html" class="nav-button next">
+                Next
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </a></div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div>© All materials are copyright scryptIQ 2025</div>
+            <div>Powered by Pyodide</div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../assets/main.js"></script>
+    
+    <!-- Pyodide Initialisation Script -->
+    <script>
+
+// Generalisable Pyodide Initialisation Script
+// Variables and state build up naturally as code blocks execute in order
+
+async function main() {
+    // Show loading message for all output elements
+    document.querySelectorAll(".output").forEach(el => {
+        el.textContent = "Loading Pyodide...";
+        el.classList.add("loading-message");
+    });
+    
+    try {
+        // Load Pyodide
+        console.log("Loading Pyodide...");
+        const pyodideStartTime = performance.now();
+        let pyodide = await loadPyodide();
+        const pyodideLoadTime = performance.now() - pyodideStartTime;
+        console.log(`Pyodide loaded in ${pyodideLoadTime.toFixed(2)}ms`);
+        
+        // Load required packages only if specified
+        const lessonPackages = window.LESSON_PACKAGES || [];
+        
+        if (lessonPackages.length > 0) {
+            console.log("Loading required Python packages...");
+            const packagesStartTime = performance.now();
+            
+            // Separate built-in packages from PyPI packages
+            const builtInPackages = lessonPackages.filter(pkg => 
+                ['numpy', 'scipy', 'matplotlib', 'pandas', 'scikit-learn', 'pillow', 'regex'].includes(pkg)
+            );
+            
+            const micropipPackages = lessonPackages.filter(pkg => !builtInPackages.includes(pkg));
+            
+            // Load built-in packages (fast)
+            if (builtInPackages.length > 0) {
+                await pyodide.loadPackage(builtInPackages);
+                console.log(`Loaded built-in packages: ${builtInPackages.join(', ')}`);
+            }
+            
+            // Install PyPI packages (slower)
+            if (micropipPackages.length > 0) {
+                await pyodide.loadPackage(['micropip']);
+                const micropip = pyodide.pyimport('micropip');
+                await micropip.install(micropipPackages);
+                console.log(`Installed PyPI packages: ${micropipPackages.join(', ')}`);
+            }
+            
+            const packagesLoadTime = performance.now() - packagesStartTime;
+            console.log(`Packages loaded in ${packagesLoadTime.toFixed(2)}ms`);
+            console.log(`Total initialisation time: ${(pyodideLoadTime + packagesLoadTime).toFixed(2)}ms`);
+        } else {
+            console.log("No packages to load for this lesson");
+            console.log(`Total initialisation time: ${pyodideLoadTime.toFixed(2)}ms`);
+        }
+
+        // Only set up basic Python environment - no pre-loaded variables
+        await pyodide.runPythonAsync(`
+            import sys
+            from io import StringIO
+        `);
+
+        // Only set up matplotlib if it's in the loaded packages
+        if (lessonPackages.includes('matplotlib')) {
+            await pyodide.runPythonAsync(`
+                # Set up matplotlib for web rendering
+                import matplotlib
+                matplotlib.use('AGG')
+                import matplotlib.pyplot as plt
+                import io
+                import base64
+                
+                def capture_matplotlib():
+                    """Capture current matplotlib figure as HTML img tag"""
+                    buf = io.BytesIO()
+                    plt.savefig(buf, format='png', bbox_inches='tight', dpi=100)
+                    buf.seek(0)
+                    img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+                    plt.close()
+                    return f'<img src="data:image/png;base64,{img_base64}" style="max-width: 100%; height: auto;" />'
+
+                # Silence the "FigureCanvasAgg is non-interactive" warning that
+                # occurs when notebook code calls plt.show().  In this environment
+                # figures are captured automatically via capture_matplotlib(), so
+                # plt.show() should simply be a no-op.
+                plt.show = lambda *args, **kwargs: None
+            `);
+            console.log('Matplotlib capture function set up');
+        }
+        
+        console.log("Pyodide loaded successfully");
+        
+        // Load remote files if URLs are specified
+        const lessonFiles = window.LESSON_FILES || [];
+        
+        if (lessonFiles.length > 0) {
+            try {
+                console.log(`Checking for ${lessonFiles.length} remote file(s) to load...`);
+                
+                // Build Python code to load all files dynamically
+                let pythonCode = `
+from pyodide.http import pyfetch
+import os
+
+# Create data directory if it doesn't exist
+os.makedirs('./data', exist_ok=True)
+`;
+                
+                // Add loading code for each file
+                for (const file of lessonFiles) {
+                    if (file.is_binary) {
+                        // Binary files (images, etc.) - use bytes
+                        pythonCode += `
+# Load ${file.filename} (binary)
+try:
+    response = await pyfetch("${file.url}")
+    content = await response.bytes()
+    with open('./data/${file.filename}', 'wb') as f:
+        f.write(bytes(content))
+    print("Loaded: ${file.filename}")
+except Exception as e:
+    print(f"Could not load ${file.filename}: {e}")
+`;
+                    } else {
+                        // Text files (CSV, etc.) - use string
+                        pythonCode += `
+# Load ${file.filename} (text)
+try:
+    response = await pyfetch("${file.url}")
+    content = await response.string()
+    with open('./data/${file.filename}', 'w') as f:
+        f.write(content)
+    print("Loaded: ${file.filename}")
+except Exception as e:
+    print(f"Could not load ${file.filename}: {e}")
+`;
+                    }
+                }
+                
+                await pyodide.runPythonAsync(pythonCode);
+                console.log("Remote files loaded successfully");
+            } catch (error) {
+                console.warn("Error loading remote files (continuing anyway):", error);
+            }
+        } else {
+            console.log("No remote files to load for this lesson");
+        }
+        
+        // Function to execute Python code and capture output
+        async function executePythonCode(code) {
+            try {
+                // Redirect Python stdout and stderr to capture print statements and warnings
+                await pyodide.runPythonAsync(`
+                    old_stdout = sys.stdout
+                    old_stderr = sys.stderr
+                    sys.stdout = mystdout = StringIO()
+                    sys.stderr = mystderr = StringIO()
+                `);
+
+                // Run the user code.
+                // We pass the code string via pyodide.globals to avoid JS-string escaping
+                // issues, then use Python's ast module to execute it.  The last expression
+                // (if any) is eval-ed inside Python so that repr() is called there —
+                // this means display settings such as np.set_printoptions() are always
+                // respected before the value crosses the Python→JS boundary.
+                // (Pyodide auto-converts numpy arrays to TypedArray, so String(result)
+                // would bypass numpy's formatting entirely.)
+                pyodide.globals.set('__cell_code__', code);
+                await pyodide.runPythonAsync(`
+import ast as _ast
+__cell_result__ = None
+try:
+    _tree = _ast.parse(__cell_code__)
+    if _tree.body and isinstance(_tree.body[-1], _ast.Expr):
+        _last = _tree.body.pop()
+        exec(compile(_ast.Module(body=_tree.body, type_ignores=[]), '<cell>', 'exec'), globals())
+        _val = eval(compile(_ast.Expression(body=_last.value), '<cell>', 'eval'), globals())
+        if _val is not None:
+            __cell_result__ = repr(_val)
+    else:
+        exec(compile(_tree, '<cell>', 'exec'), globals())
+finally:
+    for _k in ['_tree', '_last', '_val', '_ast']:
+        globals().pop(_k, None)
+    globals().pop('__cell_code__', None)
+`);
+
+                // Get the captured stdout and stderr
+                let stdout = await pyodide.runPythonAsync(`
+                    sys.stdout = old_stdout
+                    sys.stderr = old_stderr
+                    mystdout.getvalue()
+                `);
+
+                const stderr = await pyodide.runPythonAsync(`mystderr.getvalue()`);
+                if (stderr) {
+                    if (stdout) stdout += "\n";
+                    stdout += stderr;
+                }
+
+                // Retrieve the Python-side repr string (already formatted correctly)
+                const resultRepr = await pyodide.runPythonAsync(`
+_r = __cell_result__
+del __cell_result__
+_r
+`);
+
+                // Check for matplotlib figures only if matplotlib was loaded
+                const lessonPackages = window.LESSON_PACKAGES || [];
+                if (lessonPackages.includes('matplotlib')) {
+                    const hasFigures = await pyodide.runPythonAsync(`
+                        import matplotlib.pyplot as plt
+                        len(plt.get_fignums()) > 0
+                    `);
+
+                    if (hasFigures) {
+                        const figureHtml = await pyodide.runPythonAsync(`capture_matplotlib()`);
+                        if (stdout) stdout += "\n";
+                        stdout += figureHtml;
+                    }
+                }
+
+                // Combine stdout and result repr
+                let output = stdout;
+                if (resultRepr !== undefined && resultRepr !== null && String(resultRepr).trim() !== '') {
+                    if (output) output += "\n";
+                    output += String(resultRepr);
+                }
+                
+                return { success: true, output: output || "Code executed successfully (no output)" };
+                
+            } catch (error) {
+                // Attempt to restore stdout/stderr even on failure
+                try {
+                    await pyodide.runPythonAsync(`
+                        if 'old_stdout' in dir(): sys.stdout = old_stdout
+                        if 'old_stderr' in dir(): sys.stderr = old_stderr
+                    `);
+                } catch (_) {}
+                // Re-run through Python's traceback machinery to get a clean error message
+                let tracebackStr = '';
+                try {
+                    pyodide.globals.set('_traceback_code', code);
+                    await pyodide.runPythonAsync(`
+                        import traceback as _tb
+                        from io import StringIO as _SIO
+                        _trace_result = None
+                        _saved_io = (sys.stdout, sys.stderr)
+                        sys.stdout = sys.stderr = _SIO()
+                        try:
+                            exec(compile(_traceback_code, '<exec>', 'exec'), globals())
+                        except Exception:
+                            _trace_result = _tb.format_exc()
+                        finally:
+                            sys.stdout, sys.stderr = _saved_io
+                    `);
+                    const tbVal = await pyodide.runPythonAsync('_trace_result');
+                    if (tbVal) tracebackStr = tbVal;
+                } catch (_) {}
+                let displayMsg;
+                if (tracebackStr && tracebackStr.includes('File "<exec>"')) {
+                    const lines = tracebackStr.split('\n');
+                    let execIdx = -1;
+                    for (let i = lines.length - 1; i >= 0; i--) {
+                        if (lines[i].includes('File "<exec>"')) { execIdx = i; break; }
+                    }
+                    displayMsg = execIdx !== -1
+                        ? lines.slice(execIdx).join('\n').trim()
+                        : tracebackStr.trim();
+                } else {
+                    displayMsg = (error.message || '').trim() || error.type || String(error);
+                }
+                return { success: false, output: 'Error:\n' + displayMsg };
+            }
+        }
+        
+        // Execute all hidden code blocks first (for setup code like imports)
+        const hiddenCodeBlocks = Array.from(document.querySelectorAll('.hidden-code textarea'));
+        console.log(`Found ${hiddenCodeBlocks.length} hidden code blocks`);
+
+        for (const textarea of hiddenCodeBlocks) {
+            const code = textarea.value.trim();
+            if (!code) continue;
+            
+            console.log(`Executing hidden code block: ${textarea.id}`);
+            console.log(`Hidden code content: ${code.substring(0, 100)}...`);
+            const result = await executePythonCode(code);
+            
+            if (!result.success) {
+                console.error(`Error in hidden code block ${textarea.id}:`, result.output);
+            } else {
+                console.log(`Hidden code block ${textarea.id} executed successfully`);
+                console.log(`Result: ${result.output}`);
+            }
+        }
+
+        console.log("All hidden code blocks executed");
+        
+        // Get all fixed code blocks in document order
+        const fixedCodeBlocks = Array.from(document.querySelectorAll('.code-fixed textarea'));
+        
+        // Setup and execute fixed code blocks sequentially
+        for (const textarea of fixedCodeBlocks) {
+            const code = textarea.value.trim();
+            if (!code) continue;
+            
+            // Set up CodeMirror editor (read-only)
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: "python",
+                theme: "pastel-on-dark",
+                lineNumbers: true,
+                readOnly: true,
+                viewportMargin: Infinity
+            });
+            
+            // Find corresponding output element
+            const outputId = textarea.id + '-output';
+            const outputElement = document.getElementById(outputId);
+            
+            if (outputElement) {
+                outputElement.textContent = "Running code...";
+                outputElement.classList.add("loading-message");
+                
+                // Execute the code (this maintains state for subsequent blocks)
+                const result = await executePythonCode(code);
+                
+                // Display the output - check if it's HTML
+                const trimmedOutput = result.output.trim();
+                console.log('Output length:', trimmedOutput.length);
+                console.log('Output starts with:', trimmedOutput.substring(0, 100));
+                
+                if (trimmedOutput.includes('<script') && trimmedOutput.includes('Plotly')) {
+                    // It's Plotly HTML output - extract just the body content
+                    console.log('Rendering as Plotly HTML');
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(result.output, 'text/html');
+                    // Clear the output element and append the body content
+                    outputElement.innerHTML = '';
+                    
+                    // Find and load external scripts first (like Plotly CDN)
+                    const externalScripts = Array.from(doc.querySelectorAll('script[src]'));
+                    const inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+                    
+                    // Append non-script content first
+                    Array.from(doc.body.children).forEach(child => {
+                        if (child.tagName !== 'SCRIPT') {
+                            outputElement.appendChild(child.cloneNode(true));
+                        }
+                    });
+                    
+                    // Load external scripts sequentially
+                    const loadScript = (src) => {
+                        return new Promise((resolve, reject) => {
+                            const script = document.createElement('script');
+                            script.src = src;
+                            script.onload = resolve;
+                            script.onerror = reject;
+                            document.head.appendChild(script);
+                        });
+                    };
+                    
+                    // Load all external scripts first
+                    Promise.all(externalScripts.map(s => loadScript(s.src)))
+                        .then(() => {
+                            console.log('External scripts loaded, executing inline scripts');
+                            // Now execute inline scripts
+                            inlineScripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                newScript.textContent = oldScript.textContent;
+                                outputElement.appendChild(newScript);
+                            });
+                            console.log('Output element after processing:', outputElement.children.length, 'children');
+                        })
+                        .catch(err => {
+                            console.error('Failed to load external scripts:', err);
+                            outputElement.textContent = 'Error loading Plotly: ' + err.message;
+                        });
+                } else if (trimmedOutput.startsWith('<!DOCTYPE') || 
+                           trimmedOutput.startsWith('<html') ||
+                            trimmedOutput.startsWith('<div') ||
+                            trimmedOutput.startsWith('<img')) {
+                    console.log('Rendering as generic HTML');
+                    outputElement.innerHTML = result.output;
+                    console.log('Output element after innerHTML:', outputElement.children.length, 'children');
+                } else {
+                    console.log('Rendering as plain text');
+                    outputElement.textContent = result.output;
+                }
+                outputElement.classList.remove("loading-message");
+                if (result.success) {
+                    outputElement.classList.add("success-message");
+                    outputElement.classList.remove("error-message");
+                } else {
+                    outputElement.classList.add("error-message");
+                    outputElement.classList.remove("success-message");
+                }
+            }
+            
+            // Small delay to show progression
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        
+        // Set flag to indicate all FIXED cells have been executed
+        // This is used by PDF generation to ensure all outputs are ready
+        window.allCellsExecuted = true;
+        console.log("All FIXED cells executed successfully");
+        
+        // Setup all editable code blocks (but don't execute them)
+        document.querySelectorAll('.code-editor textarea').forEach((textarea) => {
+            // Set up CodeMirror editor (editable)
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: "python",
+                theme: "pastel-on-dark",
+                lineNumbers: true,
+                viewportMargin: Infinity
+            });
+            
+            // Find corresponding run button and output element
+            const baseId = textarea.id;
+            const runButtonId = 'run-' + baseId;
+            const outputId = baseId + '-output';
+            
+            const runButton = document.getElementById(runButtonId);
+            const outputElement = document.getElementById(outputId);
+            
+            if (runButton && outputElement) {
+                // Set initial state
+                outputElement.textContent = "Ready to run code!";
+                outputElement.classList.remove("loading-message");
+                
+                runButton.addEventListener("click", async () => {
+                    const code = editor.getValue().trim();
+                    if (!code) {
+                        outputElement.textContent = "No code to run";
+                        return;
+                    }
+                    
+                    outputElement.textContent = "Running...";
+                    outputElement.classList.remove("error-message", "success-message");
+                    outputElement.classList.add("loading-message");
+                    
+                    // Execute the code (this also maintains state for future blocks)
+                    const result = await executePythonCode(code);
+                    
+                    // Display the output - check if it's HTML
+                    const trimmedOutput = result.output.trim();
+                    console.log('Output length:', trimmedOutput.length);
+                    console.log('Output starts with:', trimmedOutput.substring(0, 100));
+                    
+                    if (trimmedOutput.includes('<script') && trimmedOutput.includes('Plotly')) {
+                        // It's Plotly HTML output - extract just the body content
+                        console.log('Rendering as Plotly HTML');
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(result.output, 'text/html');
+                        // Clear the output element and append the body content
+                        outputElement.innerHTML = '';
+                        
+                        // Find and load external scripts first (like Plotly CDN)
+                        const externalScripts = Array.from(doc.querySelectorAll('script[src]'));
+                        const inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+                        
+                        // Append non-script content first
+                        Array.from(doc.body.children).forEach(child => {
+                            if (child.tagName !== 'SCRIPT') {
+                                outputElement.appendChild(child.cloneNode(true));
+                            }
+                        });
+                        
+                        // Load external scripts sequentially
+                        const loadScript = (src) => {
+                            return new Promise((resolve, reject) => {
+                                const script = document.createElement('script');
+                                script.src = src;
+                                script.onload = resolve;
+                                script.onerror = reject;
+                                document.head.appendChild(script);
+                            });
+                        };
+                        
+                        // Load all external scripts first
+                        Promise.all(externalScripts.map(s => loadScript(s.src)))
+                            .then(() => {
+                                console.log('External scripts loaded, executing inline scripts');
+                                // Now execute inline scripts
+                                inlineScripts.forEach(oldScript => {
+                                    const newScript = document.createElement('script');
+                                    newScript.textContent = oldScript.textContent;
+                                    outputElement.appendChild(newScript);
+                                });
+                                console.log('Output element after processing:', outputElement.children.length, 'children');
+                            })
+                            .catch(err => {
+                                console.error('Failed to load external scripts:', err);
+                                outputElement.textContent = 'Error loading Plotly: ' + err.message;
+                            });
+                    } else if (trimmedOutput.startsWith('<!DOCTYPE') || 
+                               trimmedOutput.startsWith('<html') ||
+                               trimmedOutput.startsWith('<div') ||
+                               trimmedOutput.startsWith('<img')) {
+                        outputElement.innerHTML = result.output;
+                    } else {
+                        outputElement.textContent = result.output;
+                    }
+                    outputElement.classList.remove("loading-message");
+                    if (result.success) {
+                        outputElement.classList.add("success-message");
+                        outputElement.classList.remove("error-message");
+                    } else {
+                        outputElement.classList.add("error-message");
+                        outputElement.classList.remove("success-message");
+                    }
+                });
+            }
+        });
+        
+        console.log("All code blocks initialised successfully");
+
+        // Set flag to indicate Pyodide is fully ready
+        window.pyodideReady = true;
+        console.log("Pyodide fully ready");
+        
+    } catch (error) {
+        console.error("Failed to initialise Pyodide:", error);
+        document.querySelectorAll(".output").forEach(el => {
+            el.textContent = "Error loading Pyodide: " + error.message;
+            el.classList.remove("loading-message");
+            el.classList.add("error-message");
+        });
+    }
+}
+
+// Start the application when DOM is loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', main);
+} else {
+    main();
+}
+    </script>
+    
+</body>
+</html>

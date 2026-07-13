@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- MathJax for mathematical notation -->
+    <script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$']],
+            displayMath: [['$$', '$$']],
+            processEscapes: true
+        },
+        svg: {
+            fontCache: 'global'
+        }
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    
+    <!-- Pyodide and CodeMirror -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/theme/pastel-on-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/mode/python/python.min.js"></script>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="../assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../assets/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="../assets/android-chrome-512x512.png">
+
+    <!-- Core Stylesheets -->
+    <link rel="stylesheet" href=../assets/colours.css>
+    <link rel="stylesheet" href="../assets/shared-styles.css">
+    <link rel="stylesheet" href="../assets/nav-bar.css">
+    <link rel="stylesheet" href="../assets/module_card.css">
+    <link rel="stylesheet" href="../assets/learning_outcomes.css">
+    <link rel="stylesheet" href="../assets/learning_lists.css">
+    <link rel="stylesheet" href="../assets/box_styles.css">
+    <link rel="stylesheet" href="../assets/code_styles.css">
+    
+    <!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>scryptIQ - DP2 - Basic Plotting</title>
+    <script>
+        window.LESSON_FILES = [
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/refs/heads/main/dp/cortex_nuclear.csv", filename: "cortex_nuclear.csv", is_binary: false},
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/refs/heads/main/dp/penguins_cleaned.csv", filename: "penguins_cleaned.csv", is_binary: false}
+        ];
+        window.LESSON_PACKAGES = ['numpy', 'pandas', 'matplotlib'];
+    </script>
+</head>
+<body>
+    
+    <!-- Sidebar Navigation -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <a href="../homepage.html" style="text-decoration: none; display: inline-block;">
+                <img src="../assets/scryptIQ_logo_dark.png" alt="scryptIQ Logo" class="sidebar-logo">
+            </a>
+        </div>
+
+        <h3>Content</h3>
+        <ul>
+            <li><a href="./introduction.html" class="">Introduction</a></li><li><a href="./data-exploration.html">Data Exploration</a></li>
+            <li>
+                <div class="nav-toggle active" data-target="expandable-section-2">
+                    Basic Plotting
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <ul class="nested-nav expanded" id="expandable-section-2"><li><a href="#introduction">Introduction</a></li><li><a href="#with-pandas">with Pandas</a></li><li><a href="#matplotlib">Matplotlib</a></li><li><a href="#combining-with-pandas">Combining with Pandas</a></li><li><a href="#histograms">Histograms</a></li><li><a href="#multiple-sub-plots">Multiple sub plots</a></li><li><a href="#summary---quiz">Summary & Quiz</a></li>
+                </ul>
+            </li><li><a href="./data-transformation.html">Data Transformation</a></li><li><a href="./feature-relationships.html">Feature Relationships</a></li><li><a href="./seaborn.html">Seaborn</a></li><li><a href="./assignment.html">Assignment</a></li><li><a href="./feedback.html">Feedback</a></li>
+        </ul>
+
+        <h3 class="collapsible-header collapsed">
+            Resources
+            <span class="collapse-icon">►</span>
+        </h3>
+        <div class="collapsible-content collapsed">
+            <ul>
+                <li><a href="./glossary.html">Glossary</a></li><li><a href="./downloads.html">Downloads</a></li><li><a href="../HB/introduction.html">Handbook</a></li>
+            </ul>
+        </div>
+
+        <h3 class="collapsible-header collapsed">
+            Previous Modules
+            <span class="collapse-icon">►</span>
+        </h3>
+        <div class="collapsible-content collapsed">
+            <ul>
+            <li><a href="../DP1/introduction.html">DP1</a></li>
+        </ul>
+        </div>
+
+        <h3>
+            <li><a href="./report-issue.html">Report an Issue</a></li>
+        </h3>
+    </div>
+
+    <!-- Sidebar Toggle Button -->
+    <button id="sidebar-toggle" class="sidebar-toggle">❮</button>
+
+    <!-- Main Content Area -->
+    <div id="main-content" class="main-content">
+        <!-- Top Navigation Bar -->
+        <div class="top-navbar">
+            <h1 class="page-title">Data Processing 2</h1>
+            <div class="nav-actions">
+                <a href="../homepage.html" class="text-button" title="Materials homepage">
+                    Homepage
+                </a>
+                <a href="https://scryptiq.ai/my-cohorts/" class="text-button scryptiq-button" title="Find out more about us">
+                    scryptIQ
+                </a>
+            </div>
+        </div>
+
+        
+            <div class="module-card" id="introduction">
+                <div class="module-header">
+                    Basic Plotting <span class="module-tag">DP2</span>
+                </div>
+                <div class="module-body">
+                    <h3>Learning Objectives</h3>
+                    <div class="learning-outcomes">
+                        <div class="outcome-item">
+                    <span class="outcome-number">1</span>
+                    <span class="outcome-text">How to plot with Pandas</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">2</span>
+                    <span class="outcome-text">Exploring data visually</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">3</span>
+                    <span class="outcome-text">How to plot with Matplotlib</span>
+                </div>
+                    </div>
+                    <h3>Introduction</h3>
+                    <p>In the previous section we looked at the outliers on a subset of the data. However, it is hard to know whether you should be excluding the outliers you identify when you do not know the <strong>distribution</strong> of said data. Knowing the shape and spread of individual features in a dataset is a fantastic way to gain an understanding of what you have measured. For example, knowing a dataset has a bell-shaped curve can inform your choice of automatic outlier removal and statistical analysis.<br><br>With Pandas and two plotting packages <strong>matplotlib</strong> and <strong>seaborn</strong> you can generate high-quality visualisations that can both inform your data exploration as well as create your final figures for the write-up.</p>
+                </div>
+            </div>
+            
+            <div class="module-card" id="with-pandas">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>with Pandas</h3>
+                        <p>The easiest ways to plot data from a Pandas DataFrame is using their in-built plotting methods. These can be used to create <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.boxplot.html">boxplots</a>, <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.plot.line.html">line plots</a>, <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.plot.scatter.html#pandas.DataFrame.plot.scatter">scatter plots</a>, <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.hist.html#pandas.DataFrame.hist">histograms</a>, and so on.</p>
+        <div class="code-area">
+            <div class="code-collapse-header" onclick="toggleCodeCollapse('code-cell-27')">
+                <span class="code-collapse-icon">▶</span>
+                <span class="code-collapse-label">Show code</span>
+            </div>
+            <div class="code-container code-fixed code-collapsed" id="code-cell-27-container">
+                <textarea id="code-cell-27"># Setup the workspace as before
+import numpy as np 
+import pandas as pd
+
+df = pd.read_csv(&quot;./data/cortex_nuclear.csv&quot;)</textarea>
+            </div>
+            <div id="code-cell-27-output" class="output" style="display: none;"></div>
+        </div>
+        <p>To have pandas plots render properly in Jupyter Notebooks you will need to run a magic Python command.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-28">%matplotlib inline</textarea>
+            </div>
+            <div id="code-cell-28-output" class="output" style="display: none;"></div>
+        </div>
+        
+        <div class="info-box fact-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                FACT
+            </div>
+            <div class="box-content">
+                <p><a href="https://ipython.readthedocs.io/en/stable/interactive/magics.html">Magic commands</a> are specific to IPython (interactive Python), which is what we have in Jupyter notebooks. They are commands in IPython that provide special functionalities to users, like modifying the behavior how figures render.</p>
+            </div>
+        </div>
+        <p>A simple plot to begin with is the boxplot</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-29"># A ; is added to prevent text also being printed
+df.boxplot();</textarea>
+            </div>
+            <div id="code-cell-29-output" class="output"></div>
+        </div>
+        <p>However, with a DataFrame containing a lot of columns, this will create a very congested plot. To rectify this, a subset of the data can be selected and then plotted, as so:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-30">plot_cols = df.columns[1:4].tolist()
+
+plot_cols</textarea>
+            </div>
+            <div id="code-cell-30-output" class="output"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-31">df[plot_cols].boxplot();</textarea>
+            </div>
+            <div id="code-cell-31-output" class="output"></div>
+        </div>
+        <p>Or you can pass a list of columns to the argument <code>column</code> inside <code>.boxplot()</code>:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-32">df.boxplot(column=plot_cols);</textarea>
+            </div>
+            <div id="code-cell-32-output" class="output"></div>
+        </div>
+        <p>The Pandas plotting methods are very useful for quick visualisations to describe individual columns, especially <code>.boxplot()</code>. Their caveat is that they are not easily customisable, as much of the control is ceded for the ease of a single method and its arguments. Underneath, the code that it is built upon is <strong>Matplotlib</strong>; the foundational plotting package that most newer Python plotting packages utilise. We will therefore explore plotting further using matplotlib, rather than limit ourselves to Pandas.</p><p>If you would like a quick demonstration of the other <strong>Pandas</strong> plotting methods, uncomment each line below in turn and run the cell to see the result:</p>
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-33"># df.plot.line(column=plot_cols);
+
+# df.plot.scatter(x=plot_cols[0], y=plot_cols[1])
+
+# df.hist(column=plot_cols[0]);</textarea>
+            </div>
+            <button id="run-code-cell-33" class="run-button">Run Code</button>
+            <div id="code-cell-33-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="matplotlib">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Matplotlib</h3>
+                        <p><a href="https://matplotlib.org/"><strong>Matplotlib</strong></a> is a comprehensive package for building single and multiple series of plots. The package gives you complete control of how the <em>figure</em> is altered, at the expense of having to write a little bit more code. In the final section we will introduce a further package <strong>seaborn</strong> that, like Pandas plots, is built upon matplotlib; allowing you to produce very visually appealing plots in one line. However, to interact with the figures post creation you will need to know how the matplotlib syntax works, so it is worth dedicating time to the older package!</p><p>Like NumPy and Pandas, matplotlib is a <strong>third-party</strong> package that needs to be downloaded into your environment. Once that is achieved, we import the matplotlib <em>pyplot</em> submodule with the alias <strong>plt</strong>:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-34"># The . indicates to use a sub-module
+import matplotlib.pyplot as plt</textarea>
+            </div>
+            <div id="code-cell-34-output" class="output" style="display: none;"></div>
+        </div>
+        <p>The first action with matplotlib is to create an empty figure and axis to add your plots to. This is done through the <code>.subplots()</code> function. From there you can <em>add</em> plots to a given axes. Matplotlib was made to work with <em>array</em> like data, such as a Pandas series, a NumPy array, or a standard list.</p>
+        <div class="info-box key-terms-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                KEY TERMS
+            </div>
+            <div class="box-content">
+                <p><strong>figure:</strong> The top-level container for a matplotlib plot. A figure holds one or more axes and controls overall properties such as size and resolution.<br><br><strong>axes:</strong> The actual plotting area within a figure, where the data is drawn. A single figure can contain multiple axes (e.g. subplots).</p>
+            </div>
+        </div>
+        <p>To demonstrate, we will create a box plot from a singular column. First we:<ul class="nested-list"><li>create a figure and axes to plot onto with <code>.subplots()</code></li><br><li>next, a method is called on the axes variable, here <code>ax</code></li></ul></p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-35"># subplots returns a tuple that needs to be unpacked
+# into figure and axes
+fig, ax = plt.subplots()
+
+# Like pandas the axis has a method called boxplot()
+# NaN values need to be dropped or else they cause an error
+ax.boxplot(df[&quot;DYRK1A_N&quot;].dropna())
+
+# The x-axis labels have to be set explicitly 
+# Giving you greater control
+ax.set_xticklabels([&#x27;DYRK1A_N Protein&#x27;]);
+
+# Generates the plot
+# Not always needed in jupyter notebooks!
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-35-output" class="output"></div>
+        </div>
+        
+        <div class="info-box warning-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                WARNING
+            </div>
+            <div class="box-content">
+                <p>The Matplotlib boxplot function will return a <strong>blank</strong> plot if the data given to it contains any <strong>NaN</strong> values!</p>
+            </div>
+        </div>
+        <p>The matplotlib figure acts as a blank canvas, upon which you layer more and more parts to build up the plot that you desire. The most basic is just the data on the y- or x-axis. Contextual information can be added through methods belonging to the axes object. A useful one is <code>.set()</code> which contains arguments that can produce the labels for:<ul class="nested-list"><li>the y-axis</li><br><li>the x-axis</li><br><li>the title</li></ul></p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-36">protein = &quot;DYRK1A_N&quot;
+
+fig, ax = plt.subplots()
+ax.boxplot(df[protein].dropna())
+ax.set_xticklabels([protein]);
+
+# Set the labels:
+ax.set(ylabel=&quot;Expression count&quot;, xlabel=&quot;Protein&quot;, title=f&quot;Boxplot of {protein} protein&quot;)
+
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-36-output" class="output"></div>
+        </div>
+        
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p>The method <strong>xticklabels()</strong> lets you set the word under each tick, not the label of the x-axis. This can also be used to change the numbers for a continuous axis, such as ones seen in scatter plots. We will demonstrate this in the next section.</p>
+            </div>
+        </div>
+        <p>The size of the figure is automatically calculated given the spread of the data present in the figure. However, it can be programmatically set with the argument <code>figsize</code> when passed to the <code>.subplots()</code> function. The given input should be a 2 item tuple, i.e. <strong>(10, 15)</strong>, where 10 (index 0) is the width and 15 (index 1) is the height. Try changing the values in the cell below to get a feel of the size ratio.</p>
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-37"># (width, height) of the plotting surface
+fig, ax = plt.subplots(figsize=(15, 3))
+
+ax.boxplot(df[protein].dropna())
+ax.set_xticklabels([protein]);
+ax.set(ylabel=&quot;Expression count&quot;, xlabel=&quot;Protein&quot;, title=f&quot;Boxplot of {protein} protein&quot;)
+
+plt.show()</textarea>
+            </div>
+            <button id="run-code-cell-37" class="run-button">Run Code</button>
+            <div id="code-cell-37-output" class="output"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-38">df.head()</textarea>
+            </div>
+            <button id="run-code-cell-38" class="run-button">Run Code</button>
+            <div id="code-cell-38-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="matplotlib">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>5.</strong></p>
+                <p>Load in the penguins dataset from <strong>DP1</strong>, it is saved under the file name: <code>&quot;penguins_cleaned.csv&quot;</code> in the <code>data</code> folder.<ol class="nested-list"><li>Filter the dataset to be only <strong>Chinstrap</strong> penguins for the <strong>Dream</strong> island</li><br><li>Plot the histogram of the body mass feature with an appropriate title</li></ol></p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-39"></textarea>
+            </div>
+            <button id="run-code-cell-39" class="run-button">Run Code</button>
+            <div id="code-cell-39-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="combining-with-pandas">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Combining with Pandas</h3>
+                        <p>You may have noticed that the matplotlib plot only contained one feature, whilst the Pandas plot contained three. To recreate the plot in matplotlib is a bit more complicated, we will need to generate a dictionary where the <strong>keys</strong> are the feature names and the <strong>values</strong> are a list of the values. This is because for multiple boxplots the functions expect:<ul class="nested-list"><li>a nested list of data (plotter)</li><br><li>a list of names (x tick labels)</li></ul></p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-40"># A dictionary comprehension can be used here for each
+#                              key :     value 
+multi_data = plot_cols_dict = {col : df[col].dropna().tolist() for col in plot_cols}
+
+print(multi_data.keys())</textarea>
+            </div>
+            <div id="code-cell-40-output" class="output"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-41">fig, ax = plt.subplots()
+
+ax.boxplot(multi_data.values())
+ax.set_xticklabels(multi_data.keys());
+ax.set(ylabel=&quot;Expression level&quot;, xlabel=&quot;Proteins&quot;, title=f&quot;Boxplot of multiple proteins with Matplotlib&quot;)
+
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-41-output" class="output"></div>
+        </div>
+        <p>Generating this plot takes a lot more work than the built-in Pandas method. However, we do retain a customisable plot to add our labels to.<br><br>You may remember the end of the Pandas section saying that the plotting code of Pandas is built upon matplotlib! Due to this, we can assign the product of Pandas plots to a matplotlib figure to help us retain a figure we can customise.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-42">fig, ax = plt.subplots()
+
+# Re-assign the pandas plot to the axes
+ax = df.boxplot(column=plot_cols);
+
+ax.set_xticklabels(plot_cols);
+ax.set(ylabel=&quot;Expression level&quot;, xlabel=&quot;Proteins&quot;, title=f&quot;Boxplot of multiple proteins with Pandas &amp; Matplotlib&quot;)
+
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-42-output" class="output"></div>
+        </div>
+        <p>This concept of all plots being a matplotlib plot can help you utilise the strengths of both systems, the speed and easy syntax of Pandas, combined with the customisation and control of matplotlib.<br><br>To emphasise this, the original plot of all the features (the one at the very beginning) can be tidied up using a bit of Pandas code combined with the matplotlib&#x27;s figure augmentation tools. First we want to sort the DataFrame by the median per feature, to ensure the plot goes from the largest to smallest:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-43"># Sort the columns by median to have a visual order
+# Produces a Pandas series of the medians
+medians = df.median(numeric_only=True).sort_values()
+
+# Get only the column names in the new order
+sorted_names = medians.index.tolist()
+
+# Use the column names to have them in the correct order
+ordered_df = df.loc[:, sorted_names]</textarea>
+            </div>
+            <div id="code-cell-43-output" class="output" style="display: none;"></div>
+        </div>
+        <p>Use the cell below to print each variable in turn to see how it matches the description:</p>
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-44">medians</textarea>
+            </div>
+            <button id="run-code-cell-44" class="run-button">Run Code</button>
+            <div id="code-cell-44-output" class="output"></div>
+        </div>
+        <p>Next, we can make use of Pandas&#x27;s <code>.boxplot()</code> function that contains lots of arguments for augmenting the plot. All of the arguments are also available in Matplotlib, however we wouldn&#x27;t have the ease of plotting all the columns that Pandas gives us.<br><br>From the resultant plot we can use Matplotlib&#x27;s tools to tinker with the axis ticks, the grid, and the labels.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-45"># layout=&quot;constrained&quot; tidies up the spacing between labels
+fig, ax = plt.subplots(figsize=(10, 15), layout=&quot;constrained&quot;)
+
+ax = ordered_df.boxplot(
+    # make the plots horizontal
+    vert=False,
+    # alter the outlier marker symbol, time, colour (fill and edge)
+    flierprops=dict(marker=&#x27;.&#x27;, markersize=3, markerfacecolor=&#x27;r&#x27;, markeredgecolor=&#x27;r&#x27;),
+)
+
+ax.tick_params(axis=&quot;y&quot;, labelsize=8) # set label font size for y
+ax.grid(axis=&quot;x&quot;, linestyle=&#x27;:&#x27;, alpha=0.5) # add a grid
+ax.spines[[&quot;top&quot;, &quot;right&quot;]].set_visible(False) # removes the axis lines from top and right
+ax.set(xlabel=&quot;Expression Level&quot;, title=&quot;Distribution of features&quot;) # add labels
+
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-45-output" class="output"></div>
+        </div>
+        
+        <div class="info-box tip-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                TIP
+            </div>
+            <div class="box-content">
+                <p>On crowded plots or multiple subplots (see later) it is always useful to set the layout to constrained:<br><br><pre class="markdown-code-block"><code>fig, ax = plt.subplots(layout=&quot;constrained&quot;)</code></pre><br><br><a href="https://matplotlib.org/stable/users/explain/axes/constrainedlayout_guide.html">Constrained</a> will ensure ticks, labels, and other objects do not overlap. It has superseded <code>ax.tight_layout()</code> which you may still see others use.</p>
+            </div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="combining-with-pandas">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>6.</strong></p>
+                <p>Using a combination of matplotlib and pandas, plot box plots of <code>&quot;bill_length_mm&quot;</code>, <code>&quot;bill_depth_mm&quot;</code>, and <code>&quot;flipper_length_mm&quot;</code> for all <strong>female</strong> penguins.</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-46"></textarea>
+            </div>
+            <button id="run-code-cell-46" class="run-button">Run Code</button>
+            <div id="code-cell-46-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="histograms">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Histograms</h3>
+                        <p>Boxplots are useful tools for seeing the <strong>spread</strong> of the data, but they do not fully reveal its <strong>shape</strong>. A histogram fulfils this need by binning the values and counting how many fall into each bin, showing you the full distribution at a glance. Potentially highlighting any skew, normal distribution, or multiple peaks that would indicate distinct sub-populations.<br><br>This matters because the shape of a distribution often drives the choices you make downstream. Many statistical techniques — including a number of machine learning (ML) methods — assume, or at least perform better on, features that approximate a normal distribution. Spotting skew, heavy tails, or bimodality early tells you whether a transformation (such as a log) might be warranted, or whether a feature is worth investigating more closely before modelling.<br><br>To create a histogram, simply replace <code>.boxplot()</code> with <code>.hist()</code>. An additional argument that can be given to most matplotlib plots is <strong>color</strong> (colour), which can be passed the name of the colour as a string (see the list <a href="https://matplotlib.org/stable/gallery/color/named_colors.html">here</a>) or a RGB tuple or hexcode (see <a href="https://matplotlib.org/stable/users/explain/colors/colors.html">here</a>).</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-47"># subplots returns a tuple that needs to be unpacked
+# into figure and axes
+fig, ax = plt.subplots()
+
+# Like pandas the axis has a method called boxplot()
+ax.hist(df[&quot;ITSN1_N&quot;], color=&#x27;green&#x27;)
+ax.set(xlabel=&#x27;ITSN1_N&#x27;, ylabel=&#x27;Count&#x27;)
+
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-47-output" class="output"></div>
+        </div>
+        <p>The <strong>ITSN1_N</strong> feature — which we examined in the outlier detection section — shows rightward skew, a common characteristic of expression data. In the next section we will look at how to work with non-normally distributed data.<br><br>By default, the histogram uses <strong>10</strong> bins, the number of intervals the data is divided into. This can be adjusted using the <code>bins</code> argument. Try changing it in the cell below:</p>
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-48">fig, ax = plt.subplots()
+
+n_bins =30 
+
+ax.hist(df[&quot;DYRK1A_N&quot;], color=&#x27;purple&#x27;, bins=n_bins)
+
+ax.set(xlabel=&#x27;DYRK1A_N&#x27;, ylabel=&#x27;Count&#x27;)
+
+ax.set_title(f&quot;With {n_bins} bins&quot;)
+
+plt.show()</textarea>
+            </div>
+            <button id="run-code-cell-48" class="run-button">Run Code</button>
+            <div id="code-cell-48-output" class="output"></div>
+        </div>
+        <p>To add multiple histograms to the same plot just repeat the plotting call with a new set of data, this will cause them to overlap. To be able to view them both the transparency can be changed with the <strong>alpha</strong> argument, have a try below:</p>
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-49">fig, ax = plt.subplots()
+
+n_bins =30 
+alpha = 0.6
+
+# alpha controls the transparency of the plot: 1 = opaque, 0 = invisible
+ax.hist(df[&quot;ITSN1_N&quot;], color=&#x27;green&#x27;, bins=n_bins, alpha=alpha)
+ax.hist(df[&quot;DYRK1A_N&quot;], color=&#x27;purple&#x27;, bins=n_bins, alpha=alpha)
+
+ax.set(xlabel=&#x27;Expression count&#x27;, ylabel=&#x27;Count&#x27;)
+
+ax.set_title(f&quot;With {alpha} alpha&quot;)
+
+plt.show()</textarea>
+            </div>
+            <button id="run-code-cell-49" class="run-button">Run Code</button>
+            <div id="code-cell-49-output" class="output"></div>
+        </div>
+        
+        <div class="info-box tip-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                TIP
+            </div>
+            <div class="box-content">
+                <p>This works with most matplotlib plots. Simply keep the data on the same axes and it will overlay what was there before.</p>
+            </div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="histograms">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>7.</strong></p>
+                <p>Create a histogram plot with multiple features:<ol class="nested-list"><li>Filter the dataset into two:</li><ul class="nested-list"><li>One where it is only <strong>Adelie</strong> penguins from the <strong>Dream</strong> island</li><br><li>The second where it is only <strong>Adelie</strong> penguins from the <strong>Torgersen</strong> island</li></ul></li><br><li>Create a histogram plot containing the hisograms of both the <code>&quot;bill_length_mm&quot;</code> and the <code>&quot;bill_depth_mm&quot;</code> for both filtered datasets</li><br><li>Choose an appropriate <strong>alpha</strong>, number of  <strong>bins</strong>, and colours</li></ol></p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-50"></textarea>
+            </div>
+            <button id="run-code-cell-50" class="run-button">Run Code</button>
+            <div id="code-cell-50-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="multiple-sub-plots">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Multiple sub plots</h3>
+                        <p>Another benefit to using matplotlib directly is the creation of <strong>subplots</strong> - multiple plots on a single figure (canvas). This can allow you to directly compare and contrast different features and their sub-domains. To do so, all that needs to be done is to add an argument <strong>ncols</strong> to the <code>plt.subplots()</code> function, where the number (an integer) says how many plots on the horizontal axis there should be.<br><br>For example, below, we can compare the distributions of several features split by their genotype to try and observe if any have any noticeable differences that would warrant further investigation. To aid comparison of plots with the same axis scales it is beneficial to have them share the same axis, as we have done by setting the <code>sharey</code> parameter to <code>True</code>.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-51"># To remind us of the categories
+set(df[&#x27;Genotype&#x27;])</textarea>
+            </div>
+            <div id="code-cell-51-output" class="output"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-52"># Choose the columns
+hist_1 = &quot;DYRK1A_N&quot;
+hist_2 = &quot;ITSN1_N&quot;
+hist_3 = &quot;S6_N&quot;</textarea>
+            </div>
+            <div id="code-cell-52-output" class="output"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-53"># have their y-axis share values
+fig, axes = plt.subplots(figsize=(10,4), ncols=3, sharey=True)
+
+n_bins = 30
+
+# alpha controls the transparency of the plot: 1 = opaque, 0 = invisible
+axes[0].hist(df[hist_1][df[&#x27;Genotype&#x27;] == &quot;Control&quot;], bins=n_bins, alpha = 0.75)
+axes[0].hist(df[hist_1][df[&#x27;Genotype&#x27;] == &quot;Ts65Dn&quot;], bins=n_bins, alpha = 0.75)
+axes[0].set(xlabel=hist_1, ylabel=&quot;Count&quot;)
+
+axes[1].hist(df[hist_2][df[&#x27;Genotype&#x27;] == &quot;Control&quot;], bins=n_bins, alpha = 0.75)
+axes[1].hist(df[hist_2][df[&#x27;Genotype&#x27;] == &quot;Ts65Dn&quot;], bins=n_bins, alpha = 0.75)
+axes[1].set(xlabel=hist_2)
+
+axes[2].hist(df[hist_3][df[&#x27;Genotype&#x27;] == &quot;Control&quot;], bins=n_bins, alpha = 0.75, label=&#x27;Control&#x27;)
+axes[2].hist(df[hist_3][df[&#x27;Genotype&#x27;] == &quot;Ts65Dn&quot;], bins=n_bins, alpha = 0.75, label=&#x27;Ts65Dn&#x27;)
+axes[2].set(xlabel=hist_3)
+
+axes[2].legend()
+
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-53-output" class="output"></div>
+        </div>
+        <p>If you want to add plots in the vertical direction you can use <strong>nrows</strong> instead.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-54"># share the x-axis instead
+fig, axes = plt.subplots(figsize= (4,10), nrows=3, sharex=True)
+
+axes[0].hist(df[hist_1][df[&#x27;Genotype&#x27;] == &quot;Control&quot;], bins=n_bins, alpha = 0.75)
+axes[0].hist(df[hist_1][df[&#x27;Genotype&#x27;] == &quot;Ts65Dn&quot;], bins=n_bins, alpha = 0.75)
+axes[0].set(xlabel=hist_1, ylabel=&quot;Count&quot;)
+
+axes[1].hist(df[hist_2][df[&#x27;Genotype&#x27;] == &quot;Control&quot;], bins=n_bins, alpha = 0.75)
+axes[1].hist(df[hist_2][df[&#x27;Genotype&#x27;] == &quot;Ts65Dn&quot;], bins=n_bins, alpha = 0.75)
+axes[1].set(xlabel=hist_2)
+
+axes[2].hist(df[hist_3][df[&#x27;Genotype&#x27;] == &quot;Control&quot;], bins=n_bins, alpha = 0.75, label=&#x27;Control&#x27;)
+axes[2].hist(df[hist_3][df[&#x27;Genotype&#x27;] == &quot;Ts65Dn&quot;], bins=n_bins, alpha = 0.75, label=&#x27;Ts65Dn&#x27;)
+axes[2].set(xlabel=hist_3)
+
+axes[2].legend()
+
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-54-output" class="output"></div>
+        </div>
+        <p>Plotting the distributions split by genotype reveals a slight change in the distribution of the expression of <strong>S6_N</strong> from the Control group to <em>Ts65Dn</em>.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="multiple-sub-plots">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>8.</strong></p>
+                <p>Repeat the plot above using the columns given in the code cell below. Make a subplot of each feature&#x27;s histogram where it is a $3 \times 3$ grid. To do so:<ul class="nested-list"><li>Use both <strong>ncols</strong> and <strong>nrows</strong></li><br><li>Use a nested <code>for loop</code></li><br><li>Have them share the y-axis</li></ul><em>Hint: Each loop is for either the column or the row. Use a count variable outside the loop to track the column index.</em></p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-55">grid_cols = df.columns[1:10]</textarea>
+            </div>
+            <button id="run-code-cell-55" class="run-button">Run Code</button>
+            <div id="code-cell-55-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="plot-combinations">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Plot combinations</h3>
+                        <p>Rather than comparing the same types of plots, subplots is useful for a combination of plotting types. For example, we can combine both the histograms and the boxplots of our features to produce a figure that visualises the data in two differing ways, for a comprehensive understanding.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-56">fig, axes = plt.subplots(figsize=(10,4), nrows=2, sharex=True, layout=&quot;constrained&quot;)
+
+n_bins = 20
+
+
+axes[0].hist(df[hist_1], bins=n_bins, alpha = 0.75, label=hist_1)
+axes[0].hist(df[hist_2], bins=n_bins, alpha = 0.75, label=hist_2)
+axes[0].hist(df[hist_3], bins=n_bins, alpha = 0.75, label=hist_3)
+axes[0].legend()
+
+axes[1] = df.boxplot(column=[hist_1, hist_2, hist_3], vert=False)
+
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-56-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="summary---quiz">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Summary & Quiz</h3>
+                        <p>Here we moved from summary numbers to visualising distributions. We began with the quick Pandas plotting methods, saw their convenience but limited control, then rebuilt the same plots in Matplotlib using the figure-and-axes model. From there we layered on labels, sizing, and multiple subplots. Histograms in particular revealed the <em>shape</em> of a feature — its skew, peaks, and tails — which sets up the transformations of the next section.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="summary---quiz">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Summary & Quiz</h3>
+                        
+        <div class="quiz-box" id="quiz-2">
+            <div class="quiz-body">
+                <p class="quiz-intro">Attempt the questions below once you have finished. If you get any wrong, head back to that section to remind yourself of the reasoning/syntax behind the correct answer:</p>
+                
+            <div class="quiz-question" id="quiz-2-q0" data-quiz="quiz-2" data-topic-id="figure---axes">
+                <span class="quiz-topic-tag">Figure &amp; Axes</span>
+                <p class="quiz-question-text">What is the relationship between a figure and an axes in Matplotlib?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-2-q0" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">They are two names for the same object</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-2-q0" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">A figure is the container; an axes is a plotting area within it</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-2-q0" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">An axes holds multiple figures</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-2-q0" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">A figure can only ever hold one axes</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div><hr class="quiz-divider">
+            <div class="quiz-question" id="quiz-2-q1" data-quiz="quiz-2" data-topic-id="boxplots">
+                <span class="quiz-topic-tag">Boxplots</span>
+                <p class="quiz-question-text">Why might `ax.boxplot()` return a blank plot?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-2-q1" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">The figure size is too small</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-2-q1" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">The data passed to it contains NaN values</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-2-q1" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">Boxplots require at least three columns</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-2-q1" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">The alpha was set to zero</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div><hr class="quiz-divider">
+            <div class="quiz-question" id="quiz-2-q2" data-quiz="quiz-2" data-topic-id="subplots">
+                <span class="quiz-topic-tag">Subplots</span>
+                <p class="quiz-question-text">Which argument to `plt.subplots()` sets the number of plots along the horizontal?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-2-q2" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">nrows</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-2-q2" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">ncols</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-2-q2" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">figsize</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-2-q2" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">sharex</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div><hr class="quiz-divider">
+            <div class="quiz-question" id="quiz-2-q3" data-quiz="quiz-2" data-topic-id="histograms">
+                <span class="quiz-topic-tag">Histograms</span>
+                <p class="quiz-question-text">What does a histogram reveal that a boxplot does not?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-2-q3" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">The median</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-2-q3" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">The full shape of the distribution, including multiple peaks</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-2-q3" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">The interquartile range</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-2-q3" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">The maximum value</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div><hr class="quiz-divider">
+            <div class="quiz-question" id="quiz-2-q4" data-quiz="quiz-2" data-topic-id="plot-styling">
+                <span class="quiz-topic-tag">Plot Styling</span>
+                <p class="quiz-question-text">What does the `alpha` argument control on a plot?</p>
+                <div class="quiz-options" role="radiogroup">
+                    <label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-2-q4" value="0">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">The marker size</span>
+                </label><label class="quiz-option" data-correct="true">
+                    <input type="radio" name="quiz-2-q4" value="1">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">The transparency of the plotted elements</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-2-q4" value="2">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">The number of bins</span>
+                </label><label class="quiz-option" data-correct="false">
+                    <input type="radio" name="quiz-2-q4" value="3">
+                    <span class="quiz-option-marker"></span>
+                    <span class="quiz-option-text">The axis limits</span>
+                </label>
+                </div>
+                <div class="quiz-feedback" aria-live="polite"></div>
+            </div>
+                
+            <div class="quiz-topics-footer">
+                <span class="quiz-topics-label">Topics covered</span>
+                <div class="quiz-topics-list">
+                    <span class="quiz-topic-pill" id="quiz-2-topic-figure---axes">Figure &amp; Axes</span><span class="quiz-topic-pill" id="quiz-2-topic-boxplots">Boxplots</span><span class="quiz-topic-pill" id="quiz-2-topic-subplots">Subplots</span><span class="quiz-topic-pill" id="quiz-2-topic-histograms">Histograms</span><span class="quiz-topic-pill" id="quiz-2-topic-plot-styling">Plot Styling</span>
+                </div>
+            </div>
+            </div>
+        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+        <div class="page-navigation">
+            <a href="./data-exploration.html" class="nav-button prev">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                </svg>
+                Previous
+            </a>
+            <a href="./data-transformation.html" class="nav-button next">
+                Next
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </a></div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div>© All materials are copyright scryptIQ 2025</div>
+            <div>Powered by Pyodide</div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../assets/main.js"></script>
+    
+    <!-- Pyodide Initialisation Script -->
+    <script>
+
+// Generalisable Pyodide Initialisation Script
+// Variables and state build up naturally as code blocks execute in order
+
+async function main() {
+    // Show loading message for all output elements
+    document.querySelectorAll(".output").forEach(el => {
+        el.textContent = "Loading Pyodide...";
+        el.classList.add("loading-message");
+    });
+    
+    try {
+        // Load Pyodide
+        console.log("Loading Pyodide...");
+        const pyodideStartTime = performance.now();
+        let pyodide = await loadPyodide();
+        const pyodideLoadTime = performance.now() - pyodideStartTime;
+        console.log(`Pyodide loaded in ${pyodideLoadTime.toFixed(2)}ms`);
+        
+        // Load required packages only if specified
+        const lessonPackages = window.LESSON_PACKAGES || [];
+        
+        if (lessonPackages.length > 0) {
+            console.log("Loading required Python packages...");
+            const packagesStartTime = performance.now();
+            
+            // Separate built-in packages from PyPI packages
+            const builtInPackages = lessonPackages.filter(pkg => 
+                ['numpy', 'scipy', 'matplotlib', 'pandas', 'scikit-learn', 'pillow', 'regex'].includes(pkg)
+            );
+            
+            const micropipPackages = lessonPackages.filter(pkg => !builtInPackages.includes(pkg));
+            
+            // Load built-in packages (fast)
+            if (builtInPackages.length > 0) {
+                await pyodide.loadPackage(builtInPackages);
+                console.log(`Loaded built-in packages: ${builtInPackages.join(', ')}`);
+            }
+            
+            // Install PyPI packages (slower)
+            if (micropipPackages.length > 0) {
+                await pyodide.loadPackage(['micropip']);
+                const micropip = pyodide.pyimport('micropip');
+                await micropip.install(micropipPackages);
+                console.log(`Installed PyPI packages: ${micropipPackages.join(', ')}`);
+            }
+            
+            const packagesLoadTime = performance.now() - packagesStartTime;
+            console.log(`Packages loaded in ${packagesLoadTime.toFixed(2)}ms`);
+            console.log(`Total initialisation time: ${(pyodideLoadTime + packagesLoadTime).toFixed(2)}ms`);
+        } else {
+            console.log("No packages to load for this lesson");
+            console.log(`Total initialisation time: ${pyodideLoadTime.toFixed(2)}ms`);
+        }
+
+        // Only set up basic Python environment - no pre-loaded variables
+        await pyodide.runPythonAsync(`
+            import sys
+            from io import StringIO
+        `);
+
+        // Only set up matplotlib if it's in the loaded packages
+        if (lessonPackages.includes('matplotlib')) {
+            await pyodide.runPythonAsync(`
+                # Set up matplotlib for web rendering
+                import matplotlib
+                matplotlib.use('AGG')
+                import matplotlib.pyplot as plt
+                import io
+                import base64
+                
+                def capture_matplotlib():
+                    """Capture current matplotlib figure as HTML img tag"""
+                    buf = io.BytesIO()
+                    plt.savefig(buf, format='png', bbox_inches='tight', dpi=100)
+                    buf.seek(0)
+                    img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+                    plt.close()
+                    return f'<img src="data:image/png;base64,{img_base64}" style="max-width: 100%; height: auto;" />'
+
+                # Silence the "FigureCanvasAgg is non-interactive" warning that
+                # occurs when notebook code calls plt.show().  In this environment
+                # figures are captured automatically via capture_matplotlib(), so
+                # plt.show() should simply be a no-op.
+                plt.show = lambda *args, **kwargs: None
+            `);
+            console.log('Matplotlib capture function set up');
+        }
+        
+        console.log("Pyodide loaded successfully");
+        
+        // Load remote files if URLs are specified
+        const lessonFiles = window.LESSON_FILES || [];
+        
+        if (lessonFiles.length > 0) {
+            try {
+                console.log(`Checking for ${lessonFiles.length} remote file(s) to load...`);
+                
+                // Build Python code to load all files dynamically
+                let pythonCode = `
+from pyodide.http import pyfetch
+import os
+
+# Create data directory if it doesn't exist
+os.makedirs('./data', exist_ok=True)
+`;
+                
+                // Add loading code for each file
+                for (const file of lessonFiles) {
+                    if (file.is_binary) {
+                        // Binary files (images, etc.) - use bytes
+                        pythonCode += `
+# Load ${file.filename} (binary)
+try:
+    response = await pyfetch("${file.url}")
+    content = await response.bytes()
+    with open('./data/${file.filename}', 'wb') as f:
+        f.write(bytes(content))
+    print("Loaded: ${file.filename}")
+except Exception as e:
+    print(f"Could not load ${file.filename}: {e}")
+`;
+                    } else {
+                        // Text files (CSV, etc.) - use string
+                        pythonCode += `
+# Load ${file.filename} (text)
+try:
+    response = await pyfetch("${file.url}")
+    content = await response.string()
+    with open('./data/${file.filename}', 'w') as f:
+        f.write(content)
+    print("Loaded: ${file.filename}")
+except Exception as e:
+    print(f"Could not load ${file.filename}: {e}")
+`;
+                    }
+                }
+                
+                await pyodide.runPythonAsync(pythonCode);
+                console.log("Remote files loaded successfully");
+            } catch (error) {
+                console.warn("Error loading remote files (continuing anyway):", error);
+            }
+        } else {
+            console.log("No remote files to load for this lesson");
+        }
+        
+        // Function to execute Python code and capture output
+        async function executePythonCode(code) {
+            try {
+                // Redirect Python stdout and stderr to capture print statements and warnings
+                await pyodide.runPythonAsync(`
+                    old_stdout = sys.stdout
+                    old_stderr = sys.stderr
+                    sys.stdout = mystdout = StringIO()
+                    sys.stderr = mystderr = StringIO()
+                `);
+
+                // Run the user code.
+                // We pass the code string via pyodide.globals to avoid JS-string escaping
+                // issues, then use Python's ast module to execute it.  The last expression
+                // (if any) is eval-ed inside Python so that repr() is called there —
+                // this means display settings such as np.set_printoptions() are always
+                // respected before the value crosses the Python→JS boundary.
+                // (Pyodide auto-converts numpy arrays to TypedArray, so String(result)
+                // would bypass numpy's formatting entirely.)
+                pyodide.globals.set('__cell_code__', code);
+                await pyodide.runPythonAsync(`
+import ast as _ast
+__cell_result__ = None
+try:
+    _tree = _ast.parse(__cell_code__)
+    if _tree.body and isinstance(_tree.body[-1], _ast.Expr):
+        _last = _tree.body.pop()
+        exec(compile(_ast.Module(body=_tree.body, type_ignores=[]), '<cell>', 'exec'), globals())
+        _val = eval(compile(_ast.Expression(body=_last.value), '<cell>', 'eval'), globals())
+        if _val is not None:
+            __cell_result__ = repr(_val)
+    else:
+        exec(compile(_tree, '<cell>', 'exec'), globals())
+finally:
+    for _k in ['_tree', '_last', '_val', '_ast']:
+        globals().pop(_k, None)
+    globals().pop('__cell_code__', None)
+`);
+
+                // Get the captured stdout and stderr
+                let stdout = await pyodide.runPythonAsync(`
+                    sys.stdout = old_stdout
+                    sys.stderr = old_stderr
+                    mystdout.getvalue()
+                `);
+
+                const stderr = await pyodide.runPythonAsync(`mystderr.getvalue()`);
+                if (stderr) {
+                    if (stdout) stdout += "\n";
+                    stdout += stderr;
+                }
+
+                // Retrieve the Python-side repr string (already formatted correctly)
+                const resultRepr = await pyodide.runPythonAsync(`
+_r = __cell_result__
+del __cell_result__
+_r
+`);
+
+                // Check for matplotlib figures only if matplotlib was loaded
+                const lessonPackages = window.LESSON_PACKAGES || [];
+                if (lessonPackages.includes('matplotlib')) {
+                    const hasFigures = await pyodide.runPythonAsync(`
+                        import matplotlib.pyplot as plt
+                        len(plt.get_fignums()) > 0
+                    `);
+
+                    if (hasFigures) {
+                        const figureHtml = await pyodide.runPythonAsync(`capture_matplotlib()`);
+                        if (stdout) stdout += "\n";
+                        stdout += figureHtml;
+                    }
+                }
+
+                // Combine stdout and result repr
+                let output = stdout;
+                if (resultRepr !== undefined && resultRepr !== null && String(resultRepr).trim() !== '') {
+                    if (output) output += "\n";
+                    output += String(resultRepr);
+                }
+                
+                return { success: true, output: output || "Code executed successfully (no output)" };
+                
+            } catch (error) {
+                // Attempt to restore stdout/stderr even on failure
+                try {
+                    await pyodide.runPythonAsync(`
+                        if 'old_stdout' in dir(): sys.stdout = old_stdout
+                        if 'old_stderr' in dir(): sys.stderr = old_stderr
+                    `);
+                } catch (_) {}
+                // Re-run through Python's traceback machinery to get a clean error message
+                let tracebackStr = '';
+                try {
+                    pyodide.globals.set('_traceback_code', code);
+                    await pyodide.runPythonAsync(`
+                        import traceback as _tb
+                        from io import StringIO as _SIO
+                        _trace_result = None
+                        _saved_io = (sys.stdout, sys.stderr)
+                        sys.stdout = sys.stderr = _SIO()
+                        try:
+                            exec(compile(_traceback_code, '<exec>', 'exec'), globals())
+                        except Exception:
+                            _trace_result = _tb.format_exc()
+                        finally:
+                            sys.stdout, sys.stderr = _saved_io
+                    `);
+                    const tbVal = await pyodide.runPythonAsync('_trace_result');
+                    if (tbVal) tracebackStr = tbVal;
+                } catch (_) {}
+                let displayMsg;
+                if (tracebackStr && tracebackStr.includes('File "<exec>"')) {
+                    const lines = tracebackStr.split('\n');
+                    let execIdx = -1;
+                    for (let i = lines.length - 1; i >= 0; i--) {
+                        if (lines[i].includes('File "<exec>"')) { execIdx = i; break; }
+                    }
+                    displayMsg = execIdx !== -1
+                        ? lines.slice(execIdx).join('\n').trim()
+                        : tracebackStr.trim();
+                } else {
+                    displayMsg = (error.message || '').trim() || error.type || String(error);
+                }
+                return { success: false, output: 'Error:\n' + displayMsg };
+            }
+        }
+        
+        // Execute all hidden code blocks first (for setup code like imports)
+        const hiddenCodeBlocks = Array.from(document.querySelectorAll('.hidden-code textarea'));
+        console.log(`Found ${hiddenCodeBlocks.length} hidden code blocks`);
+
+        for (const textarea of hiddenCodeBlocks) {
+            const code = textarea.value.trim();
+            if (!code) continue;
+            
+            console.log(`Executing hidden code block: ${textarea.id}`);
+            console.log(`Hidden code content: ${code.substring(0, 100)}...`);
+            const result = await executePythonCode(code);
+            
+            if (!result.success) {
+                console.error(`Error in hidden code block ${textarea.id}:`, result.output);
+            } else {
+                console.log(`Hidden code block ${textarea.id} executed successfully`);
+                console.log(`Result: ${result.output}`);
+            }
+        }
+
+        console.log("All hidden code blocks executed");
+        
+        // Get all fixed code blocks in document order
+        const fixedCodeBlocks = Array.from(document.querySelectorAll('.code-fixed textarea'));
+        
+        // Setup and execute fixed code blocks sequentially
+        for (const textarea of fixedCodeBlocks) {
+            const code = textarea.value.trim();
+            if (!code) continue;
+            
+            // Set up CodeMirror editor (read-only)
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: "python",
+                theme: "pastel-on-dark",
+                lineNumbers: true,
+                readOnly: true,
+                viewportMargin: Infinity
+            });
+            
+            // Find corresponding output element
+            const outputId = textarea.id + '-output';
+            const outputElement = document.getElementById(outputId);
+            
+            if (outputElement) {
+                outputElement.textContent = "Running code...";
+                outputElement.classList.add("loading-message");
+                
+                // Execute the code (this maintains state for subsequent blocks)
+                const result = await executePythonCode(code);
+                
+                // Display the output - check if it's HTML
+                const trimmedOutput = result.output.trim();
+                console.log('Output length:', trimmedOutput.length);
+                console.log('Output starts with:', trimmedOutput.substring(0, 100));
+                
+                if (trimmedOutput.includes('<script') && trimmedOutput.includes('Plotly')) {
+                    // It's Plotly HTML output - extract just the body content
+                    console.log('Rendering as Plotly HTML');
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(result.output, 'text/html');
+                    // Clear the output element and append the body content
+                    outputElement.innerHTML = '';
+                    
+                    // Find and load external scripts first (like Plotly CDN)
+                    const externalScripts = Array.from(doc.querySelectorAll('script[src]'));
+                    const inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+                    
+                    // Append non-script content first
+                    Array.from(doc.body.children).forEach(child => {
+                        if (child.tagName !== 'SCRIPT') {
+                            outputElement.appendChild(child.cloneNode(true));
+                        }
+                    });
+                    
+                    // Load external scripts sequentially
+                    const loadScript = (src) => {
+                        return new Promise((resolve, reject) => {
+                            const script = document.createElement('script');
+                            script.src = src;
+                            script.onload = resolve;
+                            script.onerror = reject;
+                            document.head.appendChild(script);
+                        });
+                    };
+                    
+                    // Load all external scripts first
+                    Promise.all(externalScripts.map(s => loadScript(s.src)))
+                        .then(() => {
+                            console.log('External scripts loaded, executing inline scripts');
+                            // Now execute inline scripts
+                            inlineScripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                newScript.textContent = oldScript.textContent;
+                                outputElement.appendChild(newScript);
+                            });
+                            console.log('Output element after processing:', outputElement.children.length, 'children');
+                        })
+                        .catch(err => {
+                            console.error('Failed to load external scripts:', err);
+                            outputElement.textContent = 'Error loading Plotly: ' + err.message;
+                        });
+                } else if (trimmedOutput.startsWith('<!DOCTYPE') || 
+                           trimmedOutput.startsWith('<html') ||
+                            trimmedOutput.startsWith('<div') ||
+                            trimmedOutput.startsWith('<img')) {
+                    console.log('Rendering as generic HTML');
+                    outputElement.innerHTML = result.output;
+                    console.log('Output element after innerHTML:', outputElement.children.length, 'children');
+                } else {
+                    console.log('Rendering as plain text');
+                    outputElement.textContent = result.output;
+                }
+                outputElement.classList.remove("loading-message");
+                if (result.success) {
+                    outputElement.classList.add("success-message");
+                    outputElement.classList.remove("error-message");
+                } else {
+                    outputElement.classList.add("error-message");
+                    outputElement.classList.remove("success-message");
+                }
+            }
+            
+            // Small delay to show progression
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        
+        // Set flag to indicate all FIXED cells have been executed
+        // This is used by PDF generation to ensure all outputs are ready
+        window.allCellsExecuted = true;
+        console.log("All FIXED cells executed successfully");
+        
+        // Setup all editable code blocks (but don't execute them)
+        document.querySelectorAll('.code-editor textarea').forEach((textarea) => {
+            // Set up CodeMirror editor (editable)
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: "python",
+                theme: "pastel-on-dark",
+                lineNumbers: true,
+                viewportMargin: Infinity
+            });
+            
+            // Find corresponding run button and output element
+            const baseId = textarea.id;
+            const runButtonId = 'run-' + baseId;
+            const outputId = baseId + '-output';
+            
+            const runButton = document.getElementById(runButtonId);
+            const outputElement = document.getElementById(outputId);
+            
+            if (runButton && outputElement) {
+                // Set initial state
+                outputElement.textContent = "Ready to run code!";
+                outputElement.classList.remove("loading-message");
+                
+                runButton.addEventListener("click", async () => {
+                    const code = editor.getValue().trim();
+                    if (!code) {
+                        outputElement.textContent = "No code to run";
+                        return;
+                    }
+                    
+                    outputElement.textContent = "Running...";
+                    outputElement.classList.remove("error-message", "success-message");
+                    outputElement.classList.add("loading-message");
+                    
+                    // Execute the code (this also maintains state for future blocks)
+                    const result = await executePythonCode(code);
+                    
+                    // Display the output - check if it's HTML
+                    const trimmedOutput = result.output.trim();
+                    console.log('Output length:', trimmedOutput.length);
+                    console.log('Output starts with:', trimmedOutput.substring(0, 100));
+                    
+                    if (trimmedOutput.includes('<script') && trimmedOutput.includes('Plotly')) {
+                        // It's Plotly HTML output - extract just the body content
+                        console.log('Rendering as Plotly HTML');
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(result.output, 'text/html');
+                        // Clear the output element and append the body content
+                        outputElement.innerHTML = '';
+                        
+                        // Find and load external scripts first (like Plotly CDN)
+                        const externalScripts = Array.from(doc.querySelectorAll('script[src]'));
+                        const inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+                        
+                        // Append non-script content first
+                        Array.from(doc.body.children).forEach(child => {
+                            if (child.tagName !== 'SCRIPT') {
+                                outputElement.appendChild(child.cloneNode(true));
+                            }
+                        });
+                        
+                        // Load external scripts sequentially
+                        const loadScript = (src) => {
+                            return new Promise((resolve, reject) => {
+                                const script = document.createElement('script');
+                                script.src = src;
+                                script.onload = resolve;
+                                script.onerror = reject;
+                                document.head.appendChild(script);
+                            });
+                        };
+                        
+                        // Load all external scripts first
+                        Promise.all(externalScripts.map(s => loadScript(s.src)))
+                            .then(() => {
+                                console.log('External scripts loaded, executing inline scripts');
+                                // Now execute inline scripts
+                                inlineScripts.forEach(oldScript => {
+                                    const newScript = document.createElement('script');
+                                    newScript.textContent = oldScript.textContent;
+                                    outputElement.appendChild(newScript);
+                                });
+                                console.log('Output element after processing:', outputElement.children.length, 'children');
+                            })
+                            .catch(err => {
+                                console.error('Failed to load external scripts:', err);
+                                outputElement.textContent = 'Error loading Plotly: ' + err.message;
+                            });
+                    } else if (trimmedOutput.startsWith('<!DOCTYPE') || 
+                               trimmedOutput.startsWith('<html') ||
+                               trimmedOutput.startsWith('<div') ||
+                               trimmedOutput.startsWith('<img')) {
+                        outputElement.innerHTML = result.output;
+                    } else {
+                        outputElement.textContent = result.output;
+                    }
+                    outputElement.classList.remove("loading-message");
+                    if (result.success) {
+                        outputElement.classList.add("success-message");
+                        outputElement.classList.remove("error-message");
+                    } else {
+                        outputElement.classList.add("error-message");
+                        outputElement.classList.remove("success-message");
+                    }
+                });
+            }
+        });
+        
+        console.log("All code blocks initialised successfully");
+
+        // Set flag to indicate Pyodide is fully ready
+        window.pyodideReady = true;
+        console.log("Pyodide fully ready");
+        
+    } catch (error) {
+        console.error("Failed to initialise Pyodide:", error);
+        document.querySelectorAll(".output").forEach(el => {
+            el.textContent = "Error loading Pyodide: " + error.message;
+            el.classList.remove("loading-message");
+            el.classList.add("error-message");
+        });
+    }
+}
+
+// Start the application when DOM is loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', main);
+} else {
+    main();
+}
+    </script>
+    
+</body>
+</html>
