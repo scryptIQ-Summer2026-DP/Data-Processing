@@ -233,7 +233,18 @@ plot_cols</textarea>
                 <div class="module-body">
                     <div class="module-section">
                         <h3>Matplotlib</h3>
-                        <p><a href="https://matplotlib.org/"><strong>Matplotlib</strong></a> is a comprehensive package for building single and multiple series of plots. The package gives you complete control of how the <em>figure</em> is altered, at the expense of having to write a little bit more code. In the final section we will introduce a further package <strong>seaborn</strong> that, like Pandas plots, is built upon matplotlib; allowing you to produce very visually appealing plots in one line. However, to interact with the figures post creation you will need to know how the matplotlib syntax works, so it is worth dedicating time to the older package!</p><p>Like NumPy and Pandas, matplotlib is a <strong>third-party</strong> package that needs to be downloaded into your environment. Once that is achieved, we import the matplotlib <em>pyplot</em> submodule with the alias <strong>plt</strong>:</p>
+                        
+        <div class="video-container">
+            <iframe 
+                src="https://www.youtube.com/embed/pFyCckFerV4"
+                width="560"
+                height="315"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+        </div>
+        <p><a href="https://matplotlib.org/"><strong>Matplotlib</strong></a> is a comprehensive package for building single and multiple series of plots. The package gives you complete control of how the <em>figure</em> is altered, at the expense of having to write a little bit more code. In the final section we will introduce a further package <strong>seaborn</strong> that, like Pandas plots, is built upon matplotlib; allowing you to produce very visually appealing plots in one line. However, to interact with the figures post creation you will need to know how the matplotlib syntax works, so it is worth dedicating time to the older package!</p><p>Like NumPy and Pandas, matplotlib is a <strong>third-party</strong> package that needs to be downloaded into your environment. Once that is achieved, we import the matplotlib <em>pyplot</em> submodule with the alias <strong>plt</strong>:</p>
         <div class="code-area">
             <div class="code-container code-fixed">
                 <textarea id="code-cell-34"># The . indicates to use a sub-module
@@ -509,7 +520,7 @@ plt.show()</textarea>
             <div class="code-container code-editor">
                 <textarea id="code-cell-47">fig, ax = plt.subplots()
 
-n_bins =30 
+n_bins = 30 
 
 ax.hist(df[&quot;DYRK1A_N&quot;], color=&#x27;purple&#x27;, bins=n_bins)
 
@@ -527,7 +538,7 @@ plt.show()</textarea>
             <div class="code-container code-editor">
                 <textarea id="code-cell-48">fig, ax = plt.subplots()
 
-n_bins =30 
+n_bins = 30 
 alpha = 0.6
 
 # alpha controls the transparency of the plot: 1 = opaque, 0 = invisible

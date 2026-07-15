@@ -181,6 +181,17 @@ plt.show()</textarea>
             <div id="code-cell-57-output" class="output"></div>
         </div>
         
+        <div class="video-container">
+            <iframe 
+                src="https://www.youtube.com/embed/nhAEw6GFkrY"
+                width="560"
+                height="315"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+        </div>
+        
                     </div>
                 </div>
             </div>
@@ -363,7 +374,7 @@ plt.show()</textarea>
         <p>Placing them onto separate axes to prevent the visual squashing you can now see that their shape is exactly the same - just as we saw with the log values - it is just the range they occupy that is different. This is a <em>key</em> observation: the data shape is not changed by the scaling, it is just shifted and rescaled to fit a standard range.<br><br>Standardising puts every feature onto a common scale (in standard-deviation units), so that no single feature dominates a model simply because its raw values happen to be larger. This makes features of varying scales and shapes much more comparable and equitable inside the model&#x27;s training.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-68">fig, axes = plt.subplots(ncols=2, sharey=True)
+                <textarea id="code-cell-68">fig, axes = plt.subplots(figsize=(15,6), ncols=2, sharey=True)
 
 n_bins = 20
 
