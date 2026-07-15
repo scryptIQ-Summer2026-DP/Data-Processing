@@ -324,14 +324,6 @@ plt.show()</textarea>
             <div id="code-cell-37-output" class="output"></div>
         </div>
         
-        <div class="code-area">
-            <div class="code-container code-editor">
-                <textarea id="code-cell-38">df.head()</textarea>
-            </div>
-            <button id="run-code-cell-38" class="run-button">Run Code</button>
-            <div id="code-cell-38-output" class="output"></div>
-        </div>
-        
                     </div>
                 </div>
             </div>
@@ -353,10 +345,10 @@ plt.show()</textarea>
         
         <div class="code-area">
             <div class="code-container code-editor">
-                <textarea id="code-cell-39"></textarea>
+                <textarea id="code-cell-38"></textarea>
             </div>
-            <button id="run-code-cell-39" class="run-button">Run Code</button>
-            <div id="code-cell-39-output" class="output"></div>
+            <button id="run-code-cell-38" class="run-button">Run Code</button>
+            <div id="code-cell-38-output" class="output"></div>
         </div>
         
                     </div>
@@ -370,18 +362,18 @@ plt.show()</textarea>
                         <p>You may have noticed that the matplotlib plot only contained one feature, whilst the Pandas plot contained three. To recreate the plot in matplotlib is a bit more complicated, we will need to generate a dictionary where the <strong>keys</strong> are the feature names and the <strong>values</strong> are a list of the values. This is because for multiple boxplots the functions expect:<ul class="nested-list"><li>a nested list of data (plotter)</li><br><li>a list of names (x tick labels)</li></ul></p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-40"># A dictionary comprehension can be used here for each
+                <textarea id="code-cell-39"># A dictionary comprehension can be used here for each
 #                              key :     value 
 multi_data = plot_cols_dict = {col : df[col].dropna().tolist() for col in plot_cols}
 
 print(multi_data.keys())</textarea>
             </div>
-            <div id="code-cell-40-output" class="output"></div>
+            <div id="code-cell-39-output" class="output"></div>
         </div>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-41">fig, ax = plt.subplots()
+                <textarea id="code-cell-40">fig, ax = plt.subplots()
 
 ax.boxplot(multi_data.values())
 ax.set_xticklabels(multi_data.keys());
@@ -389,12 +381,12 @@ ax.set(ylabel=&quot;Expression level&quot;, xlabel=&quot;Proteins&quot;, title=f
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-41-output" class="output"></div>
+            <div id="code-cell-40-output" class="output"></div>
         </div>
         <p>Generating this plot takes a lot more work than the built-in Pandas method. However, we do retain a customisable plot to add our labels to.<br><br>You may remember the end of the Pandas section saying that the plotting code of Pandas is built upon matplotlib! Due to this, we can assign the product of Pandas plots to a matplotlib figure to help us retain a figure we can customise.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-42">fig, ax = plt.subplots()
+                <textarea id="code-cell-41">fig, ax = plt.subplots()
 
 # Re-assign the pandas plot to the axes
 ax = df.boxplot(column=plot_cols);
@@ -404,12 +396,12 @@ ax.set(ylabel=&quot;Expression level&quot;, xlabel=&quot;Proteins&quot;, title=f
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-42-output" class="output"></div>
+            <div id="code-cell-41-output" class="output"></div>
         </div>
         <p>This concept of all plots being a matplotlib plot can help you utilise the strengths of both systems, the speed and easy syntax of Pandas, combined with the customisation and control of matplotlib.<br><br>To emphasise this, the original plot of all the features (the one at the very beginning) can be tidied up using a bit of Pandas code combined with the matplotlib&#x27;s figure augmentation tools. First we want to sort the DataFrame by the median per feature, to ensure the plot goes from the largest to smallest:</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-43"># Sort the columns by median to have a visual order
+                <textarea id="code-cell-42"># Sort the columns by median to have a visual order
 # Produces a Pandas series of the medians
 medians = df.median(numeric_only=True).sort_values()
 
@@ -419,20 +411,20 @@ sorted_names = medians.index.tolist()
 # Use the column names to have them in the correct order
 ordered_df = df.loc[:, sorted_names]</textarea>
             </div>
-            <div id="code-cell-43-output" class="output" style="display: none;"></div>
+            <div id="code-cell-42-output" class="output" style="display: none;"></div>
         </div>
         <p>Use the cell below to print each variable in turn to see how it matches the description:</p>
         <div class="code-area">
             <div class="code-container code-editor">
-                <textarea id="code-cell-44">medians</textarea>
+                <textarea id="code-cell-43">medians</textarea>
             </div>
-            <button id="run-code-cell-44" class="run-button">Run Code</button>
-            <div id="code-cell-44-output" class="output"></div>
+            <button id="run-code-cell-43" class="run-button">Run Code</button>
+            <div id="code-cell-43-output" class="output"></div>
         </div>
         <p>Next, we can make use of Pandas&#x27;s <code>.boxplot()</code> function that contains lots of arguments for augmenting the plot. All of the arguments are also available in Matplotlib, however we wouldn&#x27;t have the ease of plotting all the columns that Pandas gives us.<br><br>From the resultant plot we can use Matplotlib&#x27;s tools to tinker with the axis ticks, the grid, and the labels.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-45"># layout=&quot;constrained&quot; tidies up the spacing between labels
+                <textarea id="code-cell-44"># layout=&quot;constrained&quot; tidies up the spacing between labels
 fig, ax = plt.subplots(figsize=(10, 15), layout=&quot;constrained&quot;)
 
 ax = ordered_df.boxplot(
@@ -449,7 +441,7 @@ ax.set(xlabel=&quot;Expression Level&quot;, title=&quot;Distribution of features
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-45-output" class="output"></div>
+            <div id="code-cell-44-output" class="output"></div>
         </div>
         
         <div class="info-box tip-box">
@@ -483,10 +475,10 @@ plt.show()</textarea>
         
         <div class="code-area">
             <div class="code-container code-editor">
-                <textarea id="code-cell-46"></textarea>
+                <textarea id="code-cell-45"></textarea>
             </div>
-            <button id="run-code-cell-46" class="run-button">Run Code</button>
-            <div id="code-cell-46-output" class="output"></div>
+            <button id="run-code-cell-45" class="run-button">Run Code</button>
+            <div id="code-cell-45-output" class="output"></div>
         </div>
         
                     </div>
@@ -500,7 +492,7 @@ plt.show()</textarea>
                         <p>Boxplots are useful tools for seeing the <strong>spread</strong> of the data, but they do not fully reveal its <strong>shape</strong>. A histogram fulfils this need by binning the values and counting how many fall into each bin, showing you the full distribution at a glance. Potentially highlighting any skew, normal distribution, or multiple peaks that would indicate distinct sub-populations.<br><br>This matters because the shape of a distribution often drives the choices you make downstream. Many statistical techniques — including a number of machine learning (ML) methods — assume, or at least perform better on, features that approximate a normal distribution. Spotting skew, heavy tails, or bimodality early tells you whether a transformation (such as a log) might be warranted, or whether a feature is worth investigating more closely before modelling.<br><br>To create a histogram, simply replace <code>.boxplot()</code> with <code>.hist()</code>. An additional argument that can be given to most matplotlib plots is <strong>color</strong> (colour), which can be passed the name of the colour as a string (see the list <a href="https://matplotlib.org/stable/gallery/color/named_colors.html">here</a>) or a RGB tuple or hexcode (see <a href="https://matplotlib.org/stable/users/explain/colors/colors.html">here</a>).</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-47"># subplots returns a tuple that needs to be unpacked
+                <textarea id="code-cell-46"># subplots returns a tuple that needs to be unpacked
 # into figure and axes
 fig, ax = plt.subplots()
 
@@ -510,12 +502,12 @@ ax.set(xlabel=&#x27;ITSN1_N&#x27;, ylabel=&#x27;Count&#x27;)
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-47-output" class="output"></div>
+            <div id="code-cell-46-output" class="output"></div>
         </div>
         <p>The <strong>ITSN1_N</strong> feature — which we examined in the outlier detection section — shows rightward skew, a common characteristic of expression data. In the next section we will look at how to work with non-normally distributed data.<br><br>By default, the histogram uses <strong>10</strong> bins, the number of intervals the data is divided into. This can be adjusted using the <code>bins</code> argument. Try changing it in the cell below:</p>
         <div class="code-area">
             <div class="code-container code-editor">
-                <textarea id="code-cell-48">fig, ax = plt.subplots()
+                <textarea id="code-cell-47">fig, ax = plt.subplots()
 
 n_bins =30 
 
@@ -527,13 +519,13 @@ ax.set_title(f&quot;With {n_bins} bins&quot;)
 
 plt.show()</textarea>
             </div>
-            <button id="run-code-cell-48" class="run-button">Run Code</button>
-            <div id="code-cell-48-output" class="output"></div>
+            <button id="run-code-cell-47" class="run-button">Run Code</button>
+            <div id="code-cell-47-output" class="output"></div>
         </div>
         <p>To add multiple histograms to the same plot just repeat the plotting call with a new set of data, this will cause them to overlap. To be able to view them both the transparency can be changed with the <strong>alpha</strong> argument, have a try below:</p>
         <div class="code-area">
             <div class="code-container code-editor">
-                <textarea id="code-cell-49">fig, ax = plt.subplots()
+                <textarea id="code-cell-48">fig, ax = plt.subplots()
 
 n_bins =30 
 alpha = 0.6
@@ -542,14 +534,12 @@ alpha = 0.6
 ax.hist(df[&quot;ITSN1_N&quot;], color=&#x27;green&#x27;, bins=n_bins, alpha=alpha)
 ax.hist(df[&quot;DYRK1A_N&quot;], color=&#x27;purple&#x27;, bins=n_bins, alpha=alpha)
 
-ax.set(xlabel=&#x27;Expression count&#x27;, ylabel=&#x27;Count&#x27;)
-
-ax.set_title(f&quot;With {alpha} alpha&quot;)
+ax.set(xlabel=&#x27;Expression count&#x27;, ylabel=&#x27;Count&#x27;, title=f&quot;With {alpha} alpha&quot;)
 
 plt.show()</textarea>
             </div>
-            <button id="run-code-cell-49" class="run-button">Run Code</button>
-            <div id="code-cell-49-output" class="output"></div>
+            <button id="run-code-cell-48" class="run-button">Run Code</button>
+            <div id="code-cell-48-output" class="output"></div>
         </div>
         
         <div class="info-box tip-box">
@@ -583,10 +573,10 @@ plt.show()</textarea>
         
         <div class="code-area">
             <div class="code-container code-editor">
-                <textarea id="code-cell-50"></textarea>
+                <textarea id="code-cell-49"></textarea>
             </div>
-            <button id="run-code-cell-50" class="run-button">Run Code</button>
-            <div id="code-cell-50-output" class="output"></div>
+            <button id="run-code-cell-49" class="run-button">Run Code</button>
+            <div id="code-cell-49-output" class="output"></div>
         </div>
         
                     </div>
@@ -600,25 +590,25 @@ plt.show()</textarea>
                         <p>Another benefit to using matplotlib directly is the creation of <strong>subplots</strong> - multiple plots on a single figure (canvas). This can allow you to directly compare and contrast different features and their sub-domains. To do so, all that needs to be done is to add an argument <strong>ncols</strong> to the <code>plt.subplots()</code> function, where the number (an integer) says how many plots on the horizontal axis there should be.<br><br>For example, below, we can compare the distributions of several features split by their genotype to try and observe if any have any noticeable differences that would warrant further investigation. To aid comparison of plots with the same axis scales it is beneficial to have them share the same axis, as we have done by setting the <code>sharey</code> parameter to <code>True</code>.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-51"># To remind us of the categories
+                <textarea id="code-cell-50"># To remind us of the categories
 set(df[&#x27;Genotype&#x27;])</textarea>
             </div>
-            <div id="code-cell-51-output" class="output"></div>
+            <div id="code-cell-50-output" class="output"></div>
         </div>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-52"># Choose the columns
+                <textarea id="code-cell-51"># Choose the columns
 hist_1 = &quot;DYRK1A_N&quot;
 hist_2 = &quot;ITSN1_N&quot;
 hist_3 = &quot;S6_N&quot;</textarea>
             </div>
-            <div id="code-cell-52-output" class="output"></div>
+            <div id="code-cell-51-output" class="output" style="display: none;"></div>
         </div>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-53"># have their y-axis share values
+                <textarea id="code-cell-52"># have their y-axis share values
 fig, axes = plt.subplots(figsize=(10,4), ncols=3, sharey=True)
 
 n_bins = 30
@@ -640,12 +630,12 @@ axes[2].legend()
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-53-output" class="output"></div>
+            <div id="code-cell-52-output" class="output"></div>
         </div>
         <p>If you want to add plots in the vertical direction you can use <strong>nrows</strong> instead.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-54"># share the x-axis instead
+                <textarea id="code-cell-53"># share the x-axis instead
 fig, axes = plt.subplots(figsize= (4,10), nrows=3, sharex=True)
 
 axes[0].hist(df[hist_1][df[&#x27;Genotype&#x27;] == &quot;Control&quot;], bins=n_bins, alpha = 0.75)
@@ -664,7 +654,7 @@ axes[2].legend()
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-54-output" class="output"></div>
+            <div id="code-cell-53-output" class="output"></div>
         </div>
         <p>Plotting the distributions split by genotype reveals a slight change in the distribution of the expression of <strong>S6_N</strong> from the Control group to <em>Ts65Dn</em>.</p>
                     </div>
@@ -688,10 +678,10 @@ plt.show()</textarea>
         
         <div class="code-area">
             <div class="code-container code-editor">
-                <textarea id="code-cell-55">grid_cols = df.columns[1:10]</textarea>
+                <textarea id="code-cell-54">grid_cols = df.columns[1:10]</textarea>
             </div>
-            <button id="run-code-cell-55" class="run-button">Run Code</button>
-            <div id="code-cell-55-output" class="output"></div>
+            <button id="run-code-cell-54" class="run-button">Run Code</button>
+            <div id="code-cell-54-output" class="output"></div>
         </div>
         
                     </div>
@@ -705,7 +695,7 @@ plt.show()</textarea>
                         <p>Rather than comparing the same types of plots, subplots is useful for a combination of plotting types. For example, we can combine both the histograms and the boxplots of our features to produce a figure that visualises the data in two differing ways, for a comprehensive understanding.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-56">fig, axes = plt.subplots(figsize=(10,4), nrows=2, sharex=True, layout=&quot;constrained&quot;)
+                <textarea id="code-cell-55">fig, axes = plt.subplots(figsize=(10,4), nrows=2, sharex=True, layout=&quot;constrained&quot;)
 
 n_bins = 20
 
@@ -719,7 +709,7 @@ axes[1] = df.boxplot(column=[hist_1, hist_2, hist_3], vert=False)
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-56-output" class="output"></div>
+            <div id="code-cell-55-output" class="output"></div>
         </div>
         
                     </div>

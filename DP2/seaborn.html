@@ -148,49 +148,49 @@
                         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-104">import pandas as pd
+                <textarea id="code-cell-103">import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
 
 import seaborn as sns</textarea>
             </div>
-            <div id="code-cell-104-output" class="output" style="display: none;"></div>
+            <div id="code-cell-103-output" class="output" style="display: none;"></div>
         </div>
         <p><em>seaborn</em> is typically imported with the alias <strong>sns</strong>, and with it, it has many plotting functions that will create all the basic plots covered, plus many more! Head to their gallery <a href="https://seaborn.pydata.org/examples/index.html">here</a> for some visual inspiration from their toolbox.<br><br>As well as being built from matplotlib, <em>seaborn</em> is built to integrate seamlessly with <em>pandas</em>. The first argument you pass to a seaborn plotting function is a pandas dataframe, the function can then take further arguments for styling.<br><br>Below, we have recreated the <a href="https://seaborn.pydata.org/generated/seaborn.boxplot.html">box plot</a> of all the proteins, as was done at the start:</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-105">df = pd.read_csv(&quot;./data/cortex_nuclear.csv&quot;)
+                <textarea id="code-cell-104">df = pd.read_csv(&quot;./data/cortex_nuclear.csv&quot;)
 
 sns.boxplot(df); # ; suppresses the text output</textarea>
             </div>
-            <div id="code-cell-105-output" class="output"></div>
+            <div id="code-cell-104-output" class="output"></div>
         </div>
         <p>To create a boxplot of just a few columns you will need to filter the dataframe down to just those that you need:</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-106">plot_cols = [&quot;DYRK1A_N&quot;, &quot;ITSN1_N&quot;, &quot;S6_N&quot;]</textarea>
+                <textarea id="code-cell-105">plot_cols = [&quot;DYRK1A_N&quot;, &quot;ITSN1_N&quot;, &quot;S6_N&quot;]</textarea>
             </div>
-            <div id="code-cell-106-output" class="output" style="display: none;"></div>
+            <div id="code-cell-105-output" class="output" style="display: none;"></div>
         </div>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-107">sns.boxplot(df[plot_cols]);</textarea>
+                <textarea id="code-cell-106">sns.boxplot(df[plot_cols]);</textarea>
             </div>
-            <div id="code-cell-107-output" class="output"></div>
+            <div id="code-cell-106-output" class="output"></div>
         </div>
         <p>So far <strong>seaborn</strong> looks useful, but not that much easier. However, it&#x27;s greatest strength comes from the <strong>hue</strong> argument, that is available in most plotting functions. To <strong>hue</strong> you pass the name of a column, one that has categorical data (such as <code>&quot;Genotype&quot;</code>), which will then split the plotted data into those categories. Saving you from having to do the filter yourself.<br><br>Below we recreate the <a href="https://seaborn.pydata.org/generated/seaborn.histplot.html">histogram</a> split by <strong>Genotype</strong>:</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-108">sns.histplot(df, x=&quot;DYRK1A_N&quot;, hue=&quot;Genotype&quot;, bins=50)</textarea>
+                <textarea id="code-cell-107">sns.histplot(df, x=&quot;DYRK1A_N&quot;, hue=&quot;Genotype&quot;, bins=50)</textarea>
             </div>
-            <div id="code-cell-108-output" class="output"></div>
+            <div id="code-cell-107-output" class="output"></div>
         </div>
         <p>As <em>seaborn</em> is built on top of matplotlib, all the additional tools are still available for you to customise your plots and figure. A common example is that <em>seaborn</em> doesn&#x27;t natively provide the option for a subplot, so you have to use matplotlib&#x27;s <code>plt.subplots()</code> and pass the axes to the <code>ax</code> argument.<br><br>Below we have recreated the 3 plot subplot of histograms, condensing the code down further by adding each plot to the figure using a <code>for loop</code>.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-109">fig, axes = plt.subplots(figsize=(10,4), ncols=3, sharey=True, layout=&quot;constrained&quot;)
+                <textarea id="code-cell-108">fig, axes = plt.subplots(figsize=(10,4), ncols=3, sharey=True, layout=&quot;constrained&quot;)
 
 for c, col in enumerate(plot_cols):
     sns.histplot(df, x=col, hue=&quot;Genotype&quot;, bins=50, ax=axes[c])
@@ -198,12 +198,12 @@ for c, col in enumerate(plot_cols):
 # Add the title to the figure
 fig.suptitle(&#x27;Histograms of Protein Expression by genotype&#x27;, fontsize=16);</textarea>
             </div>
-            <div id="code-cell-109-output" class="output"></div>
+            <div id="code-cell-108-output" class="output"></div>
         </div>
         <p>As a bonus - and a demonstration of <em>seaborn</em> - we can create a <a href="https://seaborn.pydata.org/generated/seaborn.kdeplot.html">KDE</a> (Kernel Density Estimate) plot which is a variation on the histogram. Instead of binning the data, a continuous, smoothed curve is fitted to the data to visualise the probability distribution. This can often be a much more visually appealing way to present your data distribution in a figure.<br><br>Try changing <code>bw_adjust</code> in the cell below to see how it affects the shape: 0 = less smooth, <em>to infinity</em> = smooth and uniform</p>
         <div class="code-area">
             <div class="code-container code-editor">
-                <textarea id="code-cell-110">fig, axes = plt.subplots(figsize=(10,4), ncols=3, sharey=True, layout=&quot;constrained&quot;)
+                <textarea id="code-cell-109">fig, axes = plt.subplots(figsize=(10,4), ncols=3, sharey=True, layout=&quot;constrained&quot;)
 
 for c, col in enumerate(plot_cols):
                                      # adjusts the smoothness     # change the colour scheme
@@ -211,8 +211,8 @@ for c, col in enumerate(plot_cols):
 
 fig.suptitle(&#x27;KDEs of Protein Expression by genotype&#x27;, fontsize=16);</textarea>
             </div>
-            <button id="run-code-cell-110" class="run-button">Run Code</button>
-            <div id="code-cell-110-output" class="output"></div>
+            <button id="run-code-cell-109" class="run-button">Run Code</button>
+            <div id="code-cell-109-output" class="output"></div>
         </div>
         
                     </div>
@@ -236,10 +236,10 @@ fig.suptitle(&#x27;KDEs of Protein Expression by genotype&#x27;, fontsize=16);</
         
         <div class="code-area">
             <div class="code-container code-editor">
-                <textarea id="code-cell-111"></textarea>
+                <textarea id="code-cell-110"></textarea>
             </div>
-            <button id="run-code-cell-111" class="run-button">Run Code</button>
-            <div id="code-cell-111-output" class="output"></div>
+            <button id="run-code-cell-110" class="run-button">Run Code</button>
+            <div id="code-cell-110-output" class="output"></div>
         </div>
         
                     </div>
@@ -253,7 +253,7 @@ fig.suptitle(&#x27;KDEs of Protein Expression by genotype&#x27;, fontsize=16);</
                         <p>In the previous section we explored feature relationships through the <a href="https://seaborn.pydata.org/generated/seaborn.scatterplot.html">scatter plots</a> and correlation matrices. As with creating a histogram, the code that we used previously can be reduced down to a single line:</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-112">fig, ax = plt.subplots()
+                <textarea id="code-cell-111">fig, ax = plt.subplots()
 
 ctrl = df[df[&#x27;Genotype&#x27;]==&#x27;Control&#x27;]
 tri = df[df[&#x27;Genotype&#x27;]==&#x27;Ts65Dn&#x27;]
@@ -268,20 +268,20 @@ ax.legend()
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-112-output" class="output"></div>
+            <div id="code-cell-111-output" class="output"></div>
         </div>
         <p>Have a play with the plot below, using extra arguments as seen from their <a href="https://seaborn.pydata.org/generated/seaborn.scatterplot.html">documentation</a>. Here we have added an extra split by styling the markers by another categorical column <code>&quot;Treatment&quot;</code>:</p>
         <div class="code-area">
             <div class="code-container code-editor">
-                <textarea id="code-cell-113">sns.scatterplot(df, x=&quot;ITSN1_N&quot;, y=&quot;NR2A_N&quot;, hue=&quot;Genotype&quot;, alpha=0.5, style=&quot;Treatment&quot;);</textarea>
+                <textarea id="code-cell-112">sns.scatterplot(df, x=&quot;ITSN1_N&quot;, y=&quot;NR2A_N&quot;, hue=&quot;Genotype&quot;, alpha=0.5, style=&quot;Treatment&quot;);</textarea>
             </div>
-            <button id="run-code-cell-113" class="run-button">Run Code</button>
-            <div id="code-cell-113-output" class="output"></div>
+            <button id="run-code-cell-112" class="run-button">Run Code</button>
+            <div id="code-cell-112-output" class="output"></div>
         </div>
         <p>However, if we want to recreate the log transformation plots, you will have to add the transformations as new columns to the dataframe:</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-114">cols = [&quot;ITSN1_N&quot;, &quot;NR2A_N&quot;]
+                <textarea id="code-cell-113">cols = [&quot;ITSN1_N&quot;, &quot;NR2A_N&quot;]
 
 log_df = df[cols + [&quot;Genotype&quot;]].copy()
 
@@ -291,41 +291,41 @@ for col in cols:
 
 log_df</textarea>
             </div>
-            <div id="code-cell-114-output" class="output"></div>
+            <div id="code-cell-113-output" class="output"></div>
         </div>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-115">sns.scatterplot(log_df, x=&quot;log_ITSN1_N&quot;, y=&quot;log_NR2A_N&quot;, hue=&quot;Genotype&quot;, alpha=0.5);</textarea>
+                <textarea id="code-cell-114">sns.scatterplot(log_df, x=&quot;log_ITSN1_N&quot;, y=&quot;log_NR2A_N&quot;, hue=&quot;Genotype&quot;, alpha=0.5);</textarea>
             </div>
-            <div id="code-cell-115-output" class="output"></div>
+            <div id="code-cell-114-output" class="output"></div>
         </div>
         <p>Our dataset is very wide, in that it has many columns (features), which makes viewing every pairing long winded and potentially visually unappealing. seaborn solves this with the <a href="https://seaborn.pydata.org/generated/seaborn.pairplot.html">pairplot</a> function, that will create a matrix of $N$ dimensions, where $N$ is the number of numerical columns. This matrix, like the correlation matrix, is symmetrical with each unique pair having a scatter plot. On the diagonal there is a KDE plot, as it is plotting just that feature. When combined with a <strong>hue</strong> the pair plot becomes the go to tool to get a quick overview of how your data is distributed and related.<br><br>To reduce the size of the plot we have just selected the first 5 features, adding back the <em>Genotype</em> column for the <em>hue</em>.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-116"># Get our selected columns as a list
+                <textarea id="code-cell-115"># Get our selected columns as a list
 
 pair_cols = df.columns[1:6].tolist() + [&quot;Genotype&quot;]
 
 pair_cols</textarea>
             </div>
-            <div id="code-cell-116-output" class="output"></div>
+            <div id="code-cell-115-output" class="output"></div>
         </div>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-117"># Select only those columns
+                <textarea id="code-cell-116"># Select only those columns
 
 pair_df = df.loc[:, pair_cols]</textarea>
             </div>
-            <div id="code-cell-117-output" class="output" style="display: none;"></div>
+            <div id="code-cell-116-output" class="output" style="display: none;"></div>
         </div>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-118">sns.pairplot(pair_df, hue=&quot;Genotype&quot;);</textarea>
+                <textarea id="code-cell-117">sns.pairplot(pair_df, hue=&quot;Genotype&quot;);</textarea>
             </div>
-            <div id="code-cell-118-output" class="output"></div>
+            <div id="code-cell-117-output" class="output"></div>
         </div>
         <p>Just from this plot alone, you can straight away see the control group is more likely to have outliers away from the main clusters.</p>
                     </div>
@@ -349,10 +349,10 @@ pair_df = df.loc[:, pair_cols]</textarea>
         
         <div class="code-area">
             <div class="code-container code-editor">
-                <textarea id="code-cell-119"></textarea>
+                <textarea id="code-cell-118"></textarea>
             </div>
-            <button id="run-code-cell-119" class="run-button">Run Code</button>
-            <div id="code-cell-119-output" class="output"></div>
+            <button id="run-code-cell-118" class="run-button">Run Code</button>
+            <div id="code-cell-118-output" class="output"></div>
         </div>
         
                     </div>
@@ -366,21 +366,21 @@ pair_df = df.loc[:, pair_cols]</textarea>
                         <p>As with the others, <a href="https://seaborn.pydata.org/generated/seaborn.heatmap.html">heatmaps</a> can easily be created in seaborn too:</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-120">corr_full = df.corr(numeric_only=True)</textarea>
+                <textarea id="code-cell-119">corr_full = df.corr(numeric_only=True)</textarea>
             </div>
-            <div id="code-cell-120-output" class="output" style="display: none;"></div>
+            <div id="code-cell-119-output" class="output" style="display: none;"></div>
         </div>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-121">sns.heatmap(corr_full, vmin=-1, vmax=1, cmap=&quot;crest&quot;);</textarea>
+                <textarea id="code-cell-120">sns.heatmap(corr_full, vmin=-1, vmax=1, cmap=&quot;crest&quot;);</textarea>
             </div>
-            <div id="code-cell-121-output" class="output"></div>
+            <div id="code-cell-120-output" class="output"></div>
         </div>
         <p>An extension of the heatmap is the <a href="https://seaborn.pydata.org/examples/structured_heatmap.html">clustermap</a>, which will hierarchically cluster the values in your heatmap. This can be very useful in quickly understanding how your features group, possibly indicating which can be dropped before machine learning.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-122">g = sns.clustermap(corr_full, center=0, cmap=&quot;vlag&quot;,
+                <textarea id="code-cell-121">g = sns.clustermap(corr_full, center=0, cmap=&quot;vlag&quot;,
                    dendrogram_ratio=(.1, .2),
                    cbar_pos=(.02, .32, .03, .2),
                    vmax=1, vmin=-1,
@@ -390,7 +390,7 @@ pair_df = df.loc[:, pair_cols]</textarea>
 # Removes the clustering lines from the row side
 g.ax_row_dendrogram.remove()</textarea>
             </div>
-            <div id="code-cell-122-output" class="output"></div>
+            <div id="code-cell-121-output" class="output"></div>
         </div>
         
                     </div>

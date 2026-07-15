@@ -155,24 +155,24 @@
                         <h3>Scatter plots</h3>
                         <p>The most common way to quantify a relationship between two variables is to measure how consistently they vary together. When one increases and the other tends to as well, they are positively related. When one increases as the other decreases, they are negatively related. When there is no consistent pattern, they are uncorrelated. This matters in ML for a practical reason: if two features are measuring essentially the same thing, they provide redundant information. Including both gives that signal disproportionate weight during training, potentially at the expense of other, more independent features. Identifying and addressing this kind of redundancy is a key part of feature selection.<br><br>In this section we will look at the main tools for exploring feature relationships: scatter plots for visual inspection, the Pearson correlation coefficient and covariance for quantification, and heatmaps for surveying relationships across many features at once.</p>
         <div class="code-area">
-            <div class="code-collapse-header" onclick="toggleCodeCollapse('code-cell-74')">
+            <div class="code-collapse-header" onclick="toggleCodeCollapse('code-cell-73')">
                 <span class="code-collapse-icon">▶</span>
                 <span class="code-collapse-label">Show code</span>
             </div>
-            <div class="code-container code-fixed code-collapsed" id="code-cell-74-container">
-                <textarea id="code-cell-74"># Setup the workspace as before
+            <div class="code-container code-fixed code-collapsed" id="code-cell-73-container">
+                <textarea id="code-cell-73"># Setup the workspace as before
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
 df = pd.read_csv(&quot;./data/cortex_nuclear.csv&quot;)</textarea>
             </div>
-            <div id="code-cell-74-output" class="output" style="display: none;"></div>
+            <div id="code-cell-73-output" class="output" style="display: none;"></div>
         </div>
         <p>The simplest method to explore the relationship between two features is to create a scatter plot using <code>.scatter()</code> with one feature on the <em>x-axis</em> and another on the <em>y-axis</em>.<br><br>Due to the density of the plotting points we can use two arguments:<ul class="nested-list"><li><strong>alpha</strong> (which we used previously for transparency)</li><br><li><strong>s</strong> an integer, that controls size</li></ul></p>
         <div class="code-area">
             <div class="code-container code-editor">
-                <textarea id="code-cell-75">fig, ax = plt.subplots()
+                <textarea id="code-cell-74">fig, ax = plt.subplots()
 
 ax.scatter(x=df[&quot;ITSN1_N&quot;], y=df[&quot;NR2A_N&quot;], 
             alpha=0.5, # 50% transparent
@@ -183,8 +183,8 @@ ax.set(xlabel=&quot;ITSN1_N&quot;, ylabel=&quot;NR2A_N&quot;)
 
 plt.show()</textarea>
             </div>
-            <button id="run-code-cell-75" class="run-button">Run Code</button>
-            <div id="code-cell-75-output" class="output"></div>
+            <button id="run-code-cell-74" class="run-button">Run Code</button>
+            <div id="code-cell-74-output" class="output"></div>
         </div>
         <p>The scatter plot immediately suggests a positive relationship between <code>ITSN1_N</code> and <code>NR2A_N</code>. However, it is heavily clustered in the lower end of the range of values, combined with some distinct outliers. We know that this is due to heavy <em>rightwards skew</em> from the last section, something we should also check for in <code>NR2A_N</code>.<br><br>Skewed data can violate the assumptions of correlation coefficients and make the scatter harder to read.</p>
         <div class="info-box key-terms-box">
@@ -199,7 +199,7 @@ plt.show()</textarea>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-76">fig, axes = plt.subplots(figsize=(10,4), ncols=2, layout=&#x27;constrained&#x27;)
+                <textarea id="code-cell-75">fig, axes = plt.subplots(figsize=(10,4), ncols=2, layout=&#x27;constrained&#x27;)
 
 n_bins = 20
 
@@ -217,12 +217,12 @@ axes[1].legend()
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-76-output" class="output"></div>
+            <div id="code-cell-75-output" class="output"></div>
         </div>
         <p>Plotting a histogram of <strong>NR2A_N</strong> shows it to be roughly bell-shaped in its distribution. Applying a natural log transformation mostly shifts the distribution to have a narrower standard deviation, which is shifted left along the range of values.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-77">fig, axes = plt.subplots(figsize=(18, 4), ncols=3, layout=&#x27;constrained&#x27;)
+                <textarea id="code-cell-76">fig, axes = plt.subplots(figsize=(18, 4), ncols=3, layout=&#x27;constrained&#x27;)
 
 axes[0].scatter(x=df[&quot;ITSN1_N&quot;], y=df[&quot;NR2A_N&quot;], alpha=0.4, s=15)
 axes[0].set(xlabel=&quot;ITSN1_N&quot;, ylabel=&quot;NR2A_N&quot;, title=&quot;Original scale&quot;)
@@ -235,7 +235,7 @@ axes[2].set(xlabel=&quot;log(ITSN1_N)&quot;, ylabel=&quot;log(NR2A_N)&quot;, tit
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-77-output" class="output"></div>
+            <div id="code-cell-76-output" class="output"></div>
         </div>
         <p>Creating a scatter plot with a combination of only <strong>log-ITSN1_N</strong> and with both features log transformed demonstrates how the data has been spread further in the lower ends and shrunk in the higher ends. Even though <strong>NR2A_N</strong> is bell-shaped, applying a log transformation in combination with <strong>log-ITSN1_N</strong> has the data appear much more positively correlated, moving from the bottom-left to top-right. This visual change in space between values highlights nicely how transformations can improve machine learning: as say, if we were to apply a <strong>linear regression</strong> model - one that predicts a continuous value given an input - the increased difference in points allows the model to better approximate it&#x27;s prediction in the state space.<br><br>Due to this we will stick with a log transformed version of both features.</p>
                     </div>
@@ -249,15 +249,15 @@ plt.show()</textarea>
                         <p>If your data has categorical labels it is always beneficial to colour the scatter plot by the differing groups for a quick view of any distribution differences between the groups.<br><br>With matplotlib the data needs to be separated first and then applied to different <code>ax.scatter()</code> functions.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-78"># See the categories
+                <textarea id="code-cell-77"># See the categories
 set(df[&#x27;Genotype&#x27;])</textarea>
             </div>
-            <div id="code-cell-78-output" class="output"></div>
+            <div id="code-cell-77-output" class="output"></div>
         </div>
         <p>First we will need to filter the data into our respective groups and then find the log values of each.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-79"># Filter by the genotypes
+                <textarea id="code-cell-78"># Filter by the genotypes
 ctrl = df[df[&#x27;Genotype&#x27;]==&#x27;Control&#x27;]
 tri = df[df[&#x27;Genotype&#x27;]==&#x27;Ts65Dn&#x27;]
 
@@ -269,12 +269,12 @@ ctrl_nr2 = np.log(ctrl[&#x27;NR2A_N&#x27;])
 tri_is = np.log(tri[&#x27;ITSN1_N&#x27;])
 tri_nr2 = np.log(tri[&#x27;NR2A_N&#x27;])</textarea>
             </div>
-            <div id="code-cell-79-output" class="output" style="display: none;"></div>
+            <div id="code-cell-78-output" class="output" style="display: none;"></div>
         </div>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-80">fig, ax = plt.subplots()
+                <textarea id="code-cell-79">fig, ax = plt.subplots()
 
 ax.scatter(x=ctrl_is, y=ctrl_nr2, alpha=0.5, label=&#x27;Control&#x27;)
 
@@ -286,7 +286,7 @@ ax.legend()
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-80-output" class="output"></div>
+            <div id="code-cell-79-output" class="output"></div>
         </div>
         <p>Colouring by genotype reveals that control and trisomic (Ts65Dn) mice occupy slightly different regions of the plot, with trisomic mice slightly shifted rightwards on the ITSN1_N axis. This is an important observation: if two groups have genuinely different distributions, computing a single correlation coefficient combining both can be misleading. Always consider whether your data contains meaningful subgroups before interpreting a global correlation.</p>
         <div class="info-box note-box">
@@ -320,10 +320,10 @@ plt.show()</textarea>
         
         <div class="code-area">
             <div class="code-container code-editor">
-                <textarea id="code-cell-81"></textarea>
+                <textarea id="code-cell-80"></textarea>
             </div>
-            <button id="run-code-cell-81" class="run-button">Run Code</button>
-            <div id="code-cell-81-output" class="output"></div>
+            <button id="run-code-cell-80" class="run-button">Run Code</button>
+            <div id="code-cell-80-output" class="output"></div>
         </div>
         
                     </div>
@@ -336,12 +336,12 @@ plt.show()</textarea>
                         <h3>The Correlation Coefficient</h3>
                         <p>The <a href="https://en.wikipedia.org/wiki/Pearson_correlation_coefficient">Pearson correlation coefficient</a> ($r$) quantifies the strength and direction of the <strong>linear relationship</strong> between two variables, always producing a value between −1 and +1.<br><ul class="nested-list"><li><strong>r = +1</strong>: a perfect positive linear relationship — as one variable increases, the other increases proportionally. All points in a scatter plot lie exactly on a straight line with a positive slope.</li><br><li><strong>r = −1</strong>: a perfect negative linear relationship — as one increases, the other decreases proportionally. All points lie on a straight line with a negative slope.</li><br><li><strong>r = 0</strong>: no linear relationship. The positive and negative contributions cancel out exactly.</li></ul></p><p>All real-world correlations fall somewhere in between. It is worth noting that $r = 0$ does not necessarily mean the two variables are unrelated, only that there is no <em>linear</em> pattern. A strong curved relationship, for instance, can still produce an $r$ close to zero.<br><br>Finally, $r$ is a <strong>symmetric</strong> measure: the correlation of X with Y is identical to the correlation of Y with X. There is no implied direction of influence between the two variables.</p>
         <div class="code-area">
-            <div class="code-collapse-header" onclick="toggleCodeCollapse('code-cell-82')">
+            <div class="code-collapse-header" onclick="toggleCodeCollapse('code-cell-81')">
                 <span class="code-collapse-icon">▶</span>
                 <span class="code-collapse-label">Show code</span>
             </div>
-            <div class="code-container code-fixed code-collapsed" id="code-cell-82-container">
-                <textarea id="code-cell-82"># A seed ensures the random number generator gives 
+            <div class="code-container code-fixed code-collapsed" id="code-cell-81-container">
+                <textarea id="code-cell-81"># A seed ensures the random number generator gives 
 # the same numbers each time
 rng = np.random.default_rng(42)
 n = 120
@@ -370,18 +370,18 @@ for ax, r in zip(axes, correlations):
 plt.suptitle(&#x27;Pearson Correlation&#x27;, y=1.03, fontsize=12)
 plt.show()</textarea>
             </div>
-            <div id="code-cell-82-output" class="output"></div>
+            <div id="code-cell-81-output" class="output"></div>
         </div>
         <p>To calculate the $r$ the <code>.corr()</code> method can be called on your DataFrame. For instance, here we will apply it just to the two features we explored visually previously:</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-83">target_cols = [&#x27;ITSN1_N&#x27;, &#x27;NR2A_N&#x27;]
+                <textarea id="code-cell-82">target_cols = [&#x27;ITSN1_N&#x27;, &#x27;NR2A_N&#x27;]
 
 corr_sample = df[target_cols].corr()
 
 corr_sample.round(3)</textarea>
             </div>
-            <div id="code-cell-83-output" class="output"></div>
+            <div id="code-cell-82-output" class="output"></div>
         </div>
         <p>The result is a $2 \times 2$ matrix, as we have two features. Along the diagonal (top left and bottom right) are the values for the comparison of a column to itself, which will always be <strong>1</strong> as they are identical.<br><br>The non-diagonal elements give the correlation coefficient between the two features, here <strong>0.426</strong>. Both the <em>ITSN1_N–NR2A_N</em> and <em>NR2A_N–ITSN1_N</em> entries appear, however because of the symmetry we would only need to report one out of the two.</p>
         <div class="info-box important-box">
@@ -396,16 +396,16 @@ corr_sample.round(3)</textarea>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-84">df.corr()</textarea>
+                <textarea id="code-cell-83">df.corr()</textarea>
             </div>
-            <div id="code-cell-84-output" class="output"></div>
+            <div id="code-cell-83-output" class="output"></div>
         </div>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-85">df.corr(numeric_only=True)</textarea>
+                <textarea id="code-cell-84">df.corr(numeric_only=True)</textarea>
             </div>
-            <div id="code-cell-85-output" class="output"></div>
+            <div id="code-cell-84-output" class="output"></div>
         </div>
         
                     </div>
@@ -419,64 +419,64 @@ corr_sample.round(3)</textarea>
                         <p>Pandas&#x27; <code>.corr()</code> is convenient, but the same coefficients can be computed directly on NumPy arrays with <code>np.corrcoef()</code>. This is handy when working outside a DataFrame, and lets us quickly compare the correlation under different treatments — raw, log-transformed, and split by genotype — which we plot below.</p><p>First we extract the data as a NumPy array and log transform the values. It is important to drop any NaN values as these will throw an error.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-86"># filter  # drop NaN  # To NumPy
+                <textarea id="code-cell-85"># filter  # drop NaN  # To NumPy
 stand_np = df[target_cols].dropna().to_numpy()
 log_np = np.log(df[target_cols].dropna().to_numpy())</textarea>
             </div>
-            <div id="code-cell-86-output" class="output"></div>
+            <div id="code-cell-85-output" class="output" style="display: none;"></div>
         </div>
         <p>As our data features run along a columnar axis (0), rather than along the row (1) which is standard to NumPy, we need to tell the function where to look. To do so, set the <code>rowvar</code> argument to <code>False</code>.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-87">stand_corr = np.corrcoef(stand_np, rowvar=False)
+                <textarea id="code-cell-86">stand_corr = np.corrcoef(stand_np, rowvar=False)
 
 print(&quot;The same correlation matrix as previously:&quot;)
 stand_corr</textarea>
             </div>
-            <div id="code-cell-87-output" class="output"></div>
+            <div id="code-cell-86-output" class="output"></div>
         </div>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-88">log_corr = np.corrcoef(log_np, rowvar=False)
+                <textarea id="code-cell-87">log_corr = np.corrcoef(log_np, rowvar=False)
 
 print(&quot;The correlation matrix on log transformed data:&quot;)
 log_corr</textarea>
             </div>
-            <div id="code-cell-88-output" class="output"></div>
+            <div id="code-cell-87-output" class="output"></div>
         </div>
         <p>We can now pull out the values for just the sub-groups (<em>Control</em> &amp; <em>Ts65Dn</em>), log transform them and apply the correlation analysis:</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-89">log_ctrl = np.log(df[target_cols][df[&#x27;Genotype&#x27;] == &#x27;Control&#x27;].dropna().to_numpy())
+                <textarea id="code-cell-88">log_ctrl = np.log(df[target_cols][df[&#x27;Genotype&#x27;] == &#x27;Control&#x27;].dropna().to_numpy())
 log_tri = np.log(df[target_cols][df[&#x27;Genotype&#x27;] == &#x27;Ts65Dn&#x27;].dropna().to_numpy())</textarea>
             </div>
-            <div id="code-cell-89-output" class="output" style="display: none;"></div>
+            <div id="code-cell-88-output" class="output" style="display: none;"></div>
         </div>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-90">corr_ctrl = np.corrcoef(log_ctrl, rowvar=False)
+                <textarea id="code-cell-89">corr_ctrl = np.corrcoef(log_ctrl, rowvar=False)
 
 print(&quot;The correlation matrix for Control on log transformed data:&quot;)
 corr_ctrl</textarea>
             </div>
-            <div id="code-cell-90-output" class="output"></div>
+            <div id="code-cell-89-output" class="output"></div>
         </div>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-91">corr_tri = np.corrcoef(log_tri, rowvar=False)
+                <textarea id="code-cell-90">corr_tri = np.corrcoef(log_tri, rowvar=False)
 
 print(&quot;The correlation matrix for Ts65Dn on log transformed data:&quot;)
 corr_tri</textarea>
             </div>
-            <div id="code-cell-91-output" class="output"></div>
+            <div id="code-cell-90-output" class="output"></div>
         </div>
         <p>To visually compare the $r$ values we can introduce the humble bar chart with matplotlib. Similar to previously, to call a bar chart simply use the <code>.bar()</code> method on an axes, passing to it first a list of the labels for each bar (x-axis), second a list/array of values to be plotted, and finally their colours. All left-to-right.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-92">fig, ax = plt.subplots(figsize=(12, 4))
+                <textarea id="code-cell-91">fig, ax = plt.subplots(figsize=(12, 4))
 
 labels = [&#x27;Standard&#x27;, &#x27;Log-transformed&#x27;, &#x27;Control only (log)&#x27;, &#x27;Ts65Dn only (log)&#x27;]
 # Isolate the top right value in the correlation matrix
@@ -487,12 +487,12 @@ ax.set_ylabel(&#x27;r value&#x27;)
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-92-output" class="output"></div>
+            <div id="code-cell-91-output" class="output"></div>
         </div>
         <p>When introducing the Pearson $r$ value it was stated that the range of the values lie between <strong>-1</strong> and <strong>1</strong>. It is always good practice to place your plots on an axis range that reflects the true span in that feature space. To do so use <code>ax.set_ylim()</code> (<code>.set_xlim()</code> for the x-axis) to restrict or expand the axis to your values in a tuple.<br><br>Additionally, a dotted line can be added horizontally to indicate the the reader where the values would switch from a positive to negative correlation with the <code>ax.axhline()</code> method. The line be stylised withthe arguments <code>linewidth</code> for <strong>width</strong> and <code>linestyle</code> to make it <strong>dotted</strong>.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-93">fig, ax = plt.subplots(figsize=(12, 4))
+                <textarea id="code-cell-92">fig, ax = plt.subplots(figsize=(12, 4))
 
 labels = [&#x27;Standard&#x27;, &#x27;Log-transformed&#x27;, &#x27;Control only (log)&#x27;, &#x27;Ts65Dn only (log)&#x27;]
 counts = [stand_corr[0, 1], log_corr[0, 1], corr_ctrl[0, 1], corr_tri[0, 1]]
@@ -509,7 +509,7 @@ ax.axhline(0, color=&#x27;black&#x27;, linewidth=0.8, linestyle=&#x27;--&#x27;)
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-93-output" class="output"></div>
+            <div id="code-cell-92-output" class="output"></div>
         </div>
         
                     </div>
@@ -523,30 +523,30 @@ plt.show()</textarea>
                         <p><strong>Covariance</strong> is the raw, unnormalised form of correlation. Whereas correlation is bounded between −1 and +1, covariance can be any real number, with its magnitude depending entirely on the scale of the two variables.</p><h4>Variance</h4><p>Covariance is also an extension of the <strong>variance</strong> metric, the measure of how much data points in a single feature vary across the population:<br><br>$$\sigma^2 = \frac{1}{n} \sum_{i=1}^{n} (x_i - \mu)^2$$<br><br>where $x$ is the data and $\mu$ is the mean of the data.<br><br>From this equation, you can see that variance is simply the average of how far every value deviates from the population mean $(x_i - \mu)$. The reason it is squared is to over-represent large deviations (outliers) in the final metric, and because a squared term is mathematically preferable to work with for many algorithms.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-94">x = np.array([4, 13 ,2 ,20, 1, 4, 6, 7, 3, 3, 12])
+                <textarea id="code-cell-93">x = np.array([4, 13 ,2 ,20, 1, 4, 6, 7, 3, 3, 12])
 
 variance = np.sum(  (x - np.mean(x))**2   )   /   len(x)
 
 variance</textarea>
             </div>
-            <div id="code-cell-94-output" class="output"></div>
+            <div id="code-cell-93-output" class="output"></div>
         </div>
         <h4>Covariance</h4><p>Covariance applies the idea of variance to <strong>two</strong> variables, not one. Finding the differences of one feature (x) from its mean and multiplying them by the differences of another feature (y) to their mean:<br><br>$$\text{Cov}(X, Y) = \frac{1}{n} \sum_{i=1}^{n} (x_i - \mu_x)(y_i - \mu_y)$$<br><br>A positive covariance means the variables tend to move together; negative means they move in opposite directions. A problem with covariance is interpretability: a covariance of 0.05 between two variables measured in milligrams is not directly comparable to a covariance of 0.05 between variables measured in kilograms.<br><br>The Pearson coefficient resolves this by dividing the covariance by the multiplication of the two standard deviations, effectively normalising it to the [−1, 1] scale:<br><br>$$r = \frac{\text{Cov}(X, Y)}{\sigma_X \cdot \sigma_Y}$$<br><br>In practice, you will almost always report correlation rather than covariance for interpretation. However, covariance is important internally for a lot of machine learning tools, such as <strong>principal component analysis (PCA)</strong>, which you will encounter in later modules.</p><h4>Creating a covariance matrix</h4>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-95">cols = [&#x27;DYRK1A_N&#x27;, &#x27;ITSN1_N&#x27;, &#x27;BDNF_N&#x27;, &#x27;NR1_N&#x27;, &#x27;NR2A_N&#x27;]
+                <textarea id="code-cell-94">cols = [&#x27;DYRK1A_N&#x27;, &#x27;ITSN1_N&#x27;, &#x27;BDNF_N&#x27;, &#x27;NR1_N&#x27;, &#x27;NR2A_N&#x27;]
 
 # .cov() computes the pairwise covariance matrix
 cov_matrix = df[cols].cov()
 print(&quot;Covariance matrix:&quot;)
 print(cov_matrix.round(4))</textarea>
             </div>
-            <div id="code-cell-95-output" class="output"></div>
+            <div id="code-cell-94-output" class="output"></div>
         </div>
         <p>On the diagonal you will see the <strong>variance</strong>, as it is each feature against itself. Everywhere else is the covariance, which is symmetrical about the diagonal. You can therefore disregard the information on one side of the diagonal.<br><br>To programmatically obtain all of the covariances we can use the <a href="https://numpy.org/doc/stable/reference/generated/numpy.triu_indices.html">triu_indices</a> which return the indices for the upper triangle of a matrix.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-96"># Convert the DF to numpy
+                <textarea id="code-cell-95"># Convert the DF to numpy
 cov_np = cov_matrix.to_numpy()
 
 # Get the indices by giving it the number of columns
@@ -558,12 +558,12 @@ print(covariances.shape)
 
 covariances</textarea>
             </div>
-            <div id="code-cell-96-output" class="output"></div>
+            <div id="code-cell-95-output" class="output"></div>
         </div>
         <p>As standard the function will return the indices inclusive of the diagonal, which we don&#x27;t want on this occasion. This can be altered by using the <code>k</code> parameter. What we need is <code>k=1</code>, but try altering the value to gain an intuitive understanding of how it works.</p>
         <div class="code-area">
             <div class="code-container code-editor">
-                <textarea id="code-cell-97"># K = 1 shifts the indices 1 diagonal up
+                <textarea id="code-cell-96"># K = 1 shifts the indices 1 diagonal up
 cov_idx = np.triu_indices(len(cols), k=1)
 
 covariances = cov_np[cov_idx]
@@ -572,8 +572,8 @@ print(covariances.shape)
 
 covariances</textarea>
             </div>
-            <button id="run-code-cell-97" class="run-button">Run Code</button>
-            <div id="code-cell-97-output" class="output"></div>
+            <button id="run-code-cell-96" class="run-button">Run Code</button>
+            <div id="code-cell-96-output" class="output"></div>
         </div>
         
                     </div>
@@ -587,16 +587,16 @@ covariances</textarea>
                         <p>With 77 protein columns in this dataset, inspecting correlations pair by pair is impractical. The <strong>correlation matrix</strong> we have seen computed will return a Pearson coefficient between every pair of columns, where the diagonal is always 1 (every variable is perfectly correlated with itself).<br><br>A better way to visualise everything together is a <strong>heatmap</strong> where the coefficient values are encoded with colours, making structural patterns immediately visible. Clusters of co-regulated proteins appear as bright blocks; uncorrelated or inversely related pairs appear in contrasting colours.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-98">corr_full = df.corr(numeric_only=True)
+                <textarea id="code-cell-97">corr_full = df.corr(numeric_only=True)
 
 corr_full</textarea>
             </div>
-            <div id="code-cell-98-output" class="output"></div>
+            <div id="code-cell-97-output" class="output"></div>
         </div>
         <p>To plot the full correlation matrix use the method <code>ax.imshow()</code> which renders any input data as a colour image, effectively converting the number to a colour given a scale. To <code>ax.imshow()</code> you pass:<ul class="nested-list"><li>The values from a corrlation matrix in the form of a NumPy array</li><br><li>The colour scale: here we have used <strong>RdBu_r</strong> which is Red to Blue - see <a href="https://matplotlib.org/stable/users/explain/colors/colormaps.html">here</a> for the full list</li><br><li>The minimum and maximum values in the numerical range (<strong>vmin</strong> and <strong>vmax</strong>). This is important as the colour bar will scale to the data, giving you false ideas of absolute difference where the range is small.</li></ul></p><p>The labels on the x- &amp; y-axis are the same given it is symmetrical, therefore you should pass the same list of columns to <code>set_xticks</code> and &#x27;set_yticks&#x27;.</p><p>Lastly, you should always include a colour bar by adding it to the plot with <code>plt.colourbar()</code>. To this we pass:<ul class="nested-list"><li>The plot itself, here saved to the variable <code>im</code></li><br><li>The axes to plot to with <code>ax</code></li><br><li>It&#x27;s named label with <code>label</code></li><br><li>It&#x27;s size with <code>fraction</code></li><br><li>How far it is from the plot with <code>pad</code></li></ul></p><p>Run the cell below and have a play around changing and removing the arguments, to see how they affect the outcome.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-99">fig, ax = plt.subplots(figsize=(14, 12), layout=&quot;constrained&quot;)
+                <textarea id="code-cell-98">fig, ax = plt.subplots(figsize=(14, 12), layout=&quot;constrained&quot;)
                                                                     # improves it visually
 im = ax.imshow(corr_full.to_numpy(), cmap=&#x27;RdBu_r&#x27;, vmin=-1, vmax=1, aspect=&#x27;auto&#x27;)
 
@@ -612,7 +612,7 @@ ax.set_title(&#x27;Protein Expression — Full Correlation Matrix&#x27;, fontsiz
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-99-output" class="output"></div>
+            <div id="code-cell-98-output" class="output"></div>
         </div>
         <p>The heatmap reveals clear <strong>blocks</strong> of highly correlated proteins — clusters that likely correspond to proteins in the same downstream signalling pathway. When one is elevated, the others tend to be as well.<br><br>Note that the matrix is symmetric about the diagonal: the upper and lower triangles contain identical information.</p>
                     </div>
@@ -626,7 +626,7 @@ plt.show()</textarea>
                         <p>To programmatically extract the most (and least) correlated values we can create a function that extracts the unique values as we did previously with <code>np.triu_indices()</code>, which provides both the indices of the values, as well as those for the columns, as they occupy the same space.<br><br>From this, a DataFrame can be built where each feature is named to observe the correlation value for each pair. Sorting by the <em>absolute</em> value means the top $r$ values can be obtained with just <code>.head(10)</code>. To obtain the smallest values there is a niche Pandas method <code>.nsmallest()</code>, that given an integer and a column name will return the rows where the values are smallest in that column.<br><br>This has all been wrapped into a function:</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-100">def get_top_corr(corr_df, top=True):
+                <textarea id="code-cell-99">def get_top_corr(corr_df, top=True):
     &quot;&quot;&quot;Print the 10 most or least correlated feature pairs from a correlation matrix.
 
     Extracts the upper triangle of a correlation matrix (excluding the diagonal),
@@ -678,21 +678,21 @@ plt.show()</textarea>
         # nsmallerst returns an dataframe of the smallest values given the int
         print(corr_pairs.nsmallest(10, &#x27;abs_r&#x27;).drop(columns=&#x27;abs_r&#x27;))</textarea>
             </div>
-            <div id="code-cell-100-output" class="output" style="display: none;"></div>
+            <div id="code-cell-99-output" class="output" style="display: none;"></div>
         </div>
         <p>Obtain the top 10 correlated pairs:</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-101">get_top_corr(corr_full)</textarea>
+                <textarea id="code-cell-100">get_top_corr(corr_full)</textarea>
             </div>
-            <div id="code-cell-101-output" class="output"></div>
+            <div id="code-cell-100-output" class="output"></div>
         </div>
         <p>Obtain the 10 least correlated pairs:</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-102">get_top_corr(corr_full, top=False)</textarea>
+                <textarea id="code-cell-101">get_top_corr(corr_full, top=False)</textarea>
             </div>
-            <div id="code-cell-102-output" class="output"></div>
+            <div id="code-cell-101-output" class="output"></div>
         </div>
         <p>Finding highly correlated pairs raises two important practical questions.<br><br><strong>What do we do with redundant features?</strong> In machine learning, two features with a correlation above roughly 0.9 carry nearly identical information. Including both does not add much to a model and can inflate feature importance scores or slow training. A common pre-processing step is to remove one column from each highly-correlated pair, retaining the one with a stronger relationship to your target variable.<br><br>A final caveat: Pearson only captures <em>linear</em> relationships and is sensitive to outliers and skew. Whilst it will work on non-normal distributed data, some implementations of Pearson&#x27;s will perform a statistical p-value test that the two samples are uncorrelated with the assumption they are normally distributed. If you want to use this or your data is extremely non-normal then a rank-based alternative such as <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.spearmanr.html"><strong>Spearman&#x27;s rank correlation</strong></a> is more robust, as it correlates the ranks of the values rather than the raw values themselves.</p>
                     </div>
@@ -716,12 +716,12 @@ plt.show()</textarea>
         
         <div class="code-area">
             <div class="code-container code-editor">
-                <textarea id="code-cell-103">penguins = pd.read_csv(&quot;./data/penguins_cleaned.csv&quot;)
+                <textarea id="code-cell-102">penguins = pd.read_csv(&quot;./data/penguins_cleaned.csv&quot;)
 
 correlation_cols = penguins.columns[2:6]</textarea>
             </div>
-            <button id="run-code-cell-103" class="run-button">Run Code</button>
-            <div id="code-cell-103-output" class="output"></div>
+            <button id="run-code-cell-102" class="run-button">Run Code</button>
+            <div id="code-cell-102-output" class="output"></div>
         </div>
         
                     </div>

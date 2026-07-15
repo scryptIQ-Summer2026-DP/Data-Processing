@@ -156,7 +156,7 @@
                         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-57">import pandas as pd
+                <textarea id="code-cell-56">import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -164,12 +164,12 @@ df = pd.read_csv(&quot;./data/cortex_nuclear.csv&quot;)
 
 outlier_col = &quot;ITSN1_N&quot;</textarea>
             </div>
-            <div id="code-cell-57-output" class="output" style="display: none;"></div>
+            <div id="code-cell-56-output" class="output" style="display: none;"></div>
         </div>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-58">fig, ax = plt.subplots()
+                <textarea id="code-cell-57">fig, ax = plt.subplots()
 
 n_bins = 30
 
@@ -178,7 +178,7 @@ ax.set(xlabel=outlier_col, ylabel=&#x27;Count&#x27;)
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-58-output" class="output"></div>
+            <div id="code-cell-57-output" class="output"></div>
         </div>
         
                     </div>
@@ -189,7 +189,7 @@ plt.show()</textarea>
                 <div class="module-body">
                     <div class="module-section">
                         <h3>Normalising - log</h3>
-                        <p>As expression counts change as fold-changes rather than absolute amounts (multiplicative), and are also bounded below by zero, it is more natural to work on a log scale. By doing so the changes along the unit axis become fold-changes rather than absolute, the distribution becomes more symmetrical (approximating normality better), and the variance becomes more stable across the range of values. This matters because some tools either assume normality or behave better under it.<br><br>For example, take Z-score from the first section. When interpreting the scores we would say anything $\pm3$ units would be an outlier as that contains 99.7% of the values. This assumption does not hold true when applied to right-skewed data, as a higher percentage would be outside this boundary.</p><p>Examples of when a tool <strong>assumes</strong> the data is normally distributed:<br><ul class="nested-list"><li>Confidence intervals around the mean</li><br><li>Parametric P-value tests: T-test, ANOVA</li><br><li>Gaussian Naive Bayes (supervised ML)</li><br><li>Gaussian Mixture Models (unsupervised ML)</li></ul></p><p>Examples of when a tool <strong>performs better</strong> when the data is normally distributed:<br><ul class="nested-list"><li>Principal Component Analysis (dimensionality reduction)</li><br><li>k-nearest neighbours (supervised ML)</li><br><li>support vector machines (supervised ML)</li><br><li>neural networks (supervised ML)</li></ul></p><p>We will be covering the machine learning models in the Classical ML and AI module.</p>
+                        <p>If your data looks like and is known to increase in its units as a fold-change (multiplicative) rather than absolute amounts (additive) - it is more natural to work on a log scale. Working with log means the unit axis become fold-changes rather than absolute, the distribution becomes more symmetrical (approximating normality better), and the variance becomes more stable across the range of values. This matters because some tools either assume normality or behave better under it.<br><br>For example, take Z-score from the first section. When interpreting the scores we would say anything $\pm3$ units would be an outlier as that contains 99.7% of the values. This assumption does not hold true when applied to right-skewed data, as a higher percentage would be outside this boundary.</p><p>Examples of when a tool <strong>assumes</strong> the data is normally distributed:<br><ul class="nested-list"><li>Confidence intervals around the mean</li><br><li>Parametric P-value tests: T-test, ANOVA</li><br><li>Gaussian Naive Bayes (supervised ML)</li><br><li>Gaussian Mixture Models (unsupervised ML)</li></ul></p><p>Examples of when a tool <strong>performs better</strong> when the data is normally distributed:<br><ul class="nested-list"><li>Principal Component Analysis (dimensionality reduction)</li><br><li>k-nearest neighbours (supervised ML)</li><br><li>support vector machines (supervised ML)</li><br><li>neural networks (supervised ML)</li></ul></p><p>We will be covering the machine learning models in the Classical ML and AI module.</p>
         <div class="info-box key-terms-box">
             <div class="box-title">
                 <span class="box-icon"></span>
@@ -202,18 +202,18 @@ plt.show()</textarea>
         <h4>Transforming with log</h4><p>To <em>transform</em> a log-normal set of data, you need to apply a logarithm to all elements. The standard one to use is <strong>natural log</strong> or log in base <em>e</em> ($log_e$). Alternatively, you can use <strong>$log_2$</strong> or <strong>$log_{10}$</strong>. Each one describes the fold change in terms of their base, i.e. with $log_2$ &amp; $log_{10}$ each unit step describes a 2- or 10-fold change respectively. For $log_e$, each step is an <em>e-fold</em> change, i.e. ~2.718 times.<br><br>To demonstrate we will apply all of them to our data below using <a href="https://numpy.org/doc/stable/reference/generated/numpy.log.html">NumPy log functions</a>:</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-59">data = df[outlier_col].dropna().to_numpy()
+                <textarea id="code-cell-58">data = df[outlier_col].dropna().to_numpy()
 
 loge_data = np.log(data)
 log2_data = np.log2(data)
 log10_data = np.log10(data)</textarea>
             </div>
-            <div id="code-cell-59-output" class="output" style="display: none;"></div>
+            <div id="code-cell-58-output" class="output" style="display: none;"></div>
         </div>
         <p>From plotting each distribution it can be seen that they are all shifted to the left, and have a bell-shaped curve. Negative values are obtained due to most of the expression values being <strong>between 0 &amp; 1</strong> which will produce values &lt; 0.<br><br>Additionally, the values at the end of the tail to the right have also been drawn closer to the bulk of the distribution.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-60">fig, ax = plt.subplots()
+                <textarea id="code-cell-59">fig, ax = plt.subplots()
 
 ax.hist(data, bins=n_bins, alpha = 0.75, label=&quot;untransformed&quot;)
 ax.hist(loge_data, bins=n_bins, alpha = 0.75, label=&quot;natural log transformed&quot;)
@@ -226,40 +226,44 @@ ax.set(xlabel=outlier_col, ylabel=&quot;Count&quot;);
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-60-output" class="output"></div>
+            <div id="code-cell-59-output" class="output"></div>
         </div>
         <p>The width of each distribution is an inverse of the size of the fold change it represents, with base 10 having the smallest range as many more values fall within each step increase, as greater increases are needed to have a fold-change of 10.<br><br>However, plotting them on their own scales (below) it can be seen that the shapes are still identical; it is just their scale (x-axis) that differs.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-61">fig, axes = plt.subplots(figsize=(10,4), ncols=3, layout=&quot;constrained&quot;)
+                <textarea id="code-cell-60">fig, axes = plt.subplots(figsize=(10,4), ncols=3, layout=&quot;constrained&quot;)
 
-axes[0].hist(loge_data, bins=n_bins, color=&quot;orange&quot;, label=&quot;natural log transformed&quot;)
-axes[1].hist(log2_data, bins=n_bins, color=&quot;green&quot;, label=&quot;log2 transformed&quot;)
-axes[2].hist(log10_data, bins=n_bins, color=&quot;red&quot;, label=&quot;log10 transformed&quot;)
+axes[0].hist(loge_data, bins=n_bins, color=&quot;orange&quot;)
+axes[1].hist(log2_data, bins=n_bins, color=&quot;green&quot;)
+axes[2].hist(log10_data, bins=n_bins, color=&quot;red&quot;)
+
+axes[0].set(xlabel=&quot;natural log transformed&quot;, ylabel=&quot;Count&quot;)
+axes[1].set(xlabel=&quot;log2 transformed&quot;);
+axes[2].set(xlabel=&quot;log10 transformed&quot;);
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-61-output" class="output"></div>
+            <div id="code-cell-60-output" class="output"></div>
         </div>
         <p>One caveat to log transformations is that <strong>0</strong> can not be transformed and will instead return <em>negative infinity</em> and a <em>Runtime Warning</em> with the NumPy function.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-62">np.log(0)</textarea>
+                <textarea id="code-cell-61">np.log(0)</textarea>
             </div>
-            <div id="code-cell-62-output" class="output"></div>
+            <div id="code-cell-61-output" class="output"></div>
         </div>
         <p>Zeroes are common in biological datasets, especially when cleaned for background noise. If you have <em>zeroes</em>, to counter the data being lost you can add a <em>pseudocount</em> to the data to bring them above 0. The standard addition is <strong>1</strong>. NumPy has a function <code>np.log1p()</code> that automatically adds 1 before applying a <em>natural log</em>. However, if you want to use $log_2$ or $log_{10}$ you can simply add 1 to the data yourself.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-63">log1p_data = np.log1p(data)
+                <textarea id="code-cell-62">log1p_data = np.log1p(data)
 log2_1_data = np.log2(data + 1)</textarea>
             </div>
-            <div id="code-cell-63-output" class="output"></div>
+            <div id="code-cell-62-output" class="output" style="display: none;"></div>
         </div>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-64">fig, ax = plt.subplots()
+                <textarea id="code-cell-63">fig, ax = plt.subplots()
 
 n_bins = 20
 
@@ -277,7 +281,7 @@ ax.set(xlabel=outlier_col, ylabel=&quot;Count&quot;);
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-64-output" class="output"></div>
+            <div id="code-cell-63-output" class="output"></div>
         </div>
         <p>Adding 1 actually <em>bunches up</em> much more of the lower values, as an increase of 1 for smaller values is much greater than those above them, recapitulating slightly the steep increase just after zero seen in the untransformed data. This is because adding 1 puts everything into the <strong>1-2</strong> range where log is nearly linear, thus not transforming it much at all.<br><br>One thing to note: when transforming data due to the necessity of the downstream tool - such as machine learning tools - the base is irrelevant. All that matters is that the distribution is more normal to fit the tools <em>assumptions</em>. The base matters when you want the data to be more interpretable for humans, such as $log_2$ for expression data, as doubling every step is inherently easy for a human to understand visually.</p>
                     </div>
@@ -311,35 +315,38 @@ plt.show()</textarea>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-65">from scipy import stats
+                <textarea id="code-cell-64">from scipy import stats
 from sklearn.preprocessing import PowerTransformer</textarea>
             </div>
-            <div id="code-cell-65-output" class="output" style="display: none;"></div>
+            <div id="code-cell-64-output" class="output" style="display: none;"></div>
         </div>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-66"># The function returns two variables, the data and the found lambda
+                <textarea id="code-cell-65"># The function returns two variables, the data and the found lambda
 yeo_data, yeo_lambda = stats.yeojohnson(data)
 
 yeo_lambda</textarea>
             </div>
-            <div id="code-cell-66-output" class="output"></div>
+            <div id="code-cell-65-output" class="output"></div>
         </div>
         
         <div class="code-area">
-            <div class="code-container code-fixed">
-                <textarea id="code-cell-67">pt = PowerTransformer()
+            <div class="code-container code-editor">
+                <textarea id="code-cell-66"># RUN WITH  OUTPUT
+
+pt = PowerTransformer()
 with_scaling = pt.fit_transform(data.reshape(-1, 1))
 
 pt.lambdas_</textarea>
             </div>
-            <div id="code-cell-67-output" class="output" style="display: none;"></div>
+            <button id="run-code-cell-66" class="run-button">Run Code</button>
+            <div id="code-cell-66-output" class="output"></div>
         </div>
         <p>Both return effectively the same $\lambda$, confirming they implement the same underlying method — the only difference is that <code>PowerTransformer</code> also standardises the output to a <em>standard normal distribution</em>. Plotting them side-by-side you can see the implementation without scaling is tightly clustered just above zero in contrast to the scaled data which has the majority of its data (68%) between -1 and 1.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-68">fig, ax = plt.subplots()
+                <textarea id="code-cell-67">fig, ax = plt.subplots()
 
 n_bins = 20
 
@@ -354,12 +361,12 @@ ax.set(xlabel=outlier_col, ylabel=&quot;Count&quot;);
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-68-output" class="output"></div>
+            <div id="code-cell-67-output" class="output"></div>
         </div>
         <p>Placing them onto separate axes to prevent the visual squashing you can now see that their shape is exactly the same - just as we saw with the log values - it is just the range they occupy that is different. This is a <em>key</em> observation: the data shape is not changed by the scaling, it is just shifted and rescaled to fit a standard range.<br><br>Standardising puts every feature onto a common scale (in standard-deviation units), so that no single feature dominates a model simply because its raw values happen to be larger. This makes features of varying scales and shapes much more comparable and equitable inside the model&#x27;s training.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-69">fig, axes = plt.subplots(ncols=2, sharey=True)
+                <textarea id="code-cell-68">fig, axes = plt.subplots(ncols=2, sharey=True)
 
 n_bins = 20
 
@@ -369,12 +376,12 @@ axes[0].hist(yeo_data, bins=n_bins, alpha = 0.75,
 axes[1].hist(with_scaling, bins=n_bins, alpha = 0.75, 
                 color=&#x27;pink&#x27;)
 
-axes[0].set(xlabel=&quot;Yeo-Johnson transformed&quot;)
-axes[1].set(xlabel=&quot;Scaled Yeo-Johnson transformed&quot;, ylabel=&quot;Count&quot;);
+axes[0].set(xlabel=&quot;Yeo-Johnson transformed&quot;, ylabel=&quot;Count&quot;)
+axes[1].set(xlabel=&quot;Scaled Yeo-Johnson transformed&quot;);
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-69-output" class="output"></div>
+            <div id="code-cell-68-output" class="output"></div>
         </div>
         <p>The decision of when to log transform versus using a tool agnostic of the underlying principles lies in your use case. If you want to retain interpretability, use log, as the values remain meaningful as fold-changes. Something like Yeo-Johnson, by contrast, trades all interpretability for automatic normalisation, to help downstream tools perform correctly or better.</p>
                     </div>
@@ -388,37 +395,37 @@ plt.show()</textarea>
                         <p>We can now close the loop on the outlier detection from the first section. Back then we applied the Z-score directly to the raw, right-skewed ITSN1_N and noted that the $\pm3$ rule is unreliable on skewed data. Here we compare the outliers flagged on the <strong>raw</strong> feature against those flagged after a <strong>Yeo-Johnson scaled transformation</strong>, to see how addressing the skew changes what the rule catches.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-70">it_df = df[[outlier_col]].dropna().copy()
+                <textarea id="code-cell-69">it_df = df[[outlier_col]].dropna().copy()
 it_df[&#x27;transformed&#x27;] = with_scaling</textarea>
             </div>
-            <div id="code-cell-70-output" class="output" style="display: none;"></div>
+            <div id="code-cell-69-output" class="output" style="display: none;"></div>
         </div>
         <p>Find the Z-score for both the original and transformed data:</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-71"># Calculate Z-scores
+                <textarea id="code-cell-70"># Calculate Z-scores
 it_df[&#x27;transformed_z_score&#x27;] = stats.zscore(it_df[&#x27;transformed&#x27;])
 it_df[&#x27;original_z_score&#x27;] = stats.zscore(it_df[outlier_col])
 
 it_df.head(3)</textarea>
             </div>
-            <div id="code-cell-71-output" class="output"></div>
+            <div id="code-cell-70-output" class="output"></div>
         </div>
         <p>Identify those that are outside 3 standard deviations:</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-72"># Identify outliers
+                <textarea id="code-cell-71"># Identify outliers
 it_df[&#x27;transformed_z_score_bool&#x27;] = abs(it_df[&#x27;transformed_z_score&#x27;]) &gt; 3
 it_df[&#x27;original_z_score_bool&#x27;] = abs(it_df[&#x27;original_z_score&#x27;]) &gt; 3</textarea>
             </div>
-            <div id="code-cell-72-output" class="output" style="display: none;"></div>
+            <div id="code-cell-71-output" class="output" style="display: none;"></div>
         </div>
         <p>We can now filter the dataset to where the Z-score is above 3 in <em>either</em> the transformed or original case:</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-73">it_df[(it_df[&#x27;transformed_z_score_bool&#x27;] == True) | (it_df[&#x27;original_z_score_bool&#x27;] == True)]</textarea>
+                <textarea id="code-cell-72">it_df[(it_df[&#x27;transformed_z_score_bool&#x27;] == True) | (it_df[&#x27;original_z_score_bool&#x27;] == True)]</textarea>
             </div>
-            <div id="code-cell-73-output" class="output"></div>
+            <div id="code-cell-72-output" class="output"></div>
         </div>
         <p>Comparing the two boolean columns reveals the effect of the transform: all values that were classed as beyond 3 in the original are now within the $\pm3$ boundary once the skew is removed. In other words, points that looked like extreme outliers on the raw, right-skewed feature are revealed to be part of the distribution&#x27;s natural upper tail once it is made symmetric. Interestingly, <em>three</em> values on the lower end, around 0.25, are now classed as outliers as the mean is shifted rightwards. These could be indicative of baseline, background noise values.</p>
                     </div>
