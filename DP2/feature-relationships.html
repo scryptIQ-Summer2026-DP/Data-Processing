@@ -680,18 +680,20 @@ plt.show()</textarea>
             </div>
             <div id="code-cell-99-output" class="output" style="display: none;"></div>
         </div>
-        <p>Obtain the top 10 correlated pairs:</p>
+        <p>Run the cells below to:<br><br>Obtain the top 10 correlated pairs:</p>
         <div class="code-area">
-            <div class="code-container code-fixed">
+            <div class="code-container code-editor">
                 <textarea id="code-cell-100">get_top_corr(corr_full)</textarea>
             </div>
+            <button id="run-code-cell-100" class="run-button">Run Code</button>
             <div id="code-cell-100-output" class="output"></div>
         </div>
         <p>Obtain the 10 least correlated pairs:</p>
         <div class="code-area">
-            <div class="code-container code-fixed">
+            <div class="code-container code-editor">
                 <textarea id="code-cell-101">get_top_corr(corr_full, top=False)</textarea>
             </div>
+            <button id="run-code-cell-101" class="run-button">Run Code</button>
             <div id="code-cell-101-output" class="output"></div>
         </div>
         <p>Finding highly correlated pairs raises two important practical questions.<br><br><strong>What do we do with redundant features?</strong> In machine learning, two features with a correlation above roughly 0.9 carry nearly identical information. Including both does not add much to a model and can inflate feature importance scores or slow training. A common pre-processing step is to remove one column from each highly-correlated pair, retaining the one with a stronger relationship to your target variable.<br><br>A final caveat: Pearson only captures <em>linear</em> relationships and is sensitive to outliers and skew. Whilst it will work on non-normal distributed data, some implementations of Pearson&#x27;s will perform a statistical p-value test that the two samples are uncorrelated with the assumption they are normally distributed. If you want to use this or your data is extremely non-normal then a rank-based alternative such as <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.spearmanr.html"><strong>Spearman&#x27;s rank correlation</strong></a> is more robust, as it correlates the ranks of the values rather than the raw values themselves.</p>

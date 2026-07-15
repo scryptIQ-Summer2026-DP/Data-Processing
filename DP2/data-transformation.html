@@ -332,15 +332,12 @@ yeo_lambda</textarea>
         </div>
         
         <div class="code-area">
-            <div class="code-container code-editor">
-                <textarea id="code-cell-66"># RUN WITH  OUTPUT
-
-pt = PowerTransformer()
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-66">pt = PowerTransformer()
 with_scaling = pt.fit_transform(data.reshape(-1, 1))
 
 pt.lambdas_</textarea>
             </div>
-            <button id="run-code-cell-66" class="run-button">Run Code</button>
             <div id="code-cell-66-output" class="output"></div>
         </div>
         <p>Both return effectively the same $\lambda$, confirming they implement the same underlying method — the only difference is that <code>PowerTransformer</code> also standardises the output to a <em>standard normal distribution</em>. Plotting them side-by-side you can see the implementation without scaling is tightly clustered just above zero in contrast to the scaled data which has the majority of its data (68%) between -1 and 1.</p>
