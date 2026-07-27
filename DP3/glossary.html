@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="../assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../assets/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="../assets/android-chrome-512x512.png">
+    
+    <!-- Core Stylesheets -->
+    <link rel="stylesheet" href=../assets/colours.css>
+    <link rel="stylesheet" href="../assets/shared-styles.css">
+    <link rel="stylesheet" href="../assets/module_card.css">
+    
+    <!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>scryptIQ - DP3 - Glossary</title>
+    
+    <style>
+        /* Override sidebar styling since we're not using it */
+        body {
+            background-color: var(--background) !important;
+            color: var(--text-primary);
+            margin: 0 !important;
+            padding: 0 !important;
+            min-height: 100vh;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: flex-start !important;
+            flex-direction: column !important;
+        }
+
+        .main-content {
+            width: 100% !important;
+            max-width: 1200px !important;
+            padding: 0 20px !important;
+            box-sizing: border-box !important;
+            margin: 0 auto !important;
+            position: relative !important;
+            left: auto !important;
+            right: auto !important;
+            transform: none !important;
+        }
+
+        /* Additional centering overrides */
+        #main-content {
+            margin-left: auto !important;
+            margin-right: auto !important;
+            text-align: left !important;
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo-container img {
+            width: clamp(60px, 10vw, 120px);
+            height: clamp(60px, 10vw, 120px);
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .glossary-entry {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .glossary-entry:last-child {
+            border-bottom: none;
+        }
+
+        .glossary-term {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--remember);
+            margin-bottom: 8px;
+        }
+
+        .glossary-definition {
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .logo-container img {
+                height: 60px;
+            }
+            
+            .glossary-term {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="main-content" class="main-content">
+        <div class="top-navbar">
+            <div class="logo-container">
+                <h1 class="page-title">Data Processing 3 - Glossary</h1>
+            </div>
+        </div>
+
+        <div class="module-card">
+            <div class="module-header">
+                Glossary <span class="module-tag">DP3</span>
+            </div>
+            <div class="module-body">
+                
+                <div class="glossary-entry">
+                    <strong>Pixel</strong>: The smallest individual unit of a digital image. In a raster image, each pixel stores a numerical value that represents brightness in a greyscale image, or colour information in a colour image.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Brightness</strong>: The overall lightness or darkness of an image, which in Python image handling can be adjusted by increasing or decreasing the numerical intensity values of the pixels.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Contrast</strong>: The difference in intensity between darker and brighter regions of an image. Increasing contrast stretches the differences between darker and brighter pixels, making features stand out more clearly.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Exposure</strong>: A description of how much light is captured when an image is made. Underexposure makes an image too dark (crushing details to black), while overexposure makes it too bright (blowing out details to white).
+                </div>
+                <div class="glossary-entry">
+                    <strong>False Colouring</strong>: The deliberate reassignment or transformation of an image&#x27;s colour channels so that structures are displayed in colours different from those in the original image.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Colour Space</strong>: A system for representing colours numerically, by describing each pixel using a defined set of components (such as RGB or HSV).
+                </div>
+                <div class="glossary-entry">
+                    <strong>HSV (Hue, Saturation, Value)</strong>: A colour space that represents each pixel using hue, saturation, and value, rather than red, green, and blue intensities.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Hue</strong>: The component of the HSV colour space describing the dominant perceived colour of a pixel (such as red, green, blue, or yellow).
+                </div>
+                <div class="glossary-entry">
+                    <strong>Saturation</strong>: The component of the HSV colour space describing how pure or intense a colour is, ranging from grey and washed-out to vivid and fully coloured.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Value</strong>: The component of the HSV colour space describing the overall brightness of a pixel, ranging from dark to bright.
+                </div>
+                <div class="glossary-entry">
+                    <strong>Segmentation</strong>: The process of partitioning an image into distinct, meaningful regions, such as dividing an image into signal and background.
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div>© Built with parchmentIQ copyright of scryptIQ</div>
+            <div>© all materials are copyright of scryptIQ 2026</div>
+        </div>
+    </div>
+</body>
+</html>
+        

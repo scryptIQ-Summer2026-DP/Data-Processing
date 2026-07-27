@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- MathJax for mathematical notation -->
+    <script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$']],
+            displayMath: [['$$', '$$']],
+            processEscapes: true
+        },
+        svg: {
+            fontCache: 'global'
+        }
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    
+    <!-- Pyodide and CodeMirror -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/theme/pastel-on-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/mode/python/python.min.js"></script>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="../assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../assets/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="../assets/android-chrome-512x512.png">
+
+    <!-- Core Stylesheets -->
+    <link rel="stylesheet" href=../assets/colours.css>
+    <link rel="stylesheet" href="../assets/shared-styles.css">
+    <link rel="stylesheet" href="../assets/nav-bar.css">
+    <link rel="stylesheet" href="../assets/module_card.css">
+    <link rel="stylesheet" href="../assets/learning_outcomes.css">
+    <link rel="stylesheet" href="../assets/learning_lists.css">
+    <link rel="stylesheet" href="../assets/box_styles.css">
+    <link rel="stylesheet" href="../assets/code_styles.css">
+    
+    <!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>scryptIQ - DP3 - Greyscale images</title>
+    <script>
+        window.LESSON_FILES = [
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/main/dp3/dendrite_greyscale.png", filename: "dendrite_greyscale.png", is_binary: true}
+        ];
+        window.LESSON_PACKAGES = ['numpy', 'matplotlib', 'ipython'];
+    </script>
+</head>
+<body>
+    
+    <!-- Sidebar Navigation -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <a href="../homepage.html" style="text-decoration: none; display: inline-block;">
+                <img src="../assets/scryptIQ_logo_dark.png" alt="scryptIQ Logo" class="sidebar-logo">
+            </a>
+        </div>
+
+        <h3>Content</h3>
+        <ul>
+            <li><a href="./introduction.html" class="">Introduction</a></li><li><a href="./images-in-python.html">Images in Python</a></li>
+            <li>
+                <div class="nav-toggle active" data-target="expandable-section-2">
+                    Greyscale images
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <ul class="nested-nav expanded" id="expandable-section-2"><li><a href="#introduction">Introduction</a></li><li><a href="#quantitatively-analysing-intensity">Quantitatively analysing intensity</a></li><li><a href="#histograms-of-pixel-intensities">Histograms of pixel intensities</a></li><li><a href="#analysis-of-identified-intensity-ranges">Analysis of identified intensity ranges</a></li><li><a href="#using-an-intensity-picker">Using an intensity picker</a></li><li><a href="#contrast-and-brightness">Contrast and brightness</a></li><li><a href="#inverting-a-greyscale-image">Inverting a greyscale image</a></li><li><a href="#masking-out-specific-features">Masking out specific features</a></li><li><a href="#a-note-on-simple-thresholding">A note on simple thresholding</a></li><li><a href="#summary">Summary</a></li>
+                </ul>
+            </li><li><a href="./colour-images.html">Colour images</a></li><li><a href="./segmentation-masking.html">Masking and segmentation</a></li><li><a href="./assignment.html">Assignment</a></li><li><a href="./feedback.html">Feedback</a></li>
+        </ul>
+
+        <h3 class="collapsible-header collapsed">
+            Resources
+            <span class="collapse-icon">►</span>
+        </h3>
+        <div class="collapsible-content collapsed">
+            <ul>
+                <li><a href="./glossary.html">Glossary</a></li><li><a href="./downloads.html">Downloads</a></li><li><a href="../HB/introduction.html">Handbook</a></li>
+            </ul>
+        </div>
+
+        <h3 class="collapsible-header collapsed">
+            Previous Modules
+            <span class="collapse-icon">►</span>
+        </h3>
+        <div class="collapsible-content collapsed">
+            <ul>
+            <li><a href="../DP1/introduction.html">DP1</a></li>
+            <li><a href="../DP2/introduction.html">DP2</a></li>
+        </ul>
+        </div>
+
+        <h3>
+            <li><a href="./report-issue.html">Report an Issue</a></li>
+        </h3>
+    </div>
+
+    <!-- Sidebar Toggle Button -->
+    <button id="sidebar-toggle" class="sidebar-toggle">❮</button>
+
+    <!-- Main Content Area -->
+    <div id="main-content" class="main-content">
+        <!-- Top Navigation Bar -->
+        <div class="top-navbar">
+            <h1 class="page-title">Data Processing 3</h1>
+            <div class="nav-actions">
+                <a href="../homepage.html" class="text-button" title="Materials homepage">
+                    Homepage
+                </a>
+                <a href="https://scryptiq.ai/my-cohorts/" class="text-button scryptiq-button" title="Find out more about us">
+                    scryptIQ
+                </a>
+            </div>
+        </div>
+
+        
+            <div class="module-card" id="introduction">
+                <div class="module-header">
+                    Greyscale images <span class="module-tag">DP3</span>
+                </div>
+                <div class="module-body">
+                    <h3>Learning Objectives</h3>
+                    <div class="learning-outcomes">
+                        <div class="outcome-item">
+                    <span class="outcome-number">1</span>
+                    <span class="outcome-text">Interpret grayscale images as two-dimensional arrays of intensity values</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">2</span>
+                    <span class="outcome-text">Access and inspect pixel values using indexing and slicing</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">3</span>
+                    <span class="outcome-text">Visualise selected regions of an image at different scales</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">4</span>
+                    <span class="outcome-text">Generate and interpret histograms of grayscale pixel intensities</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">5</span>
+                    <span class="outcome-text">Use intensity distributions to guide simple threshold-based analysis</span>
+                </div>
+                    </div>
+                    <h3>Introduction</h3>
+                    <p>Building upon the previous section, we will now narrow our focus to grayscale images, where each pixel is represented by a <em>single intensity value</em>. This simpler image format - in which much biological imaging still exists - is especially useful for understanding the relationship between the way an image presents graphically, and the underlying numerical data. Thus, this section of the Data Processing module will hopefully provide you with a strong foundation for many common image analysis tasks. We will explore how grayscale images are represented, how their intensity values can be interpreted, and crucially how <strong>histograms</strong> are a valuable tool for summarising and investigating their distribution.</p>
+                </div>
+            </div>
+            
+            <div class="module-card" id="quantitatively-analysing-intensity">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Quantitatively analysing intensity</h3>
+                        <p>In a grayscale image, each pixel is represented by a single numerical intensity value. These values describe how bright or dark each pixel is.<br><ul class="nested-list"><li>Low values correspond to darker regions</li><br><li>High values correspond to brighter regions</li><br><li>For <em>non-normalised, 8-bit greyscale</em> images, pixel intensities typically range from <strong>0 to 255</strong>, where 0 represents black and 255 represents white. Values between these extremes correspond to different shades of grey.</li><br><li>In <em>normalised images</em>, intensities are often stored on a scale from <strong>0.0 to 1.0</strong> instead: where 0.0 represents black, 1.0 represents white, and intermediate floating-point values represent shades of grey.</li></ul>Since an image is stored as a NumPy array, we can inspect these values directly in Python, rather than relying only on visual interpretation. This allows us to move from simply looking at an image to analysing it quantitatively.<br><br>Inspecting intensity values can help us understand what features in an image actually correspond to in numerical terms. Image features such as the petals of a flower might occupy higher intensity values when compared to darker leaf-occupied regions; or a particular range of grey values could correlate with staining intensity in a micrograph. These intensity values can often be very informative in a computationally economical way, allowing us to perform thresholding and masking on images in large numbers, as an efficient means of image analysis, that can easily be performed, <em>en masse</em>.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="histograms-of-pixel-intensities">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Histograms of pixel intensities</h3>
+                        <p>In order to efficiently decide on what intensity ranges features of interest occupy, we must firstly do some preliminary, exploratory analysis of the image in question. One of the simplest ways to do this is using a <strong>histogram</strong> to visualise the distribution of different pixel intensities.<br><br>For this example, we will once again turn to matplotlib. The image below shows a dendrite (neuron), and is credited to Shelley Halpain of UC San Diego.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-11"># Imports for this lesson
+
+import base64
+from pathlib import Path
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.image import imread
+from matplotlib.pyplot import axis, imshow, show, subplots
+from IPython.display import HTML, display
+
+dendrite = imread(&quot;./data/dendrite_greyscale.png&quot;)
+
+print(f&quot;shape = {dendrite.shape} \ndimensions = {dendrite.ndim} \nsize = {dendrite.size} pixels \ndtype = {dendrite.dtype}&quot;)</textarea>
+            </div>
+            <div id="code-cell-11-output" class="output"></div>
+        </div>
+        <p>The output for the code above reveals that <code>imread</code> has produced a <strong>2-dimensional</strong> NumPy array from this image. This indicates that the image is indeed <em>greyscale</em>, as there is no third dimension to this array which, in a colour image, would be used to store intensities ona per-channel basis for red, green, blue and potentially alpha channels, as well.</p>
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p>You may have noticed that the <code>dtype</code> for this image is <code>float32</code>. Crucially, while the image file itself may well be stored on disk as 8-bit unsigned integer data (the previously encountered <code>dtype = uint8</code>), where pixel values range from 0 to 255, when reading the file into Python using <code>matplotlib.image.imread()</code>, Matplotlib <em>may</em> automatically convert those values into floating-point numbers and rescale them to lie between 0.0 and 1.0. This is a very common behaviour when encountering greyscale images. In this case, the array you inspect in Python will have data type <code>float32</code>, even though the original file was saved as <code>uint8</code>.<br><br>This means that the data type you see after loading an image depends not only on the file itself, but also on the function used to read it. A <code>uint8</code> image on disk can therefore become a normalised <code>float32</code> array in memory.<br><br>The takehome message here is: always check an image&#x27;s <code>.dtype</code> attribute, so you know what you are dealing with.</p>
+            </div>
+        </div>
+        <p>Next, let&#x27;s use <code>imshow</code> to visualise our image. Bear in mind that by leaving the axes in place and numbered (the default value for the <code>imshow</code> function), we can see rough x and y coordinates for various regions of the image. Conceptually, this is a nice way to solidify the concept of an image as an 2-dimensional grid of intensity values.</p>
+        <div class="info-box tip-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                TIP
+            </div>
+            <div class="box-content">
+                <p>In a Jupyter notebook, Matplotlib will often display a line of alphanumeric text output beneath the figure, which gives information about the image object returned by <code>imshow()</code>, including a hexadecimal address indicating where it is stored on your system&#x27;s memory. To suppress this extra output and show only the figure, we place a <strong>semi-colon</strong> at the end of the final plotting line in the cell.<br><br>To see this line of output for yourself, feel free to remove the semi-colon, and re-run the cell.</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-12">imshow(dendrite);   # semi-colon to suppress alphanumeric output.</textarea>
+            </div>
+            <div id="code-cell-12-output" class="output"></div>
+        </div>
+        
+        <div class="info-box important-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                IMPORTANT
+            </div>
+            <div class="box-content">
+                <p>While the <code>.shape</code> attribute indicates that this is a 2-D image array, and therefore a greyscale image, you may notice that it appears to be in colour when displayed, above. The underlying data <em>stil belong to a greyscale image</em>. What you are seeing is Matplotlib applying its default &#x27;viridis&#x27; colour map to the 2-D array when <code>imshow()</code> is called, without specifying one using the <code>cmap</code> keyword argument.<br><br>In order override this and display the image in its true greyscale form, provide a greyscale colour map explicitly, for example with <code>cmap=&quot;gray&quot;</code>. We can also take this opportunity to switch of the axes.</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-13">imshow(dendrite, cmap=&quot;gray&quot;)
+axis(&quot;off&quot;);</textarea>
+            </div>
+            <div id="code-cell-13-output" class="output"></div>
+        </div>
+        <p>Next, let&#x27;s plot a histogram of all the pixel intensities within the image. By its nature, a histogram shows how frequently different numerical values occur: in this case, this allows us to inspect how the brightness values are distributed across the whole image.<br><br>Since a grayscale image is stored as a 2-dimensional array, with rows and columns corresponding to the coordinates of each pixel, we must first convert this data into a 1-dimensional sequence of intensity values before passing it to <code>hist()</code>. We can do this using the <code>.ravel()</code> method, which flattens the 2-D array into a single continuous vector while preserving all of the original pixel values. This allows Matplotlib to count how many pixels fall within each intensity range and display the resulting distribution as a histogram. We&#x27;ll use the keyword argument <code>bins</code> to determine how many bins or &#x27;bars&#x27; the histogram chunks our data into.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-14"># Read the grayscale image into Python
+image_gray = imread(&quot;./data/dendrite_greyscale.png&quot;)
+
+# Create a figure and axes object
+fig, ax = subplots()
+
+# Plot a histogram of all pixel intensity values
+ax.hist(image_gray.ravel(), bins=50)
+
+# Add axis labels and a title
+ax.set_title(&quot;Pixel Intensity Distribution&quot;)
+ax.set_xlabel(&quot;Pixel intensity&quot;)
+ax.set_ylabel(&quot;Frequency&quot;)
+
+show()</textarea>
+            </div>
+            <div id="code-cell-14-output" class="output"></div>
+        </div>
+        <p>As we can see in this image, the frequency of pixels at or close to 0.0 is very high. This fits with what we&#x27;re seeing in the image itself, where most of the pixel grid is taken up by black background.<br><br>Thus, to better highlight the dendrite-occupying regions of the image, we may want to only plot values above 0.05. We can do this by using the <code>set_xlim</code> method to specify a minimum and maximum value to be displayed on the x axis.<br><br>Accordingly, since our first histogram indicates that the frequency of non-black pixels is considerably greater than grey and white pixels, we may want to use <code>set_ylim</code> to constrain the upper frequency limit of the y-axis, to better &#x27;zoom&#x27; into our frequency plot.</p>
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p>The values on the y-axis are very large, and are being displayed in scientific notation. The label <code>1e6</code> means that each tick mark should be multiplied by $10^6$, or 1,000,000. For example, a tick label of <code>0.8</code> corresponds to a frequency of 800,000.<br><br>In the code cell below, <code>e</code> (denoting the <strong>exponent</strong>) is used in Python to represent powers of ten in scientific notation. For example, <code>1e6</code> means $1$ x $10^6$.</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-15">fig, ax = subplots()
+
+# Plot histogram of all pixel intensities
+ax.hist(dendrite.ravel(), bins=50)
+
+# Label the plot
+ax.set_title(&quot;Pixel Intensity Distribution&quot;)
+ax.set_xlabel(&quot;Pixel intensity&quot;)
+ax.set_ylabel(&quot;Frequency&quot;)
+
+# Zoom in on values above 0.05
+ax.set_xlim(0.05, 1.0)
+ax.set_ylim(0, 0.015e6)
+
+show()</textarea>
+            </div>
+            <div id="code-cell-15-output" class="output"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-16">fig, ax = subplots(ncols=2)
+
+dendrite_crop = dendrite[500:1000, 1200:1700]
+
+ax[0].imshow(dendrite_crop, cmap=&quot;gray&quot;)
+ax[0].axis(&quot;off&quot;)
+ax[0].set_title(&quot;Crop&quot;, fontsize=10)
+
+ax[1].hist(dendrite_crop.ravel(), bins=50)
+ax[1].set_xlim(0.1, 0.92)
+ax[1].set_ylim(0, 0.0014e6)
+ax[1].set_title(&quot;Intensity Distribution&quot;, fontsize=10)
+
+fig.tight_layout()</textarea>
+            </div>
+            <div id="code-cell-16-output" class="output"></div>
+        </div>
+        <p>When the dark background pixels are excluded from the histogram, we start to see two broader intensity groupings becoming more apparent. In this cropped image, the brightest structures are the labelled <em>dendritic processes</em>, which appear as elongated branching fibres. The dimmer grey features are <em>punctate signals</em> distributed around and along these processes.<br><br>In fluorescence microscopy images such as this, these puncta often correspond to localised, labelled structures; for example synaptic puncta or other subcellular compartments. Despite this, their precise biological identity depends on the stain or marker that was used. The two broad peaks in the histogram therefore likely reflect different classes of foreground signal intensity, with brighter pixels arising mainly from the dendrites and dimmer pixels arising from smaller punctate features.<br><br>Immediately, the histogram has helped to inform us that these common peaks lie between intensities of 0.2-0.4, and 0.8-0.9. We can use this early exploratory analysis of our image to inform us of the components present within the image, which may help us to isolate or mask them out.<br><br>We can then generate a similar plot, this time across the entire image, to see if those two peaks hold true.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-17">fig, ax = subplots(ncols=2)
+
+ax[0].imshow(dendrite, cmap=&quot;gray&quot;)
+ax[0].axis(&quot;off&quot;)
+ax[0].set_title(&quot;Whole Image&quot;, fontsize=10)
+
+ax[1].hist(dendrite.ravel(), bins=50)
+ax[1].set_xlim(0.1, 0.92)
+ax[1].set_ylim(0, 0.0075e6)
+ax[1].set_title(&quot;Intensity Distribution&quot;, fontsize=10)
+
+fig.tight_layout()</textarea>
+            </div>
+            <div id="code-cell-17-output" class="output"></div>
+        </div>
+        <p>And, again, we can see the two peaks are still present across the wider image.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="analysis-of-identified-intensity-ranges">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Analysis of identified intensity ranges</h3>
+                        <p>Now that we have used the image and its histograms to help us narrow in on two intensity ranges of interest, we can go on to figure out the proportion of these two intensity ranges, both in the image as a whole, and as a portion of the total non-background, signal-only pixels in the image.<br><br>We&#x27;ll do this using basic logical and mathematical operations, many of which may be familiar to you from our Python Fundamentals module.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-18"># Estimate the proportion of pixels occupying the two main intensity peaks
+
+peak_1_mask = (dendrite &gt;= 0.2) &amp; (dendrite &lt;= 0.4)
+peak_2_mask = (dendrite &gt;= 0.8) &amp; (dendrite &lt;= 0.9)
+
+# Treat very dark pixels (under an intensity of 0.05) as background, based on our histograms
+
+non_background_mask = dendrite &gt; 0.05
+
+# Figure out the total pixels and total non-background pixels in the image
+
+total_pixels = dendrite.size
+non_background_pixels = non_background_mask.sum()
+
+# Determine the total number of pixels within each peak of interest
+
+peak_1_pixels = peak_1_mask.sum()
+peak_2_pixels = peak_2_mask.sum()
+
+# Calculate percentages
+
+peak_1_whole_image_pct = 100 * peak_1_pixels / total_pixels
+peak_2_whole_image_pct = 100 * peak_2_pixels / total_pixels
+
+peak_1_non_background_pct = 100 * peak_1_pixels / non_background_pixels
+peak_2_non_background_pct = 100 * peak_2_pixels / non_background_pixels
+
+print(f&quot;Peak 1 (0.2-0.4) represents {peak_1_whole_image_pct:.2f}% of the whole image&quot;)
+print(f&quot;Peak 2 (0.8-0.9) represents {peak_2_whole_image_pct:.2f}% of the whole image&quot;)
+print()
+print(f&quot;Peak 1 (0.2-0.4) represents {peak_1_non_background_pct:.2f}% of non-background signal&quot;)
+print(f&quot;Peak 2 (0.8-0.9) represents {peak_2_non_background_pct:.2f}% of non-background signal&quot;)</textarea>
+            </div>
+            <div id="code-cell-18-output" class="output"></div>
+        </div>
+        <p>Thus, just over 25% of non-background pixels appear to be punctate signals, while just under 14% appear to be dendritic processes.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="using-an-intensity-picker">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Using an intensity picker</h3>
+                        <p>Although fully interactive image viewers can be convenient, they often rely on additional HTML and JavaScript components behind the scenes. For demonstration, we have included one two cells down in this learning material.<br><br>However, for real-world purposes and keeping your workflow Pythonic and easy to use, it is often more useful to work with a much simpler Python-based intensity picker. In the example below, we can choose a value for <code>row</code> and <code>col</code> directly, and Matplotlib then marks the selected pixel with a red ring while Python reports its intensity value. The axes system can help you to zero in on a particular region, with a small red ring indicating where in the image your selected coordinate lies.<br><br>This is not essential for all image analysis workflows, but it is a helpful way of reinforcing the concept of an image as a numerical array, where every visible point in the image corresponds to a specific position and value in that array.</p>
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-19"># Change these values to inspect a different pixel, then rerun the cell.
+# The red ring will highlight the coordinate you have selected.
+
+row = 400
+col = 400
+
+intensity = dendrite[row, col]
+
+fig, ax = subplots(figsize=(7, 5))
+
+ax.imshow(dendrite, cmap=&quot;gray&quot;)
+ax.scatter([col], [row], s=20, facecolors=&quot;none&quot;, edgecolors=&quot;red&quot;, linewidths=1)
+ax.set_title(&quot;Chosen pixel&quot;)
+
+show()</textarea>
+            </div>
+            <button id="run-code-cell-19" class="run-button">Run Code</button>
+            <div id="code-cell-19-output" class="output"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-20"># Print this statement to give you a nice line of written output about the selected region.
+
+print(f&quot;Pixel at row {row}, column {col} has intensity {intensity:.3f}&quot;)</textarea>
+            </div>
+            <button id="run-code-cell-20" class="run-button">Run Code</button>
+            <div id="code-cell-20-output" class="output"></div>
+        </div>
+        
+        <div class="info-box tip-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                TIP
+            </div>
+            <div class="box-content">
+                <p>In this last line, we&#x27;re using an <strong>f-string</strong> (as introduced in Python Fundamentals 1). Notice that the expression <code>{intensity:.3f}</code> contains the format specifier <code>.3f</code>, where <code>f</code> indicates a floating-point number and <code>.3</code> specifies that it should be displayed to <strong>three decimal places</strong>. Also note that the row and column coordinates are enclosed in square brackets (<code>[col]</code> and <code>[row]</code>) when passed to <code>scatter()</code>, because the function expects lists of x and y coordinates, even when plotting a single point.</p>
+            </div>
+        </div>
+        <p>For fun, the code cell below contains an interactive example, where mousing over the image shows the intensity. This is more complex to write, and contains code that goes beyond the scope of this lesson, so should be used with caution. It does, however, contain a live-updating intensity value, depending on where your cursor hovers over the displayed image.</p>
+        <div class="info-box warning-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                WARNING
+            </div>
+            <div class="box-content">
+                <p>The cell below will not run in the written materials here, but you should be able to run it if you download the Jupyter Notebook from the Resources section, at the bottom of the left sidebar, and run this in your own coding environment.</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-collapse-header" onclick="toggleCodeCollapse('code-cell-21')">
+                <span class="code-collapse-icon">▶</span>
+                <span class="code-collapse-label">Show code</span>
+            </div>
+            <div class="code-container code-fixed code-collapsed" id="code-cell-21-container">
+                <textarea id="code-cell-21">image_path = Path(&quot;./data/dendrite_greyscale.png&quot;)
+image_base64 = base64.b64encode(image_path.read_bytes()).decode(&quot;ascii&quot;)
+viewer_id = &quot;dendrite-pixel-viewer&quot;
+
+display(HTML(f&#x27;&#x27;&#x27;
+&lt;div id=&quot;{viewer_id}&quot; style=&quot;font-family: sans-serif; max-width: 980px;&quot;&gt;
+  &lt;p style=&quot;margin: 0 0 8px 0;&quot;&gt;&lt;strong&gt;Move your cursor over the image&lt;/strong&gt; to inspect pixel intensities.&lt;/p&gt;
+  &lt;p id=&quot;{viewer_id}-readout&quot; style=&quot;margin: 0 0 10px 0;&quot;&gt;Loading image...&lt;/p&gt;
+  &lt;canvas id=&quot;{viewer_id}-canvas&quot; style=&quot;border: 1px solid #ccc; max-width: 100%; cursor: crosshair;&quot;&gt;&lt;/canvas&gt;
+&lt;/div&gt;
+&lt;script&gt;
+(function() {{
+  const canvas = document.getElementById(&quot;{viewer_id}-canvas&quot;);
+  const readout = document.getElementById(&quot;{viewer_id}-readout&quot;);
+  const ctx = canvas.getContext(&quot;2d&quot;, {{ willReadFrequently: true }});
+  const img = new Image();
+
+  img.onload = function() {{
+    const maxWidth = 900;
+    const scale = Math.min(1, maxWidth / img.width);
+    canvas.width = img.width;
+    canvas.height = img.height;
+    canvas.style.width = (img.width * scale) + &quot;px&quot;;
+    canvas.style.height = (img.height * scale) + &quot;px&quot;;
+    ctx.drawImage(img, 0, 0);
+    readout.textContent = &quot;Hover over the image to inspect a pixel.&quot;;
+  }};
+
+  canvas.addEventListener(&quot;mousemove&quot;, function(event) {{
+    const rect = canvas.getBoundingClientRect();
+    const x = Math.max(0, Math.min(canvas.width - 1, Math.floor((event.clientX - rect.left) * canvas.width / rect.width)));
+    const y = Math.max(0, Math.min(canvas.height - 1, Math.floor((event.clientY - rect.top) * canvas.height / rect.height)));
+    const pixel = ctx.getImageData(x, y, 1, 1).data;
+    const intensity = (pixel[0] / 255).toFixed(3);
+    readout.textContent = `row = ${{y}}, col = ${{x}}, intensity = ${{intensity}}`;
+  }});
+
+  canvas.addEventListener(&quot;mouseleave&quot;, function() {{
+    readout.textContent = &quot;Hover over the image to inspect a pixel.&quot;;
+  }});
+
+  img.src = &quot;data:image/png;base64,{image_base64}&quot;;
+}})();
+&lt;/script&gt;
+&#x27;&#x27;&#x27;))
+</textarea>
+            </div>
+            <div id="code-cell-21-output" class="output" style="display: none;"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="contrast-and-brightness">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Contrast and brightness</h3>
+                        <p>In a grayscale image, the appearance of features depends not only on the underlying biological signal, but also on how the intensity values are distributed across the available range. Two common adjustments seen in image editing software, for example, are <strong>brightness</strong> and <strong>contrast</strong>.</p>
+        <div class="info-box key-terms-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                KEY TERMS
+            </div>
+            <div class="box-content">
+                <p><ul class="nested-list"><li><strong>Brightness</strong> refers to shifting intensity values up or down, making the whole image appear lighter or darker overall.</li><br><li><strong>Contrast</strong> refers to increasing or decreasing the difference between darker and brighter regions, which can make structures stand out more clearly or, conversely, appear flatter and less distinct.</li></ul></p>
+            </div>
+        </div>
+        <p><br>From a Pythonic perspective, these adjustments can be understood as simple operations on the image array. Increasing brightness involves <em>adding a constant value to all pixel intensities</em>, while adjusting contrast involves <em>stretching or compressing the spread of those values around a central point</em>. In the context of this example, increasing contrast may help emphasise the brighter dendritic processes while making the dimmer punctate signals less visually prominent.<br><br>This might serve as a useful quick and dirty way of improving visual clarity, quickly. But it is important to be clear that this is <em>not</em> a rigorous technqiue to be used for accurately separating structures of interest. More reliable approaches, such as <strong>thresholding</strong> and <strong>masking</strong>, are better suited when we want to isolate signal accurately and reproducibly. But contrast adjustments may be just the ticket, if we are doing initial exploratory analyses of our images, before deciding on a strategy to pursue with them, in greater depth.<br><br>Brightness adjustments can also be useful in cases where an image appears <em>underexposed</em> or simply difficult to see. By shifting all intensity values upwards, the image may become easier to inspect visually. However, as with contrast adjustment, this should be treated mainly as a visualisation aid rather than a substitute for proper image analysis.</p>
+        <div class="info-box key-terms-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                KEY TERMS
+            </div>
+            <div class="box-content">
+                <p><strong>Exposure</strong> is a term used to describe how much light is captured when an image is made. In photography, for instance, this depends on factors such as the amount of incoming light, the aperture of the taking lens, the shutter speed, and the sensitivity of the sensor, or photosensitive medium, to light.</p>
+            </div>
+        </div>
+        <p>As an example, in microscopy and micrography (the capture of an image from a microscope) applications, exposure similarly describes how much signal is recorded by the detector during image capture. If an image is <strong>underexposed</strong>, it may appear too dark, with important structures becoming difficult to distinguish from the background. If it is <strong>overexposed</strong>, it may appear too bright, with fine detail lost because many pixels are pushed towards the upper end of the intensity range. Information lost to overexposure is &#x27;blown out&#x27; to white, whereas information lost to underexposure is &#x27;crushed&#x27; to black. Thus, for maximum information retention, it is important that an image is properly exposed to capture the greatest dynamic range and detail in the image.</p>
+        <div class="info-box key-terms-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                KEY TERMS
+            </div>
+            <div class="box-content">
+                <p><strong>Brightness</strong> refers to the overall lightness or darkness of an image, and in Python image handling it can be adjusted by increasing or decreasing the numerical intensity values of the pixels.</p>
+            </div>
+        </div>
+        <p>Being able to adjust the apparent <strong>brightness</strong> of an image after it has been loaded into Python can therefore be useful when the original image looks noticeably too dark or too bright for clear visual inspection. This can help make features easier to see and interpret. However, it is important to remember that post hoc brightness adjustment does not recover information that was never captured properly in the first place. It is best understood as a visualisation aid, rather than a true correction of the original acquisition conditions.<br><br>Adjusting <strong>contrast</strong> can also be helpful when different structures in an image occupy different parts of the intensity range, but do not stand apart clearly enough for easy visual inspection. In simple terms, increasing contrast stretches the differences between darker and brighter pixels, which can make prominent structures appear more distinct. In this example, raising the contrast helps the brighter dendritic processes stand out more strongly, while the dimmer punctate signals become less visually dominant. This can be a useful quick visual aid when we want to emphasise the main branching structures.<br><br>In the code cell below, let&#x27;s visualise our greyscale image in a 3-way tile, displaying:<br><ul class="nested-list"><li>how it looks in its original form</li><br><li>with increased brightness</li><br><li>and finally increased contrast</li></ul>The <code>np.clip()</code> function has the syntax <code>np.clip(array, min, max)</code>, where the second and third arguments define the minimum and maximum allowable values. Here, all pixel intensities are clipped to the range <strong>0 to 1</strong>, meaning any value below <code>0</code> is hard set to <code>0</code> and any value above <code>1</code> is hard set to <code>1</code>. Although clipping can cause some bright or dark pixels to lose detail by saturating at these limits, this effect is often negligible if only a small proportion of pixels are affected.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-22"># Increase brightness by adding a constant
+brighter = np.clip(dendrite + 0.2, 0, 1)
+
+# Increase contrast by stretching values away from the midpoint
+higher_contrast = np.clip((dendrite - 0.5) * 1.8 + 0.5, 0, 1)
+
+# Display the original and adjusted images
+fig, ax = plt.subplots(ncols=3, figsize=(12,8))
+
+ax[0].imshow(dendrite, cmap=&quot;gray&quot;)
+ax[0].set_title(&quot;Original&quot;)
+ax[0].axis(&quot;off&quot;)
+
+ax[1].imshow(brighter, cmap=&quot;gray&quot;)
+ax[1].set_title(&quot;Increased brightness&quot;)
+ax[1].axis(&quot;off&quot;)
+
+ax[2].imshow(higher_contrast, cmap=&quot;gray&quot;)
+ax[2].set_title(&quot;Increased contrast&quot;)
+ax[2].axis(&quot;off&quot;)
+
+fig.tight_layout()
+
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-22-output" class="output"></div>
+        </div>
+        <p>The differences between the three images are most clearly observed at the <strong>soma</strong> (cell body) - the structure in the bottom centre of the image, from which all the dendritic processes radiate.<br><br>Notice that increasing <strong>brightness</strong> simply adds a constant to every pixel, whereas increasing <strong>contrast</strong> first subtracts the midpoint (<code>0.5</code>) before scaling. This centres the intensity values around zero, allowing pixels above the midpoint to become brighter and those below it to become darker by equal proportions. Finally, the midpoint is added back, returning the image to its original intensity scale while preserving the increased contrast.</p>
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p>Brightness and contrast adjustments should be judicous. They change how the image is displayed, and are not reliable for identifying structures in a rigorous or reproducible way. If the aim is to separate signal accurately, we strongly endorse the use of <strong>thresholding</strong> and <strong>masking</strong>: the more acceptable and rigorous choice.<br><br>Contrast and brighness adjustments should be best treated as simple visualisation tools, rather than a substitute for more reliable image analysis methods.</p>
+            </div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="inverting-a-greyscale-image">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Inverting a greyscale image</h3>
+                        <p>As we have demonstrated with all the analysis and image manipulation discussed so far, the way that an image is displayed can alter how it is perceived by the observer&#x27;s eye. Depending on the imaging method, important features may appear as dark objects on a pale background, or as bright objects on a dark background. Inverting a grayscale image can therefore be useful when the original presentation makes structures harder to distinguish at a glance.<br><br>Inverting a grayscale image refers to <em>reversing its intensity values</em> so that dark pixels become bright and bright pixels become dark. In an 8-bit image, for instance, this would map values near 0 towards 255 and values near 255 towards 0; in a normalised image the same applies to intensities from 0.0-1.0. This can be useful when important structures are easier for the eye to interpret as bright objects on a dark background, or when the original display makes subtle features difficult to distinguish.<br><br>In practice, inversion can improve visual contrast for certain images, making important features pop out more clearly. As with brightness and contrast adjustment, however, inversion changes only the visual representation of the data, not the underlying signal, itself.<br><br>With Python, we can use simple arithmetic to invert a grayscale image by reversing its intensity values across the available range. For images stored as normalised floating-point data, where intensities run from 0.0 to 1.0, this can be done simply by <em>subtracting the image array from 1</em>. For 8-bit images, inversion is usually performed by <em>subtracting the image from 255</em>, instead.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-23"># Invert the image
+image_inverted = 1 - dendrite
+
+# Display the original and inverted images
+fig, ax = plt.subplots(ncols=2, figsize=(10, 5))
+
+ax[0].imshow(dendrite, cmap=&quot;gray&quot;)
+ax[0].set_title(&quot;Original Image&quot;)
+ax[0].axis(&quot;off&quot;)
+
+ax[1].imshow(image_inverted, cmap=&quot;gray&quot;)
+ax[1].set_title(&quot;Inverted Image&quot;)
+ax[1].axis(&quot;off&quot;)
+
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-23-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="masking-out-specific-features">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Masking out specific features</h3>
+                        <p>Once we have identified intensity ranges that likely correspond to different structures, we can go one step further and use them to build <strong>image masks</strong>. A mask is simply a Boolean array of the same shape as the image, where <code>True</code> marks pixels we want to keep and <code>False</code> marks pixels we want to suppress. This allows us to isolate particular classes of signal directly from the original image, rather than merely counting how often they occur.<br><br>In this example, the brighter dendritic processes occupy the upper intensity peak, while the dimmer punctate signals occupy the lower one. Since we already defined Boolean masks for these intensity ranges earlier in the notebook, we can now reuse those same variables directly. By applying one mask to the dendritic range and the other to the punctate range, we can generate two new views of the same image: one showing just the dendritic processes, and another showing just the punctate features. To make the effect of the mask clear, the excluded background pixels can be set to a dark grey value rather than pure black, so that the retained structures stand out while the masked regions remain visibly suppressed.</p>
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p>To isolate each feature, we first create an independent copy of the original image using the <code>.copy()</code> method, ensuring that the original array remains unchanged. We can then use the corresponding Boolean mask to retain only the pixels of interest, replacing all others with a constant dark grey value (<code>0.2</code>) for visual context.</p>
+            </div>
+        </div>
+        
+        <div class="info-box remember-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                REMEMBER
+            </div>
+            <div class="box-content">
+                <p>Notice that the <code>~</code> operator performs <strong>logical negation</strong>, so in the code below, <code>~dendrite_mask</code>, for instance, selects every pixel that is <strong>not</strong> part of the dendritic mask.</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-24"># Reuse the masks defined earlier from the thresholded intensity ranges
+puncta_mask = peak_1_mask
+dendrite_mask = peak_2_mask
+
+# Use a dark grey value so the masked background remains visible
+masked_background = 0.2
+
+# Copy the original image, then suppress pixels outside each mask
+dendrite_only = dendrite.copy()
+dendrite_only[~dendrite_mask] = masked_background
+
+puncta_only = dendrite.copy()
+puncta_only[~puncta_mask] = masked_background
+
+# Display the original image alongside the two masked outputs
+fig, ax = subplots(ncols=3, figsize=(12, 7))
+
+ax[0].imshow(dendrite, cmap=&quot;gray&quot;, vmin=0, vmax=1)
+ax[0].set_title(&quot;Original Image&quot;)
+ax[0].axis(&quot;off&quot;)
+
+ax[1].imshow(dendrite_only, cmap=&quot;gray&quot;, vmin=0, vmax=1)
+ax[1].set_title(&quot;Dendritic Processes Only&quot;)
+ax[1].axis(&quot;off&quot;)
+
+ax[2].imshow(puncta_only, cmap=&quot;gray&quot;, vmin=0, vmax=1)
+ax[2].set_title(&quot;Punctate Signals Only&quot;)
+ax[2].axis(&quot;off&quot;)
+
+fig.tight_layout()
+
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-24-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="masking-out-specific-features">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>2.</strong></p>
+                <p>Let&#x27;s practice creating a binary (black and white) mask of the dendritic processes.<ol class="nested-list"><li>Create a boolean mask of the dendritic processes, selecting pixels with intensities between <code>0.8</code> and <code>0.9</code> (inclusive), and store it in a variable called <code>dendrite_mask</code>.</li><br><li>Create a new array of the same shape and size as the <code>dendrite</code> image, containing all zeros (pure black), using <code>np.zeros_like(dendrite)</code>, and store it in a variable called <code>binary_image</code>.</li><br><li>Use your <code>dendrite_mask</code> to set the pixel values in <code>binary_image</code> to <code>1.0</code> (pure white) where the mask is <code>True</code>.</li><br><li>Display the resulting <code>binary_image</code> using Matplotlib&#x27;s <code>imshow</code> function with <code>cmap=&quot;gray&quot;</code>, hiding the axes.</li></ol></p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-25">import numpy as np
+import matplotlib.pyplot as plt
+
+# 1. Create a boolean mask for intensities between 0.8 and 0.9 (inclusive)
+dendrite_mask = 
+
+# 2. Create a new array of zeros with the same shape as dendrite
+binary_image = 
+
+# 3. Use the mask to set pixels of the dendritic processes to 1.0 (white)
+binary_image[] = 
+
+# 4. Display the binary image
+# ...</textarea>
+            </div>
+            <button id="run-code-cell-25" class="run-button">Run Code</button>
+            <div id="code-cell-25-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="a-note-on-simple-thresholding">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>A note on simple thresholding</h3>
+                        <p>Simple thresholding can be a useful first step in image analysis because it is easy to understand and quick to apply, but it also has important <em>limitations</em>. Its effectiveness depends on there being a reasonably <em>clear separation</em> between the pixel intensities of the signal you&#x27;re interested in, and those of the background. In real-world images, this separation is often highly imperfect. Signal intensity may vary across the image, background illumination may be uneven, and different biological structures may overlap in intensity range. As a result, a single threshold value can easily exclude relevant signal or include unwanted regions.<br><br>Thresholding is also sensitive to how the image has been acquired and displayed. Differences in exposure, staining intensity, focus or noise can all influence which pixels fall above or below a chosen cutoff. This means that a threshold that works well for one image may perform poorly on another.<br><br>Thus, while the techniques discussed so far can be used with great effectiveness for many different cases - particularly where fast and efficient batch processing is required - there will be a plethora of situations for which it is not sensitive enough. Simple thresholding should therefore be viewed as an introductory segmentation method, or a &#x27;quick and dirty&#x27; exploratory tool; at least, for situations where intensity separation is not distinct enough. More reliable analysis often requires refined threshold selection, preprocessing, masking strategies, or more advanced segmentation methods. We will start to explore these as we progress through this Data Processing lesson.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="summary">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Summary</h3>
+                        <p>In this section, we treated greyscale images as two-dimensional arrays of intensity values and used that representation to inspect, display and interpret image data quantitatively. We explored how histograms of pixel intensities can reveal the distribution of signal and background, and used those distributions to identify candidate intensity ranges for different image features.<br><br>We then used simple Boolean logic to estimate the proportion of pixels occupying selected intensity ranges, demonstrated a basic coordinate-based intensity picker, and showed how brightness, contrast and inversion affect the visual appearance of an image. Finally, we used threshold-derived masks to isolate specific features, while also highlighting the limitations of simple thresholding and the need for more robust segmentation approaches in less clearly separated images.</p>
+                    </div>
+                </div>
+            </div>
+            
+
+        <div class="page-navigation">
+            <a href="./images-in-python.html" class="nav-button prev">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                </svg>
+                Previous
+            </a>
+            <a href="./colour-images.html" class="nav-button next">
+                Next
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </a></div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div>© All materials are copyright scryptIQ 2025</div>
+            <div>Powered by Pyodide</div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../assets/main.js"></script>
+    
+    <!-- Pyodide Initialisation Script -->
+    <script>
+
+// Generalisable Pyodide Initialisation Script
+// Variables and state build up naturally as code blocks execute in order
+
+async function main() {
+    // Show loading message for all output elements
+    document.querySelectorAll(".output").forEach(el => {
+        el.textContent = "Loading Pyodide...";
+        el.classList.add("loading-message");
+    });
+    
+    try {
+        // Load Pyodide
+        console.log("Loading Pyodide...");
+        const pyodideStartTime = performance.now();
+        let pyodide = await loadPyodide();
+        const pyodideLoadTime = performance.now() - pyodideStartTime;
+        console.log(`Pyodide loaded in ${pyodideLoadTime.toFixed(2)}ms`);
+        
+        // Load required packages only if specified
+        const lessonPackages = window.LESSON_PACKAGES || [];
+        
+        if (lessonPackages.length > 0) {
+            console.log("Loading required Python packages...");
+            const packagesStartTime = performance.now();
+            
+            // Separate built-in packages from PyPI packages
+            const builtInPackages = lessonPackages.filter(pkg => 
+                ['numpy', 'scipy', 'matplotlib', 'pandas', 'scikit-learn', 'pillow', 'regex'].includes(pkg)
+            );
+            
+            const micropipPackages = lessonPackages.filter(pkg => !builtInPackages.includes(pkg));
+            
+            // Load built-in packages (fast)
+            if (builtInPackages.length > 0) {
+                await pyodide.loadPackage(builtInPackages);
+                console.log(`Loaded built-in packages: ${builtInPackages.join(', ')}`);
+            }
+            
+            // Install PyPI packages (slower)
+            if (micropipPackages.length > 0) {
+                await pyodide.loadPackage(['micropip']);
+                const micropip = pyodide.pyimport('micropip');
+                await micropip.install(micropipPackages);
+                console.log(`Installed PyPI packages: ${micropipPackages.join(', ')}`);
+            }
+            
+            const packagesLoadTime = performance.now() - packagesStartTime;
+            console.log(`Packages loaded in ${packagesLoadTime.toFixed(2)}ms`);
+            console.log(`Total initialisation time: ${(pyodideLoadTime + packagesLoadTime).toFixed(2)}ms`);
+        } else {
+            console.log("No packages to load for this lesson");
+            console.log(`Total initialisation time: ${pyodideLoadTime.toFixed(2)}ms`);
+        }
+
+        // Only set up basic Python environment - no pre-loaded variables
+        await pyodide.runPythonAsync(`
+            import sys
+            from io import StringIO
+        `);
+
+        // Only set up matplotlib if it's in the loaded packages
+        if (lessonPackages.includes('matplotlib')) {
+            await pyodide.runPythonAsync(`
+                # Set up matplotlib for web rendering
+                import matplotlib
+                matplotlib.use('AGG')
+                import matplotlib.pyplot as plt
+                import io
+                import base64
+                
+                def capture_matplotlib():
+                    """Capture current matplotlib figure as HTML img tag"""
+                    buf = io.BytesIO()
+                    plt.savefig(buf, format='png', bbox_inches='tight', dpi=100)
+                    buf.seek(0)
+                    img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+                    plt.close()
+                    return f'<img src="data:image/png;base64,{img_base64}" style="max-width: 100%; height: auto;" />'
+
+                # Silence the "FigureCanvasAgg is non-interactive" warning that
+                # occurs when notebook code calls plt.show().  In this environment
+                # figures are captured automatically via capture_matplotlib(), so
+                # plt.show() should simply be a no-op.
+                plt.show = lambda *args, **kwargs: None
+            `);
+            console.log('Matplotlib capture function set up');
+        }
+        
+        console.log("Pyodide loaded successfully");
+        
+        // Load remote files if URLs are specified
+        const lessonFiles = window.LESSON_FILES || [];
+        
+        if (lessonFiles.length > 0) {
+            try {
+                console.log(`Checking for ${lessonFiles.length} remote file(s) to load...`);
+                
+                // Build Python code to load all files dynamically
+                let pythonCode = `
+from pyodide.http import pyfetch
+import os
+
+# Create data directory if it doesn't exist
+os.makedirs('./data', exist_ok=True)
+`;
+                
+                // Add loading code for each file
+                for (const file of lessonFiles) {
+                    if (file.is_binary) {
+                        // Binary files (images, etc.) - use bytes
+                        pythonCode += `
+# Load ${file.filename} (binary)
+try:
+    response = await pyfetch("${file.url}")
+    content = await response.bytes()
+    with open('./data/${file.filename}', 'wb') as f:
+        f.write(bytes(content))
+    print("Loaded: ${file.filename}")
+except Exception as e:
+    print(f"Could not load ${file.filename}: {e}")
+`;
+                    } else {
+                        // Text files (CSV, etc.) - use string
+                        pythonCode += `
+# Load ${file.filename} (text)
+try:
+    response = await pyfetch("${file.url}")
+    content = await response.string()
+    with open('./data/${file.filename}', 'w') as f:
+        f.write(content)
+    print("Loaded: ${file.filename}")
+except Exception as e:
+    print(f"Could not load ${file.filename}: {e}")
+`;
+                    }
+                }
+                
+                await pyodide.runPythonAsync(pythonCode);
+                console.log("Remote files loaded successfully");
+            } catch (error) {
+                console.warn("Error loading remote files (continuing anyway):", error);
+            }
+        } else {
+            console.log("No remote files to load for this lesson");
+        }
+        
+        // Function to execute Python code and capture output
+        async function executePythonCode(code) {
+            try {
+                // Redirect Python stdout and stderr to capture print statements and warnings
+                await pyodide.runPythonAsync(`
+                    old_stdout = sys.stdout
+                    old_stderr = sys.stderr
+                    sys.stdout = mystdout = StringIO()
+                    sys.stderr = mystderr = StringIO()
+                `);
+
+                // Run the user code.
+                // We pass the code string via pyodide.globals to avoid JS-string escaping
+                // issues, then use Python's ast module to execute it.  The last expression
+                // (if any) is eval-ed inside Python so that repr() is called there —
+                // this means display settings such as np.set_printoptions() are always
+                // respected before the value crosses the Python→JS boundary.
+                // (Pyodide auto-converts numpy arrays to TypedArray, so String(result)
+                // would bypass numpy's formatting entirely.)
+                pyodide.globals.set('__cell_code__', code);
+                await pyodide.runPythonAsync(`
+import ast as _ast
+__cell_result__ = None
+try:
+    _tree = _ast.parse(__cell_code__)
+    if _tree.body and isinstance(_tree.body[-1], _ast.Expr):
+        _last = _tree.body.pop()
+        exec(compile(_ast.Module(body=_tree.body, type_ignores=[]), '<cell>', 'exec'), globals())
+        _val = eval(compile(_ast.Expression(body=_last.value), '<cell>', 'eval'), globals())
+        if _val is not None:
+            __cell_result__ = repr(_val)
+    else:
+        exec(compile(_tree, '<cell>', 'exec'), globals())
+finally:
+    for _k in ['_tree', '_last', '_val', '_ast']:
+        globals().pop(_k, None)
+    globals().pop('__cell_code__', None)
+`);
+
+                // Get the captured stdout and stderr
+                let stdout = await pyodide.runPythonAsync(`
+                    sys.stdout = old_stdout
+                    sys.stderr = old_stderr
+                    mystdout.getvalue()
+                `);
+
+                const stderr = await pyodide.runPythonAsync(`mystderr.getvalue()`);
+                if (stderr) {
+                    if (stdout) stdout += "\n";
+                    stdout += stderr;
+                }
+
+                // Retrieve the Python-side repr string (already formatted correctly)
+                const resultRepr = await pyodide.runPythonAsync(`
+_r = __cell_result__
+del __cell_result__
+_r
+`);
+
+                // Check for matplotlib figures only if matplotlib was loaded
+                const lessonPackages = window.LESSON_PACKAGES || [];
+                if (lessonPackages.includes('matplotlib')) {
+                    const hasFigures = await pyodide.runPythonAsync(`
+                        import matplotlib.pyplot as plt
+                        len(plt.get_fignums()) > 0
+                    `);
+
+                    if (hasFigures) {
+                        const figureHtml = await pyodide.runPythonAsync(`capture_matplotlib()`);
+                        if (stdout) stdout += "\n";
+                        stdout += figureHtml;
+                    }
+                }
+
+                // Combine stdout and result repr
+                let output = stdout;
+                if (resultRepr !== undefined && resultRepr !== null && String(resultRepr).trim() !== '') {
+                    if (output) output += "\n";
+                    output += String(resultRepr);
+                }
+                
+                return { success: true, output: output || "Code executed successfully (no output)" };
+                
+            } catch (error) {
+                // Attempt to restore stdout/stderr even on failure
+                try {
+                    await pyodide.runPythonAsync(`
+                        if 'old_stdout' in dir(): sys.stdout = old_stdout
+                        if 'old_stderr' in dir(): sys.stderr = old_stderr
+                    `);
+                } catch (_) {}
+                // Re-run through Python's traceback machinery to get a clean error message
+                let tracebackStr = '';
+                try {
+                    pyodide.globals.set('_traceback_code', code);
+                    await pyodide.runPythonAsync(`
+                        import traceback as _tb
+                        from io import StringIO as _SIO
+                        _trace_result = None
+                        _saved_io = (sys.stdout, sys.stderr)
+                        sys.stdout = sys.stderr = _SIO()
+                        try:
+                            exec(compile(_traceback_code, '<exec>', 'exec'), globals())
+                        except Exception:
+                            _trace_result = _tb.format_exc()
+                        finally:
+                            sys.stdout, sys.stderr = _saved_io
+                    `);
+                    const tbVal = await pyodide.runPythonAsync('_trace_result');
+                    if (tbVal) tracebackStr = tbVal;
+                } catch (_) {}
+                let displayMsg;
+                if (tracebackStr && tracebackStr.includes('File "<exec>"')) {
+                    const lines = tracebackStr.split('\n');
+                    let execIdx = -1;
+                    for (let i = lines.length - 1; i >= 0; i--) {
+                        if (lines[i].includes('File "<exec>"')) { execIdx = i; break; }
+                    }
+                    displayMsg = execIdx !== -1
+                        ? lines.slice(execIdx).join('\n').trim()
+                        : tracebackStr.trim();
+                } else {
+                    displayMsg = (error.message || '').trim() || error.type || String(error);
+                }
+                return { success: false, output: 'Error:\n' + displayMsg };
+            }
+        }
+        
+        // Execute all hidden code blocks first (for setup code like imports)
+        const hiddenCodeBlocks = Array.from(document.querySelectorAll('.hidden-code textarea'));
+        console.log(`Found ${hiddenCodeBlocks.length} hidden code blocks`);
+
+        for (const textarea of hiddenCodeBlocks) {
+            const code = textarea.value.trim();
+            if (!code) continue;
+            
+            console.log(`Executing hidden code block: ${textarea.id}`);
+            console.log(`Hidden code content: ${code.substring(0, 100)}...`);
+            const result = await executePythonCode(code);
+            
+            if (!result.success) {
+                console.error(`Error in hidden code block ${textarea.id}:`, result.output);
+            } else {
+                console.log(`Hidden code block ${textarea.id} executed successfully`);
+                console.log(`Result: ${result.output}`);
+            }
+        }
+
+        console.log("All hidden code blocks executed");
+        
+        // Get all fixed code blocks in document order
+        const fixedCodeBlocks = Array.from(document.querySelectorAll('.code-fixed textarea'));
+        
+        // Setup and execute fixed code blocks sequentially
+        for (const textarea of fixedCodeBlocks) {
+            const code = textarea.value.trim();
+            if (!code) continue;
+            
+            // Set up CodeMirror editor (read-only)
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: "python",
+                theme: "pastel-on-dark",
+                lineNumbers: true,
+                readOnly: true,
+                viewportMargin: Infinity
+            });
+            
+            // Find corresponding output element
+            const outputId = textarea.id + '-output';
+            const outputElement = document.getElementById(outputId);
+            
+            if (outputElement) {
+                outputElement.textContent = "Running code...";
+                outputElement.classList.add("loading-message");
+                
+                // Execute the code (this maintains state for subsequent blocks)
+                const result = await executePythonCode(code);
+                
+                // Display the output - check if it's HTML
+                const trimmedOutput = result.output.trim();
+                console.log('Output length:', trimmedOutput.length);
+                console.log('Output starts with:', trimmedOutput.substring(0, 100));
+                
+                if (trimmedOutput.includes('<script') && trimmedOutput.includes('Plotly')) {
+                    // It's Plotly HTML output - extract just the body content
+                    console.log('Rendering as Plotly HTML');
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(result.output, 'text/html');
+                    // Clear the output element and append the body content
+                    outputElement.innerHTML = '';
+                    
+                    // Find and load external scripts first (like Plotly CDN)
+                    const externalScripts = Array.from(doc.querySelectorAll('script[src]'));
+                    const inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+                    
+                    // Append non-script content first
+                    Array.from(doc.body.children).forEach(child => {
+                        if (child.tagName !== 'SCRIPT') {
+                            outputElement.appendChild(child.cloneNode(true));
+                        }
+                    });
+                    
+                    // Load external scripts sequentially
+                    const loadScript = (src) => {
+                        return new Promise((resolve, reject) => {
+                            const script = document.createElement('script');
+                            script.src = src;
+                            script.onload = resolve;
+                            script.onerror = reject;
+                            document.head.appendChild(script);
+                        });
+                    };
+                    
+                    // Load all external scripts first
+                    Promise.all(externalScripts.map(s => loadScript(s.src)))
+                        .then(() => {
+                            console.log('External scripts loaded, executing inline scripts');
+                            // Now execute inline scripts
+                            inlineScripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                newScript.textContent = oldScript.textContent;
+                                outputElement.appendChild(newScript);
+                            });
+                            console.log('Output element after processing:', outputElement.children.length, 'children');
+                        })
+                        .catch(err => {
+                            console.error('Failed to load external scripts:', err);
+                            outputElement.textContent = 'Error loading Plotly: ' + err.message;
+                        });
+                } else if (trimmedOutput.startsWith('<!DOCTYPE') || 
+                           trimmedOutput.startsWith('<html') ||
+                            trimmedOutput.startsWith('<div') ||
+                            trimmedOutput.startsWith('<img')) {
+                    console.log('Rendering as generic HTML');
+                    outputElement.innerHTML = result.output;
+                    console.log('Output element after innerHTML:', outputElement.children.length, 'children');
+                } else {
+                    console.log('Rendering as plain text');
+                    outputElement.textContent = result.output;
+                }
+                outputElement.classList.remove("loading-message");
+                if (result.success) {
+                    outputElement.classList.add("success-message");
+                    outputElement.classList.remove("error-message");
+                } else {
+                    outputElement.classList.add("error-message");
+                    outputElement.classList.remove("success-message");
+                }
+            }
+            
+            // Small delay to show progression
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        
+        // Set flag to indicate all FIXED cells have been executed
+        // This is used by PDF generation to ensure all outputs are ready
+        window.allCellsExecuted = true;
+        console.log("All FIXED cells executed successfully");
+        
+        // Setup all editable code blocks (but don't execute them)
+        document.querySelectorAll('.code-editor textarea').forEach((textarea) => {
+            // Set up CodeMirror editor (editable)
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: "python",
+                theme: "pastel-on-dark",
+                lineNumbers: true,
+                viewportMargin: Infinity
+            });
+            
+            // Find corresponding run button and output element
+            const baseId = textarea.id;
+            const runButtonId = 'run-' + baseId;
+            const outputId = baseId + '-output';
+            
+            const runButton = document.getElementById(runButtonId);
+            const outputElement = document.getElementById(outputId);
+            
+            if (runButton && outputElement) {
+                // Set initial state
+                outputElement.textContent = "Ready to run code!";
+                outputElement.classList.remove("loading-message");
+                
+                runButton.addEventListener("click", async () => {
+                    const code = editor.getValue().trim();
+                    if (!code) {
+                        outputElement.textContent = "No code to run";
+                        return;
+                    }
+                    
+                    outputElement.textContent = "Running...";
+                    outputElement.classList.remove("error-message", "success-message");
+                    outputElement.classList.add("loading-message");
+                    
+                    // Execute the code (this also maintains state for future blocks)
+                    const result = await executePythonCode(code);
+                    
+                    // Display the output - check if it's HTML
+                    const trimmedOutput = result.output.trim();
+                    console.log('Output length:', trimmedOutput.length);
+                    console.log('Output starts with:', trimmedOutput.substring(0, 100));
+                    
+                    if (trimmedOutput.includes('<script') && trimmedOutput.includes('Plotly')) {
+                        // It's Plotly HTML output - extract just the body content
+                        console.log('Rendering as Plotly HTML');
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(result.output, 'text/html');
+                        // Clear the output element and append the body content
+                        outputElement.innerHTML = '';
+                        
+                        // Find and load external scripts first (like Plotly CDN)
+                        const externalScripts = Array.from(doc.querySelectorAll('script[src]'));
+                        const inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+                        
+                        // Append non-script content first
+                        Array.from(doc.body.children).forEach(child => {
+                            if (child.tagName !== 'SCRIPT') {
+                                outputElement.appendChild(child.cloneNode(true));
+                            }
+                        });
+                        
+                        // Load external scripts sequentially
+                        const loadScript = (src) => {
+                            return new Promise((resolve, reject) => {
+                                const script = document.createElement('script');
+                                script.src = src;
+                                script.onload = resolve;
+                                script.onerror = reject;
+                                document.head.appendChild(script);
+                            });
+                        };
+                        
+                        // Load all external scripts first
+                        Promise.all(externalScripts.map(s => loadScript(s.src)))
+                            .then(() => {
+                                console.log('External scripts loaded, executing inline scripts');
+                                // Now execute inline scripts
+                                inlineScripts.forEach(oldScript => {
+                                    const newScript = document.createElement('script');
+                                    newScript.textContent = oldScript.textContent;
+                                    outputElement.appendChild(newScript);
+                                });
+                                console.log('Output element after processing:', outputElement.children.length, 'children');
+                            })
+                            .catch(err => {
+                                console.error('Failed to load external scripts:', err);
+                                outputElement.textContent = 'Error loading Plotly: ' + err.message;
+                            });
+                    } else if (trimmedOutput.startsWith('<!DOCTYPE') || 
+                               trimmedOutput.startsWith('<html') ||
+                               trimmedOutput.startsWith('<div') ||
+                               trimmedOutput.startsWith('<img')) {
+                        outputElement.innerHTML = result.output;
+                    } else {
+                        outputElement.textContent = result.output;
+                    }
+                    outputElement.classList.remove("loading-message");
+                    if (result.success) {
+                        outputElement.classList.add("success-message");
+                        outputElement.classList.remove("error-message");
+                    } else {
+                        outputElement.classList.add("error-message");
+                        outputElement.classList.remove("success-message");
+                    }
+                });
+            }
+        });
+        
+        console.log("All code blocks initialised successfully");
+
+        // Set flag to indicate Pyodide is fully ready
+        window.pyodideReady = true;
+        console.log("Pyodide fully ready");
+        
+    } catch (error) {
+        console.error("Failed to initialise Pyodide:", error);
+        document.querySelectorAll(".output").forEach(el => {
+            el.textContent = "Error loading Pyodide: " + error.message;
+            el.classList.remove("loading-message");
+            el.classList.add("error-message");
+        });
+    }
+}
+
+// Start the application when DOM is loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', main);
+} else {
+    main();
+}
+    </script>
+    
+</body>
+</html>

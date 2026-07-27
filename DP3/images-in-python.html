@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- MathJax for mathematical notation -->
+    <script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$']],
+            displayMath: [['$$', '$$']],
+            processEscapes: true
+        },
+        svg: {
+            fontCache: 'global'
+        }
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    
+    <!-- Pyodide and CodeMirror -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/theme/pastel-on-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/mode/python/python.min.js"></script>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="../assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../assets/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="../assets/android-chrome-512x512.png">
+
+    <!-- Core Stylesheets -->
+    <link rel="stylesheet" href=../assets/colours.css>
+    <link rel="stylesheet" href="../assets/shared-styles.css">
+    <link rel="stylesheet" href="../assets/nav-bar.css">
+    <link rel="stylesheet" href="../assets/module_card.css">
+    <link rel="stylesheet" href="../assets/learning_outcomes.css">
+    <link rel="stylesheet" href="../assets/learning_lists.css">
+    <link rel="stylesheet" href="../assets/box_styles.css">
+    <link rel="stylesheet" href="../assets/code_styles.css">
+    
+    <!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>scryptIQ - DP3 - Images in Python</title>
+    <script>
+        window.LESSON_FILES = [
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/main/dp3/healthy/healthy_1.JPG", filename: "healthy_1.JPG", is_binary: true},
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/main/dp3/healthy/healthy_5.JPG", filename: "healthy_5.JPG", is_binary: true}
+        ];
+        window.LESSON_PACKAGES = ['numpy', 'matplotlib'];
+    </script>
+</head>
+<body>
+    
+    <!-- Sidebar Navigation -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <a href="../homepage.html" style="text-decoration: none; display: inline-block;">
+                <img src="../assets/scryptIQ_logo_dark.png" alt="scryptIQ Logo" class="sidebar-logo">
+            </a>
+        </div>
+
+        <h3>Content</h3>
+        <ul>
+            <li><a href="./introduction.html" class="">Introduction</a></li>
+            <li>
+                <div class="nav-toggle active" data-target="expandable-section-1">
+                    Images in Python
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <ul class="nested-nav expanded" id="expandable-section-1"><li><a href="#introduction">Introduction</a></li><li><a href="#images-in-python">Images in Python</a></li><li><a href="#images-as-numpy-arrays">Images as NumPy arrays</a></li><li><a href="#reading-image-files-into-python">Reading image files into Python</a></li><li><a href="#displaying-images-using-matplotlib">Displaying images using matplotlib</a></li><li><a href="#summary">Summary</a></li>
+                </ul>
+            </li><li><a href="./greyscale-images.html">Greyscale images</a></li><li><a href="./colour-images.html">Colour images</a></li><li><a href="./segmentation-masking.html">Masking and segmentation</a></li><li><a href="./assignment.html">Assignment</a></li><li><a href="./feedback.html">Feedback</a></li>
+        </ul>
+
+        <h3 class="collapsible-header collapsed">
+            Resources
+            <span class="collapse-icon">►</span>
+        </h3>
+        <div class="collapsible-content collapsed">
+            <ul>
+                <li><a href="./glossary.html">Glossary</a></li><li><a href="./downloads.html">Downloads</a></li><li><a href="../HB/introduction.html">Handbook</a></li>
+            </ul>
+        </div>
+
+        <h3 class="collapsible-header collapsed">
+            Previous Modules
+            <span class="collapse-icon">►</span>
+        </h3>
+        <div class="collapsible-content collapsed">
+            <ul>
+            <li><a href="../DP1/introduction.html">DP1</a></li>
+            <li><a href="../DP2/introduction.html">DP2</a></li>
+        </ul>
+        </div>
+
+        <h3>
+            <li><a href="./report-issue.html">Report an Issue</a></li>
+        </h3>
+    </div>
+
+    <!-- Sidebar Toggle Button -->
+    <button id="sidebar-toggle" class="sidebar-toggle">❮</button>
+
+    <!-- Main Content Area -->
+    <div id="main-content" class="main-content">
+        <!-- Top Navigation Bar -->
+        <div class="top-navbar">
+            <h1 class="page-title">Data Processing 3</h1>
+            <div class="nav-actions">
+                <a href="../homepage.html" class="text-button" title="Materials homepage">
+                    Homepage
+                </a>
+                <a href="https://scryptiq.ai/my-cohorts/" class="text-button scryptiq-button" title="Find out more about us">
+                    scryptIQ
+                </a>
+            </div>
+        </div>
+
+        
+            <div class="module-card" id="introduction">
+                <div class="module-header">
+                    Images in Python <span class="module-tag">DP3</span>
+                </div>
+                <div class="module-body">
+                    <h3>Learning Objectives</h3>
+                    <div class="learning-outcomes">
+                        <div class="outcome-item">
+                    <span class="outcome-number">1</span>
+                    <span class="outcome-text">Understand that digital images are stored as NumPy arrays</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">2</span>
+                    <span class="outcome-text">Load image files into Python using current image-handling libraries</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">3</span>
+                    <span class="outcome-text">Inspect image shape, dimensionality, and data type</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">4</span>
+                    <span class="outcome-text">Display images correctly using Matplotlib</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">5</span>
+                    <span class="outcome-text">Distinguish between grayscale and colour image representations</span>
+                </div>
+                    </div>
+                    <h3>Introduction</h3>
+                    <p>Images comprise one of the most universal and abundant formats in which data can exist, irrespective of discipline, and are especially common in the biological and medical sciences. From microscopy and histology image, through to clinical scans and field photography, images often serve as a rich source of quantitative information as well as visual evidence to support a research project or study.<br><br>As datasets can quickly grow in both size and complexity, the ability to read, inspect, analyse and manipulate image data is one of the most practical and widely used applications of Python. In this lesson, we will explore how images are represented, handled and analysed in Python, deconstructing them into their numerical components; a representation which allows an image to be studied as data rather than solely viewing them as pictures.</p>
+                </div>
+            </div>
+            
+            <div class="module-card" id="images-in-python">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Images in Python</h3>
+                        <p>In Python, an image can be understood as a numerical array in which each value represents the intensity or colour information of a pixel. Rather than being treated simply as a picture for visual inspection, an image is stored as structured data that can be indexed, measured, transformed, and analysed mathematically. A grayscale image is typically represented as a two-dimensional array, where each position corresponds to one pixel intensity, while a colour image is usually represented as a three-dimensional array, in which the third dimension stores separate colour channels such as red, green, and blue. From this Pythonic perspective, an image is therefore a grid of numerical values arranged in space, making it both a visual object and a dataset that can be explored computationally.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="images-as-numpy-arrays">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Images as NumPy arrays</h3>
+                        <p>The first step in analysing images is to understand them as objects containing raw, constituent data. In Python, this data is typically stored as a <strong>NumPy array</strong>, where each value corresponds to the intensity or colour information of a single pixel. Each pixel can therefore be located by its position in the array, and in a colour image, by its position within a specific colour channel.</p>
+        <div class="info-box key-terms-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                KEY TERMS
+            </div>
+            <div class="box-content">
+                <p>A <strong>pixel</strong> - or <em>picture element</em> - is the smallest individual unit of a digital image. In a raster image (an image made up of a grid of individual pixels), each pixel stores a numerical value that represents brightness in a greyscale image, or colour information in a colour image. When thousands or millions of pixels are arranged in a grid, they combine to form the complete image we see on screen.</p>
+            </div>
+        </div>
+        <p>Representing images in this way allows us to inspect their structure, measure their dimensions and process them efficiently using familiar numerical methods. This means that an image is not only something we can display, but also a dataset that we can analyse, transform and manipulate computationally. Once an image has been loaded as an array, we can crop it, measure it, filter it or modify it using ordinary NumPy operations.<br><br>The two most common types of image we encounter are <strong>greyscale</strong> and <strong>colour</strong>.<br><ul class="nested-list"><li>In a <strong>greyscale image</strong>, each pixel stores a <em>single intensity value</em> representing brightness, ranging from black through shades of grey to white. Because only one value is needed for each pixel, greyscale images are typically stored as two-dimensional arrays.</li><br><li>In a <strong>colour image</strong>, each pixel usually stores multiple values for different colour channels, most commonly red, green and blue (RGB). Colour images are therefore typically stored as three-dimensional arrays, where the first two dimensions describe the image height and width, and the third dimension stores the colour-channel values.</li></ul></p>
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p><ul class="nested-list"><li>When checking the <code>.shape</code> attribute, greyscale images return a tuple of two values. An image of resolution 500 x 500 pixels, will simply have a shape of <code>(500, 500)</code>.</li><br><li>When checking the <code>.shape</code> attribute, colour images return a tuple of three values. An RGB image of resolution 500 x 500 pixels, will simply have a shape of <code>(500, 500, 3)</code>. If the image has a transparency layer, it is RGBA, with the alpha layer showing up as a fourth channel in dimension 3. The given example as RGBA would have a shape of <code>(500, 500, 4)</code>.</li></ul></p>
+            </div>
+        </div>
+        <p>Another important feature of an image array is its <strong>data type</strong> (<code>dtype</code>), which tells us how the pixel values are stored in memory. Many image files are represented using the <code>uint8</code> data type, meaning that each value is stored as an unsigned 8-bit integer between <code>0</code> and <code>255</code>. In a greyscale image, these values typically run from black (<code>0</code>) to white (<code>255</code>), while in a colour image they represent the intensity of each individual colour channel.<br><br>It is also worth noting that different Python libraries do not always store colour channels in exactly the same order. While RGB is very common, some libraries may use alternative conventions, so it is always good practice to check the shape and structure of an image array after loading it.</p>
+        <div class="info-box tip-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                TIP
+            </div>
+            <div class="box-content">
+                <p>Different image libraries may return arrays with different channel orders, data types, or intensity ranges. For that reason, it is good practice to inspect <code>shape</code>, <code>ndim</code>, and <code>dtype</code> every time you load a new image.</p>
+            </div>
+        </div>
+        
+        <div class="info-box fact-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                FACT
+            </div>
+            <div class="box-content">
+                <p>You may sometimes encounter colour images with a 4th channel. These are <strong>RGBA</strong> images, where the fourth channel is an <strong>alpha channel</strong>, containing transparency information. If you have ever encountered PNGs where a logo, for example, has a transparent background, it will be RGBA, with the transparency component determined by this fourth colour channel. In such cases, the shape of the array is often <code>(height, width, 4)</code> rather than <code>(height, width, 3)</code>.</p>
+            </div>
+        </div>
+        <p><img src="./images/Fig1_rgb_pixels.png" alt="" class="notebook-image"></p><p>The figure above conceptualises how this image of a dendrite is composed, when broken down into its constituent pixels, and colour channels. The 3-dimensional NumPy array that comprises this image, therefore, has <code>shape = (height, width, channels)</code>.<br><br>The ratio of red, green and blue intensities at any one pixel, therefore, superimpose over one another, combining into the final colour that we perceive when looking at a given pixel.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="reading-image-files-into-python">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Reading image files into Python</h3>
+                        <p>Before we can inspect or analyse an image in Python, we first need to be able to read the image file into memory, as an array. In this lesson, we will focus on using the <code>imread</code> function from the <code>matplotlib.image</code> submodule; a common and convenient function for loading image data directly into a NumPy-compatible format.<br><br>That is not to say that there aren&#x27;t other methods for doing this. For instance, you may encounter <code>Image.open()</code> from the <strong>Pillow</strong> library, <code>imageio.imread()</code> or even <code>cv2.imread()</code> from <strong>OpenCV</strong>. But <code>imread</code> is a good starting point, as it keeps the process simple and closely aligned with array-based image analysis. We will use it consistently throughout this course, going forward, whenever we are dealing with image files.<br><br>Let&#x27;s start with this image of a bitter gourd leaf.</p><p><img src="./images/Fig2_healthy_5.JPG" alt="" class="notebook-image"></p><p>We can make use of the <code>imread</code> function to load in the file, and check its <code>type</code>:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-1">from matplotlib.image import imread
+
+leaf_image = imread(&#x27;./data/healthy_5.JPG&#x27;)
+
+type(leaf_image)</textarea>
+            </div>
+            <div id="code-cell-1-output" class="output"></div>
+        </div>
+        
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p>While our example file here is a <code>.JPG</code> file, <code>imread()</code> function can actually read a wide range of common image file formats, including <strong>JPEG (<code>.jpg</code>, <code>.jpeg</code>)</strong>, <strong>PNG (<code>.png</code>)</strong>, <strong>TIFF (<code>.tif</code>, <code>.tiff</code>)</strong>, <strong>BMP (<code>.bmp</code>)</strong>, <strong>GIF (<code>.gif</code>)</strong> and many others, automatically decoding the file into a NumPy array for further analysis.</p>
+            </div>
+        </div>
+        <p>Now that the image has been loaded as a NumPy array, we can inspect some of its properties.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-2">height, width, channels = leaf_image.shape # For easy pixel counting
+
+print(f&quot;shape = {leaf_image.shape} \ndimensions (channels) = {leaf_image.ndim} \nsize = {height * width} pixels or {(height * width) / 1000000} megapixels \ndtype = {leaf_image.dtype}&quot;)</textarea>
+            </div>
+            <div id="code-cell-2-output" class="output"></div>
+        </div>
+        
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p>It is important to understand the bit-depth and range of intensities that contribute to greyscale and colour images.<br><ul class="nested-list"><li><strong>Greyscale</strong> images: these have one intensity value per pixel. In an 8-bit image, this is typically stored as <code>uint8</code> with values from <code>0</code> (black) to <code>255</code> (white). In some image-processing workflows, greyscale images may instead be represented as floating-point values from <code>0.0</code> to <code>1.0</code>.</li><br><li><strong>Colour</strong> images: these usually have three channels per pixel, commonly red, green, and blue (RGB). In an 8-bit colour image, each channel is typically stored as <code>uint8</code> with values from <code>0</code> to <code>255</code>, so each pixel is described by three intensity values rather than one.</li></ul></p>
+            </div>
+        </div>
+        <table class="markdown-table">
+<thead>
+<tr>
+<th>Image type</th>
+<th>Channels</th>
+<th>Common dtypes / bit depths</th>
+<th>Typical intensity scale</th>
+<th>Transparency</th>
+<th>NumPy array shape</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Greyscale</td>
+<td>1</td>
+<td><code>uint8</code> (8-bit), sometimes <code>uint16</code> or <code>float32</code></td>
+<td><code>0-255</code> for <code>uint8</code>, <code>0.0-1.0</code> for normalised floats</td>
+<td>No</td>
+<td><code>(height, width)</code></td>
+</tr>
+<tr>
+<td>RGB</td>
+<td>3</td>
+<td><code>uint8</code> (8-bit per channel), sometimes <code>uint16</code> or <code>float32</code></td>
+<td>Each channel usually <code>0-255</code> or <code>0.0-1.0</code></td>
+<td>No</td>
+<td><code>(height, width, 3)</code></td>
+</tr>
+<tr>
+<td>RGBA</td>
+<td>4</td>
+<td><code>uint8</code> (8-bit per channel), sometimes <code>uint16</code> or <code>float32</code></td>
+<td>RGB channels as above; alpha usually <code>0-255</code> or <code>0.0-1.0</code></td>
+<td>Yes, alpha channel</td>
+<td><code>(height, width, 4)</code></td>
+</tr>
+</tbody>
+</table>
+        <div class="info-box key-terms-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                KEY TERMS
+            </div>
+            <div class="box-content">
+                <p>When you encounter the acronym <code>uint</code> in data types such as <code>uint8</code>, it stands for <strong>unsigned integer</strong>. The number that follows specifies the number of <strong>bits</strong> used to store each value. For example, <code>uint8</code> represents an <strong>unsigned 8-bit integer</strong>, meaning it can store whole numbers from <strong>0 to 255</strong>: a common format in imaging.</p>
+            </div>
+        </div>
+        <p>We can also inspect the range of values stored in the array, and access individual pixels or small regions using ordinary NumPy indexing.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-3">leaf_image.min(), leaf_image.max()</textarea>
+            </div>
+            <div id="code-cell-3-output" class="output"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-4"># RGB values for one pixel near the top-left corner
+
+leaf_image[0, 0]</textarea>
+            </div>
+            <div id="code-cell-4-output" class="output"></div>
+        </div>
+        
+        <div class="info-box remember-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                REMEMBER
+            </div>
+            <div class="box-content">
+                <p>In an RGB image, indexing a single pixel returns three values, one for each colour channel. In a greyscale image, the same kind of lookup would usually return just one intensity value.</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-5"># A small 3 x 3 patch of pixels from the image
+
+leaf_image[:3, :3]</textarea>
+            </div>
+            <div id="code-cell-5-output" class="output"></div>
+        </div>
+        <p>The way this NumPy array is structured can be visualised as a <strong>3 × 3 grid of pixels</strong>, as shown in the table, below. The <strong>outer list</strong> corresponds to the image rows, each <strong>inner list</strong> corresponds to the columns, each being a three-element array (<code>[R, G, B]</code>) containing the <strong>Red, Green</strong> and  <strong>Blue</strong> values describing the colour of a single pixel.</p><table class="markdown-table">
+<thead>
+<tr>
+<th></th>
+<th><strong>Column 1</strong></th>
+<th><strong>Column 2</strong></th>
+<th><strong>Column 3</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Row 1</strong></td>
+<td><span style="color:grey">R&nbsp;&nbsp;&nbsp;G&nbsp;&nbsp;&nbsp;B</span><br><strong>[62, 63, 58]</strong></td>
+<td><span style="color:grey">R&nbsp;&nbsp;&nbsp;G&nbsp;&nbsp;&nbsp;B</span><br><strong>[38, 39, 34]</strong></td>
+<td><span style="color:grey">R&nbsp;&nbsp;&nbsp;G&nbsp;&nbsp;&nbsp;B</span><br><strong>[10, 11, 6]</strong></td>
+</tr>
+<tr>
+<td><strong>Row 2</strong></td>
+<td><span style="color:grey">R&nbsp;&nbsp;&nbsp;G&nbsp;&nbsp;&nbsp;B</span><br><strong>[72, 73, 68]</strong></td>
+<td><span style="color:grey">R&nbsp;&nbsp;&nbsp;G&nbsp;&nbsp;&nbsp;B</span><br><strong>[47, 48, 43]</strong></td>
+<td><span style="color:grey">R&nbsp;&nbsp;&nbsp;G&nbsp;&nbsp;&nbsp;B</span><br><strong>[14, 15, 10]</strong></td>
+</tr>
+<tr>
+<td><strong>Row 3</strong></td>
+<td><span style="color:grey">R&nbsp;&nbsp;&nbsp;G&nbsp;&nbsp;&nbsp;B</span><br><strong>[67, 68, 63]</strong></td>
+<td><span style="color:grey">R&nbsp;&nbsp;&nbsp;G&nbsp;&nbsp;&nbsp;B</span><br><strong>[51, 52, 47]</strong></td>
+<td><span style="color:grey">R&nbsp;&nbsp;&nbsp;G&nbsp;&nbsp;&nbsp;B</span><br><strong>[22, 23, 18]</strong></td>
+</tr>
+</tbody>
+</table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="displaying-images-using-matplotlib">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Displaying images using matplotlib</h3>
+                        <p>Now that we have read the image in as a NumPy array, we can display it graphically using Matplotlib. An oft-used approach is employing the <code>imshow</code> function within matplotlib&#x27;s <code>pyplot</code> submodule, which renders the array as an image. In the code below, we use <code>plt.axis(&#x27;off&#x27;)</code> to hide axes when we only want to view the image itself. If we left this out, the numbering on x and y axes would correspond to the dimensions of the image, in pixels.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-6">import matplotlib.pyplot as plt
+
+plt.imshow(leaf_image)
+plt.axis(&#x27;off&#x27;)
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-6-output" class="output"></div>
+        </div>
+        <p>As with any array, you can slice into an image in order to focus on particular zones or areas of interest. This can, for instance, allow the inspection local detail, filling the figure canvas with a cropped region of the image in question.<br><br>With colour images, we typically slice across the first two dimensions to select rows and columns of pixels, while the third dimension stores the colour channels, and is kept, in tact.</p>
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p>When cropping a colour image, the slice usually selects rows and columns while keeping the full set of channels. For example, <code>image[500:1200, 800:1500]</code> returns a rectangular RGB crop with shape <code>(height, width, 3)</code>.</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-7"># Take a rectangular crop from the image
+
+leaf_crop = leaf_image[500:1200, 800:1500]
+leaf_crop.shape</textarea>
+            </div>
+            <div id="code-cell-7-output" class="output"></div>
+        </div>
+        <p>Using <code>subplots</code> - with which you will be familiar from previous lessons in this module - you can easily create tiled figures, displaying different regions of the image</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-8">from matplotlib.pyplot import subplots
+
+leaf_crop_2 = leaf_image[1300:1900, 1600:2300]
+leaf_crop_3 = leaf_image[1000:1700, 1500:2200]
+
+fig, ax = subplots(ncols=2, nrows=2, figsize=(10,10))
+
+ax[0, 0].imshow(leaf_image)
+ax[0, 0].axis(&quot;off&quot;)
+ax[0, 0].set_title(&quot;Original&quot;,fontsize=10)
+
+ax[0, 1].imshow(leaf_crop)
+ax[0, 1].axis(&quot;off&quot;)
+ax[0, 1].set_title(&quot;Crop 1&quot;,fontsize=10)
+
+ax[1, 0].imshow(leaf_crop_2)
+ax[1, 0].axis(&quot;off&quot;)
+ax[1, 0].set_title(&quot;Crop 2&quot;,fontsize=10)
+
+ax[1, 1].imshow(leaf_crop_3)
+ax[1, 1].axis(&quot;off&quot;)
+ax[1, 1].set_title(&quot;Crop 3&quot;,fontsize=10)
+
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-8-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="displaying-images-using-matplotlib">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>1.</strong></p>
+                <p>Let&#x27;s practice loading a new image, checking its attributes and taking a crop of a specific feature.<ol class="nested-list"><li>Use <code>imread</code> to load the image <code>healthy_1.JPG</code> located in the <code>./data/</code> directory, and store it in a variable called <code>leaf_2</code>.</li><br><li>Print the shape and data type of the loaded image.</li><br><li>Create a cropped version of this image, selecting rows 500 to 1700 and columns 1000 to 2000, and store it in a variable called <code>leaf_2_crop</code>.</li><br><li>Display <code>leaf_2_crop</code> using Matplotlib&#x27;s <code>imshow</code> function, making sure to hide the axes.</li></ol></p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-9">from matplotlib.image import imread
+import matplotlib.pyplot as plt
+
+# 1. Load the image healthy_1.JPG from ./data/healthy/
+leaf_2 = 
+
+# 2. Print shape and data type
+print(f&quot;Shape = {leaf_2.shape}&quot;)
+print(f&quot;Data type = {leaf_2.dtype}&quot;)
+
+# 3. Crop the image: rows 500:1700, columns 1000:1000
+leaf_2_crop = 
+
+# 4. Display the cropped image
+# </textarea>
+            </div>
+            <button id="run-code-cell-9" class="run-button">Run Code</button>
+            <div id="code-cell-9-output" class="output"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-collapse-header" onclick="toggleCodeCollapse('code-cell-10')">
+                <span class="code-collapse-icon">▶</span>
+                <span class="code-collapse-label">Show solution</span>
+            </div>
+            <div class="code-container code-fixed code-solution code-collapsed" id="code-cell-10-container">
+                <textarea id="code-cell-10">from matplotlib.image import imread
+import matplotlib.pyplot as plt
+
+# 1. Load the image healthy_1.JPG from ./data/healthy/
+leaf_2 = imread(&#x27;./data/healthy_1.JPG&#x27;)
+
+# 2. Print shape and data type
+print(f&quot;Shape = {leaf_2.shape}&quot;)
+print(f&quot;Data type = {leaf_2.dtype}&quot;)
+
+# 3. Crop the image: rows 500:1700, columns 1000:2000
+leaf_2_crop = leaf_2[500:1700, 1000:2000]
+
+# 4. Display the cropped image
+plt.imshow(leaf_2_crop)
+plt.axis(&#x27;off&#x27;)
+plt.show()</textarea>
+            </div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="summary">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Summary</h3>
+                        <p>In this section of the lesson, we introduced the concept of digital images as numerical data stored in NumPy arrays, showing how Python can treat images both as images and as structured datasets: which, like any other, can be inspected, indexed, sliced and displayed. The lesson briefly introduced the difference between greyscale, RGB and RGBA images, including characteristics such as typical channel structure, data types and intensity ranges associated with each, highlighting that many images are stored as <code>uint8</code> values while some workflows use normalised floating-point data. We then learned how to read in a Python image using the <code>imread</code> function. Lastly, we accessed individual pixels and small regions through standard NumPy indexing, created a crop by slicing the array, and showed how to display images in a graphical format, using Matplotlib with <code>imshow</code> function.</p>
+                    </div>
+                </div>
+            </div>
+            
+
+        <div class="page-navigation">
+            <a href="./introduction.html" class="nav-button prev">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                </svg>
+                Previous
+            </a>
+            <a href="./greyscale-images.html" class="nav-button next">
+                Next
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </a></div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div>© All materials are copyright scryptIQ 2025</div>
+            <div>Powered by Pyodide</div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../assets/main.js"></script>
+    
+    <!-- Pyodide Initialisation Script -->
+    <script>
+
+// Generalisable Pyodide Initialisation Script
+// Variables and state build up naturally as code blocks execute in order
+
+async function main() {
+    // Show loading message for all output elements
+    document.querySelectorAll(".output").forEach(el => {
+        el.textContent = "Loading Pyodide...";
+        el.classList.add("loading-message");
+    });
+    
+    try {
+        // Load Pyodide
+        console.log("Loading Pyodide...");
+        const pyodideStartTime = performance.now();
+        let pyodide = await loadPyodide();
+        const pyodideLoadTime = performance.now() - pyodideStartTime;
+        console.log(`Pyodide loaded in ${pyodideLoadTime.toFixed(2)}ms`);
+        
+        // Load required packages only if specified
+        const lessonPackages = window.LESSON_PACKAGES || [];
+        
+        if (lessonPackages.length > 0) {
+            console.log("Loading required Python packages...");
+            const packagesStartTime = performance.now();
+            
+            // Separate built-in packages from PyPI packages
+            const builtInPackages = lessonPackages.filter(pkg => 
+                ['numpy', 'scipy', 'matplotlib', 'pandas', 'scikit-learn', 'pillow', 'regex'].includes(pkg)
+            );
+            
+            const micropipPackages = lessonPackages.filter(pkg => !builtInPackages.includes(pkg));
+            
+            // Load built-in packages (fast)
+            if (builtInPackages.length > 0) {
+                await pyodide.loadPackage(builtInPackages);
+                console.log(`Loaded built-in packages: ${builtInPackages.join(', ')}`);
+            }
+            
+            // Install PyPI packages (slower)
+            if (micropipPackages.length > 0) {
+                await pyodide.loadPackage(['micropip']);
+                const micropip = pyodide.pyimport('micropip');
+                await micropip.install(micropipPackages);
+                console.log(`Installed PyPI packages: ${micropipPackages.join(', ')}`);
+            }
+            
+            const packagesLoadTime = performance.now() - packagesStartTime;
+            console.log(`Packages loaded in ${packagesLoadTime.toFixed(2)}ms`);
+            console.log(`Total initialisation time: ${(pyodideLoadTime + packagesLoadTime).toFixed(2)}ms`);
+        } else {
+            console.log("No packages to load for this lesson");
+            console.log(`Total initialisation time: ${pyodideLoadTime.toFixed(2)}ms`);
+        }
+
+        // Only set up basic Python environment - no pre-loaded variables
+        await pyodide.runPythonAsync(`
+            import sys
+            from io import StringIO
+        `);
+
+        // Only set up matplotlib if it's in the loaded packages
+        if (lessonPackages.includes('matplotlib')) {
+            await pyodide.runPythonAsync(`
+                # Set up matplotlib for web rendering
+                import matplotlib
+                matplotlib.use('AGG')
+                import matplotlib.pyplot as plt
+                import io
+                import base64
+                
+                def capture_matplotlib():
+                    """Capture current matplotlib figure as HTML img tag"""
+                    buf = io.BytesIO()
+                    plt.savefig(buf, format='png', bbox_inches='tight', dpi=100)
+                    buf.seek(0)
+                    img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+                    plt.close()
+                    return f'<img src="data:image/png;base64,{img_base64}" style="max-width: 100%; height: auto;" />'
+
+                # Silence the "FigureCanvasAgg is non-interactive" warning that
+                # occurs when notebook code calls plt.show().  In this environment
+                # figures are captured automatically via capture_matplotlib(), so
+                # plt.show() should simply be a no-op.
+                plt.show = lambda *args, **kwargs: None
+            `);
+            console.log('Matplotlib capture function set up');
+        }
+        
+        console.log("Pyodide loaded successfully");
+        
+        // Load remote files if URLs are specified
+        const lessonFiles = window.LESSON_FILES || [];
+        
+        if (lessonFiles.length > 0) {
+            try {
+                console.log(`Checking for ${lessonFiles.length} remote file(s) to load...`);
+                
+                // Build Python code to load all files dynamically
+                let pythonCode = `
+from pyodide.http import pyfetch
+import os
+
+# Create data directory if it doesn't exist
+os.makedirs('./data', exist_ok=True)
+`;
+                
+                // Add loading code for each file
+                for (const file of lessonFiles) {
+                    if (file.is_binary) {
+                        // Binary files (images, etc.) - use bytes
+                        pythonCode += `
+# Load ${file.filename} (binary)
+try:
+    response = await pyfetch("${file.url}")
+    content = await response.bytes()
+    with open('./data/${file.filename}', 'wb') as f:
+        f.write(bytes(content))
+    print("Loaded: ${file.filename}")
+except Exception as e:
+    print(f"Could not load ${file.filename}: {e}")
+`;
+                    } else {
+                        // Text files (CSV, etc.) - use string
+                        pythonCode += `
+# Load ${file.filename} (text)
+try:
+    response = await pyfetch("${file.url}")
+    content = await response.string()
+    with open('./data/${file.filename}', 'w') as f:
+        f.write(content)
+    print("Loaded: ${file.filename}")
+except Exception as e:
+    print(f"Could not load ${file.filename}: {e}")
+`;
+                    }
+                }
+                
+                await pyodide.runPythonAsync(pythonCode);
+                console.log("Remote files loaded successfully");
+            } catch (error) {
+                console.warn("Error loading remote files (continuing anyway):", error);
+            }
+        } else {
+            console.log("No remote files to load for this lesson");
+        }
+        
+        // Function to execute Python code and capture output
+        async function executePythonCode(code) {
+            try {
+                // Redirect Python stdout and stderr to capture print statements and warnings
+                await pyodide.runPythonAsync(`
+                    old_stdout = sys.stdout
+                    old_stderr = sys.stderr
+                    sys.stdout = mystdout = StringIO()
+                    sys.stderr = mystderr = StringIO()
+                `);
+
+                // Run the user code.
+                // We pass the code string via pyodide.globals to avoid JS-string escaping
+                // issues, then use Python's ast module to execute it.  The last expression
+                // (if any) is eval-ed inside Python so that repr() is called there —
+                // this means display settings such as np.set_printoptions() are always
+                // respected before the value crosses the Python→JS boundary.
+                // (Pyodide auto-converts numpy arrays to TypedArray, so String(result)
+                // would bypass numpy's formatting entirely.)
+                pyodide.globals.set('__cell_code__', code);
+                await pyodide.runPythonAsync(`
+import ast as _ast
+__cell_result__ = None
+try:
+    _tree = _ast.parse(__cell_code__)
+    if _tree.body and isinstance(_tree.body[-1], _ast.Expr):
+        _last = _tree.body.pop()
+        exec(compile(_ast.Module(body=_tree.body, type_ignores=[]), '<cell>', 'exec'), globals())
+        _val = eval(compile(_ast.Expression(body=_last.value), '<cell>', 'eval'), globals())
+        if _val is not None:
+            __cell_result__ = repr(_val)
+    else:
+        exec(compile(_tree, '<cell>', 'exec'), globals())
+finally:
+    for _k in ['_tree', '_last', '_val', '_ast']:
+        globals().pop(_k, None)
+    globals().pop('__cell_code__', None)
+`);
+
+                // Get the captured stdout and stderr
+                let stdout = await pyodide.runPythonAsync(`
+                    sys.stdout = old_stdout
+                    sys.stderr = old_stderr
+                    mystdout.getvalue()
+                `);
+
+                const stderr = await pyodide.runPythonAsync(`mystderr.getvalue()`);
+                if (stderr) {
+                    if (stdout) stdout += "\n";
+                    stdout += stderr;
+                }
+
+                // Retrieve the Python-side repr string (already formatted correctly)
+                const resultRepr = await pyodide.runPythonAsync(`
+_r = __cell_result__
+del __cell_result__
+_r
+`);
+
+                // Check for matplotlib figures only if matplotlib was loaded
+                const lessonPackages = window.LESSON_PACKAGES || [];
+                if (lessonPackages.includes('matplotlib')) {
+                    const hasFigures = await pyodide.runPythonAsync(`
+                        import matplotlib.pyplot as plt
+                        len(plt.get_fignums()) > 0
+                    `);
+
+                    if (hasFigures) {
+                        const figureHtml = await pyodide.runPythonAsync(`capture_matplotlib()`);
+                        if (stdout) stdout += "\n";
+                        stdout += figureHtml;
+                    }
+                }
+
+                // Combine stdout and result repr
+                let output = stdout;
+                if (resultRepr !== undefined && resultRepr !== null && String(resultRepr).trim() !== '') {
+                    if (output) output += "\n";
+                    output += String(resultRepr);
+                }
+                
+                return { success: true, output: output || "Code executed successfully (no output)" };
+                
+            } catch (error) {
+                // Attempt to restore stdout/stderr even on failure
+                try {
+                    await pyodide.runPythonAsync(`
+                        if 'old_stdout' in dir(): sys.stdout = old_stdout
+                        if 'old_stderr' in dir(): sys.stderr = old_stderr
+                    `);
+                } catch (_) {}
+                // Re-run through Python's traceback machinery to get a clean error message
+                let tracebackStr = '';
+                try {
+                    pyodide.globals.set('_traceback_code', code);
+                    await pyodide.runPythonAsync(`
+                        import traceback as _tb
+                        from io import StringIO as _SIO
+                        _trace_result = None
+                        _saved_io = (sys.stdout, sys.stderr)
+                        sys.stdout = sys.stderr = _SIO()
+                        try:
+                            exec(compile(_traceback_code, '<exec>', 'exec'), globals())
+                        except Exception:
+                            _trace_result = _tb.format_exc()
+                        finally:
+                            sys.stdout, sys.stderr = _saved_io
+                    `);
+                    const tbVal = await pyodide.runPythonAsync('_trace_result');
+                    if (tbVal) tracebackStr = tbVal;
+                } catch (_) {}
+                let displayMsg;
+                if (tracebackStr && tracebackStr.includes('File "<exec>"')) {
+                    const lines = tracebackStr.split('\n');
+                    let execIdx = -1;
+                    for (let i = lines.length - 1; i >= 0; i--) {
+                        if (lines[i].includes('File "<exec>"')) { execIdx = i; break; }
+                    }
+                    displayMsg = execIdx !== -1
+                        ? lines.slice(execIdx).join('\n').trim()
+                        : tracebackStr.trim();
+                } else {
+                    displayMsg = (error.message || '').trim() || error.type || String(error);
+                }
+                return { success: false, output: 'Error:\n' + displayMsg };
+            }
+        }
+        
+        // Execute all hidden code blocks first (for setup code like imports)
+        const hiddenCodeBlocks = Array.from(document.querySelectorAll('.hidden-code textarea'));
+        console.log(`Found ${hiddenCodeBlocks.length} hidden code blocks`);
+
+        for (const textarea of hiddenCodeBlocks) {
+            const code = textarea.value.trim();
+            if (!code) continue;
+            
+            console.log(`Executing hidden code block: ${textarea.id}`);
+            console.log(`Hidden code content: ${code.substring(0, 100)}...`);
+            const result = await executePythonCode(code);
+            
+            if (!result.success) {
+                console.error(`Error in hidden code block ${textarea.id}:`, result.output);
+            } else {
+                console.log(`Hidden code block ${textarea.id} executed successfully`);
+                console.log(`Result: ${result.output}`);
+            }
+        }
+
+        console.log("All hidden code blocks executed");
+        
+        // Get all fixed code blocks in document order
+        const fixedCodeBlocks = Array.from(document.querySelectorAll('.code-fixed textarea'));
+        
+        // Setup and execute fixed code blocks sequentially
+        for (const textarea of fixedCodeBlocks) {
+            const code = textarea.value.trim();
+            if (!code) continue;
+            
+            // Set up CodeMirror editor (read-only)
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: "python",
+                theme: "pastel-on-dark",
+                lineNumbers: true,
+                readOnly: true,
+                viewportMargin: Infinity
+            });
+            
+            // Find corresponding output element
+            const outputId = textarea.id + '-output';
+            const outputElement = document.getElementById(outputId);
+            
+            if (outputElement) {
+                outputElement.textContent = "Running code...";
+                outputElement.classList.add("loading-message");
+                
+                // Execute the code (this maintains state for subsequent blocks)
+                const result = await executePythonCode(code);
+                
+                // Display the output - check if it's HTML
+                const trimmedOutput = result.output.trim();
+                console.log('Output length:', trimmedOutput.length);
+                console.log('Output starts with:', trimmedOutput.substring(0, 100));
+                
+                if (trimmedOutput.includes('<script') && trimmedOutput.includes('Plotly')) {
+                    // It's Plotly HTML output - extract just the body content
+                    console.log('Rendering as Plotly HTML');
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(result.output, 'text/html');
+                    // Clear the output element and append the body content
+                    outputElement.innerHTML = '';
+                    
+                    // Find and load external scripts first (like Plotly CDN)
+                    const externalScripts = Array.from(doc.querySelectorAll('script[src]'));
+                    const inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+                    
+                    // Append non-script content first
+                    Array.from(doc.body.children).forEach(child => {
+                        if (child.tagName !== 'SCRIPT') {
+                            outputElement.appendChild(child.cloneNode(true));
+                        }
+                    });
+                    
+                    // Load external scripts sequentially
+                    const loadScript = (src) => {
+                        return new Promise((resolve, reject) => {
+                            const script = document.createElement('script');
+                            script.src = src;
+                            script.onload = resolve;
+                            script.onerror = reject;
+                            document.head.appendChild(script);
+                        });
+                    };
+                    
+                    // Load all external scripts first
+                    Promise.all(externalScripts.map(s => loadScript(s.src)))
+                        .then(() => {
+                            console.log('External scripts loaded, executing inline scripts');
+                            // Now execute inline scripts
+                            inlineScripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                newScript.textContent = oldScript.textContent;
+                                outputElement.appendChild(newScript);
+                            });
+                            console.log('Output element after processing:', outputElement.children.length, 'children');
+                        })
+                        .catch(err => {
+                            console.error('Failed to load external scripts:', err);
+                            outputElement.textContent = 'Error loading Plotly: ' + err.message;
+                        });
+                } else if (trimmedOutput.startsWith('<!DOCTYPE') || 
+                           trimmedOutput.startsWith('<html') ||
+                            trimmedOutput.startsWith('<div') ||
+                            trimmedOutput.startsWith('<img')) {
+                    console.log('Rendering as generic HTML');
+                    outputElement.innerHTML = result.output;
+                    console.log('Output element after innerHTML:', outputElement.children.length, 'children');
+                } else {
+                    console.log('Rendering as plain text');
+                    outputElement.textContent = result.output;
+                }
+                outputElement.classList.remove("loading-message");
+                if (result.success) {
+                    outputElement.classList.add("success-message");
+                    outputElement.classList.remove("error-message");
+                } else {
+                    outputElement.classList.add("error-message");
+                    outputElement.classList.remove("success-message");
+                }
+            }
+            
+            // Small delay to show progression
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        
+        // Set flag to indicate all FIXED cells have been executed
+        // This is used by PDF generation to ensure all outputs are ready
+        window.allCellsExecuted = true;
+        console.log("All FIXED cells executed successfully");
+        
+        // Setup all editable code blocks (but don't execute them)
+        document.querySelectorAll('.code-editor textarea').forEach((textarea) => {
+            // Set up CodeMirror editor (editable)
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: "python",
+                theme: "pastel-on-dark",
+                lineNumbers: true,
+                viewportMargin: Infinity
+            });
+            
+            // Find corresponding run button and output element
+            const baseId = textarea.id;
+            const runButtonId = 'run-' + baseId;
+            const outputId = baseId + '-output';
+            
+            const runButton = document.getElementById(runButtonId);
+            const outputElement = document.getElementById(outputId);
+            
+            if (runButton && outputElement) {
+                // Set initial state
+                outputElement.textContent = "Ready to run code!";
+                outputElement.classList.remove("loading-message");
+                
+                runButton.addEventListener("click", async () => {
+                    const code = editor.getValue().trim();
+                    if (!code) {
+                        outputElement.textContent = "No code to run";
+                        return;
+                    }
+                    
+                    outputElement.textContent = "Running...";
+                    outputElement.classList.remove("error-message", "success-message");
+                    outputElement.classList.add("loading-message");
+                    
+                    // Execute the code (this also maintains state for future blocks)
+                    const result = await executePythonCode(code);
+                    
+                    // Display the output - check if it's HTML
+                    const trimmedOutput = result.output.trim();
+                    console.log('Output length:', trimmedOutput.length);
+                    console.log('Output starts with:', trimmedOutput.substring(0, 100));
+                    
+                    if (trimmedOutput.includes('<script') && trimmedOutput.includes('Plotly')) {
+                        // It's Plotly HTML output - extract just the body content
+                        console.log('Rendering as Plotly HTML');
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(result.output, 'text/html');
+                        // Clear the output element and append the body content
+                        outputElement.innerHTML = '';
+                        
+                        // Find and load external scripts first (like Plotly CDN)
+                        const externalScripts = Array.from(doc.querySelectorAll('script[src]'));
+                        const inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+                        
+                        // Append non-script content first
+                        Array.from(doc.body.children).forEach(child => {
+                            if (child.tagName !== 'SCRIPT') {
+                                outputElement.appendChild(child.cloneNode(true));
+                            }
+                        });
+                        
+                        // Load external scripts sequentially
+                        const loadScript = (src) => {
+                            return new Promise((resolve, reject) => {
+                                const script = document.createElement('script');
+                                script.src = src;
+                                script.onload = resolve;
+                                script.onerror = reject;
+                                document.head.appendChild(script);
+                            });
+                        };
+                        
+                        // Load all external scripts first
+                        Promise.all(externalScripts.map(s => loadScript(s.src)))
+                            .then(() => {
+                                console.log('External scripts loaded, executing inline scripts');
+                                // Now execute inline scripts
+                                inlineScripts.forEach(oldScript => {
+                                    const newScript = document.createElement('script');
+                                    newScript.textContent = oldScript.textContent;
+                                    outputElement.appendChild(newScript);
+                                });
+                                console.log('Output element after processing:', outputElement.children.length, 'children');
+                            })
+                            .catch(err => {
+                                console.error('Failed to load external scripts:', err);
+                                outputElement.textContent = 'Error loading Plotly: ' + err.message;
+                            });
+                    } else if (trimmedOutput.startsWith('<!DOCTYPE') || 
+                               trimmedOutput.startsWith('<html') ||
+                               trimmedOutput.startsWith('<div') ||
+                               trimmedOutput.startsWith('<img')) {
+                        outputElement.innerHTML = result.output;
+                    } else {
+                        outputElement.textContent = result.output;
+                    }
+                    outputElement.classList.remove("loading-message");
+                    if (result.success) {
+                        outputElement.classList.add("success-message");
+                        outputElement.classList.remove("error-message");
+                    } else {
+                        outputElement.classList.add("error-message");
+                        outputElement.classList.remove("success-message");
+                    }
+                });
+            }
+        });
+        
+        console.log("All code blocks initialised successfully");
+
+        // Set flag to indicate Pyodide is fully ready
+        window.pyodideReady = true;
+        console.log("Pyodide fully ready");
+        
+    } catch (error) {
+        console.error("Failed to initialise Pyodide:", error);
+        document.querySelectorAll(".output").forEach(el => {
+            el.textContent = "Error loading Pyodide: " + error.message;
+            el.classList.remove("loading-message");
+            el.classList.add("error-message");
+        });
+    }
+}
+
+// Start the application when DOM is loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', main);
+} else {
+    main();
+}
+    </script>
+    
+</body>
+</html>

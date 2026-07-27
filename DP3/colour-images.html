@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- MathJax for mathematical notation -->
+    <script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$']],
+            displayMath: [['$$', '$$']],
+            processEscapes: true
+        },
+        svg: {
+            fontCache: 'global'
+        }
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    
+    <!-- Pyodide and CodeMirror -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/theme/pastel-on-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/mode/python/python.min.js"></script>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="../assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../assets/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="../assets/android-chrome-512x512.png">
+
+    <!-- Core Stylesheets -->
+    <link rel="stylesheet" href=../assets/colours.css>
+    <link rel="stylesheet" href="../assets/shared-styles.css">
+    <link rel="stylesheet" href="../assets/nav-bar.css">
+    <link rel="stylesheet" href="../assets/module_card.css">
+    <link rel="stylesheet" href="../assets/learning_outcomes.css">
+    <link rel="stylesheet" href="../assets/learning_lists.css">
+    <link rel="stylesheet" href="../assets/box_styles.css">
+    <link rel="stylesheet" href="../assets/code_styles.css">
+    
+    <!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>scryptIQ - DP3 - Colour images</title>
+    <script>
+        window.LESSON_FILES = [
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/main/dp3/dendrite_colour.png", filename: "dendrite_colour.png", is_binary: true},
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/main/dp3/Milo.jpg", filename: "Milo.jpg", is_binary: true}
+        ];
+        window.LESSON_PACKAGES = ['numpy', 'matplotlib'];
+    </script>
+</head>
+<body>
+    
+    <!-- Sidebar Navigation -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <a href="../homepage.html" style="text-decoration: none; display: inline-block;">
+                <img src="../assets/scryptIQ_logo_dark.png" alt="scryptIQ Logo" class="sidebar-logo">
+            </a>
+        </div>
+
+        <h3>Content</h3>
+        <ul>
+            <li><a href="./introduction.html" class="">Introduction</a></li><li><a href="./images-in-python.html">Images in Python</a></li><li><a href="./greyscale-images.html">Greyscale images</a></li>
+            <li>
+                <div class="nav-toggle active" data-target="expandable-section-3">
+                    Colour images
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <ul class="nested-nav expanded" id="expandable-section-3"><li><a href="#introduction">Introduction</a></li><li><a href="#the-rgb-colour-space">The RGB colour space</a></li><li><a href="#splitting-and-visualising-channels">Splitting and visualising channels</a></li><li><a href="#merging-channels">Merging channels</a></li><li><a href="#false-colour-images">False-colour images</a></li><li><a href="#colour-space-conversions">Colour space conversions</a></li><li><a href="#obtaining-feature-target-hsv-values">Obtaining feature target HSV values</a></li><li><a href="#summary">Summary</a></li>
+                </ul>
+            </li><li><a href="./segmentation-masking.html">Masking and segmentation</a></li><li><a href="./assignment.html">Assignment</a></li><li><a href="./feedback.html">Feedback</a></li>
+        </ul>
+
+        <h3 class="collapsible-header collapsed">
+            Resources
+            <span class="collapse-icon">►</span>
+        </h3>
+        <div class="collapsible-content collapsed">
+            <ul>
+                <li><a href="./glossary.html">Glossary</a></li><li><a href="./downloads.html">Downloads</a></li><li><a href="../HB/introduction.html">Handbook</a></li>
+            </ul>
+        </div>
+
+        <h3 class="collapsible-header collapsed">
+            Previous Modules
+            <span class="collapse-icon">►</span>
+        </h3>
+        <div class="collapsible-content collapsed">
+            <ul>
+            <li><a href="../DP1/introduction.html">DP1</a></li>
+            <li><a href="../DP2/introduction.html">DP2</a></li>
+        </ul>
+        </div>
+
+        <h3>
+            <li><a href="./report-issue.html">Report an Issue</a></li>
+        </h3>
+    </div>
+
+    <!-- Sidebar Toggle Button -->
+    <button id="sidebar-toggle" class="sidebar-toggle">❮</button>
+
+    <!-- Main Content Area -->
+    <div id="main-content" class="main-content">
+        <!-- Top Navigation Bar -->
+        <div class="top-navbar">
+            <h1 class="page-title">Data Processing 3</h1>
+            <div class="nav-actions">
+                <a href="../homepage.html" class="text-button" title="Materials homepage">
+                    Homepage
+                </a>
+                <a href="https://scryptiq.ai/my-cohorts/" class="text-button scryptiq-button" title="Find out more about us">
+                    scryptIQ
+                </a>
+            </div>
+        </div>
+
+        
+            <div class="module-card" id="introduction">
+                <div class="module-header">
+                    Colour images <span class="module-tag">DP3</span>
+                </div>
+                <div class="module-body">
+                    <h3>Learning Objectives</h3>
+                    <div class="learning-outcomes">
+                        <div class="outcome-item">
+                    <span class="outcome-number">1</span>
+                    <span class="outcome-text">Understand colour images as multi-channel arrays</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">2</span>
+                    <span class="outcome-text">Separate and visualise red, green, and blue channels</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">3</span>
+                    <span class="outcome-text">Generate and compare histograms for individual colour channels</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">4</span>
+                    <span class="outcome-text">Recognise the role of an alpha channel in RGBA images</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">5</span>
+                    <span class="outcome-text">Distinguish between true colour images and false-colour visualisations</span>
+                </div>
+                    </div>
+                    <h3>Introduction</h3>
+                    <p>Having established that images can be treated as NumPy arrays, we can now extend this concept from greyscale onto <strong>colour images</strong>, where each pixel stores <em>multiple channel values</em>, as opposed to a single intensity. This makes colour images more complex, because important visual information is often distributed across different channels and colour relationships rather than brightness alone. Learning how colour image data is structured and handled is therefore an important step in moving from simply viewing images to analysing them quantitatively, allowing us to isolate features, compare signals and make more informed use of image data in applied contexts.</p>
+                </div>
+            </div>
+            
+            <div class="module-card" id="the-rgb-colour-space">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>The RGB colour space</h3>
+                        <p>Most digital colour images are represented using the <strong>RGB colour space</strong>, in which each pixel is most commonly described by a combination of <strong>red</strong>, <strong>green</strong> and <strong>blue</strong> intensity values. Thus, each pixel is a composite of three colour value intensities for each of these channels, rather than being represented by a single number, as per grayscale images. In Python, this means that an RGB image is usually represented as a <strong>three-dimensional NumPy array</strong>, with the first two dimensions corresponding to the image height and width, and the third dimension having length 3 to store the red, green, and blue components.</p>
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p>Some colour images contain a fourth channel: <strong>alpha</strong>. These images, termed <strong>RGBA images</strong>, have a channel which governs opacity. An alpha value of 255 means that a pixel is fully opaque, whereas a value of 0 means that it is fully transparent.<br><br>A commonly-encoutered example of an RGBA image, might be a company logo, often given as a PNG (Portable Network Graphics) file, where the logo border may non-square, and have transparent pixels around its border, allowing the logo to be layered on top of other layers, and appear to &#x27;float&#x27; on top of it.</p>
+            </div>
+        </div>
+        <p>With a colour, RGB image, its three channel values combine to produce the final perceived colour of each pixel. For example, a pixel with a high red value and low green and blue values will appear red-dominant, while a pixel with similar values in all three channels will appear more grey or white.<br><br>This numerical pixel representation is very useful to us as data scientists, for it allows us to inspect, manipulate and analyse each colour channel separately. In biological imaging, colour information may arise from stains, fluorescent markers or false-colour rendering, for instance, and so understanding how RGB images are structured is an important first step towards more advanced colour-based image analysis.</p><p>Let&#x27;s use matplotlib&#x27;s <code>imread()</code> function, to read in a colour image, and store it into a variable.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-26">from matplotlib.image import imread
+
+image_colour = imread(&quot;./data/dendrite_colour.png&quot;)
+
+type(image_colour)</textarea>
+            </div>
+            <div id="code-cell-26-output" class="output"></div>
+        </div>
+        <p>The image is now stored as a NumPy array, and so we can use NumPy methods to inspect the data held within it, as follows.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-27">max_intensity = image_colour.max()
+min_intensity = image_colour.min()
+
+print(f&quot;Data type = {image_colour.dtype}\nMinimum pixel intensity = {min_intensity}\nMaximum pixel intensity = {max_intensity}\n\nImage Array = \n{image_colour}&quot;)</textarea>
+            </div>
+            <div id="code-cell-27-output" class="output"></div>
+        </div>
+        <p>The array comprises trios of intensities with indices <code>0</code>, <code>1</code> and <code>2</code> corresponding to red, green and blue channels, respectively. We can see that its <code>.min</code> value is <code>0.0</code>, and its <code>.max</code> value is 1.0, and can see that its data type is <code>float32</code>, and not an integer.<br><br>This shows that the intensities in this image are normalised to a scale running from 0 to 1, not 0-255, as many colour images are.</p>
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p>The pixel intensity scales depend partly on <em>how the image was originally stored</em>, and partly on <em>which Python function was used</em> to read it in.<br><br>Many standard colour images are saved as 8-bit data, in which each channel takes integer values from 0 to 255. When such images are loaded into Python, some libraries preserve that original <code>uint8</code> format, while others convert the values into floating-point form and rescale them to lie between 0 and 1. The image content is still the same in principle, but the numerical representation has changed.<br><br>Both conventions are useful in different settings. A <code>0-255</code> scale is convenient because it reflects the common 8-bit storage format used by many image files, and it is often easier to relate to when thinking in terms of familiar RGB colour values. A <code>0-1</code> scale, by contrast, is often more convenient for computation, because it standardises the data and makes mathematical operations such as scaling, normalisation, blending, and contrast adjustment more straightforward. In practice, neither representation is inherently better in all cases, but it is important to know which one you are working with before interpreting or manipulating the image.</p>
+            </div>
+        </div>
+        <p>Let&#x27;s take a look at our dendrite image, this time, in colour. As before, we&#x27;ll display the image using matplotlib&#x27;s <code>imshow()</code> function.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-28">from matplotlib.pyplot import imshow, subplots, axis
+
+# Display
+imshow(image_colour)
+axis(&quot;off&quot;);</textarea>
+            </div>
+            <div id="code-cell-28-output" class="output"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-29"># Inspect NumPy array structure and channel count
+print(f&quot;shape = {image_colour.shape}&quot;)
+print(f&quot;dimensions = {image_colour.ndim}&quot;)
+print(f&quot;dtype = {image_colour.dtype}&quot;)
+print(f&quot;channel count = {image_colour.shape[2]}&quot;)</textarea>
+            </div>
+            <div id="code-cell-29-output" class="output"></div>
+        </div>
+        <p>The image clearly contains a total of three channels, and thus is RGB, containing no transparency layer. Visibly, the dendritic processes are now a vibrant, light green colour, with punctate signal in bright red. At a glance, we can immediately anticipate that isolating one feature from the other should give a better result, when using the colour image over the greyscale counterpart we looked at, previously.<br><br>Since we have already worked with 0-1 intensities with our earlier greyscale image example, let&#x27;s convert these normalised intensities to a <code>uint8</code> or &#x27;8-bit unsigned integer&#x27; type, so that we can experience handling images whose intensities are represented on a 0-255, integer scale.<br><br>We can do this using a simple conditional statement:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-30"># Convert normalised float images to 8-bit RGB values
+
+if image_colour.max() &lt;= 1.0:
+    image_colour = (image_colour * 255).round().astype(&quot;uint8&quot;)</textarea>
+            </div>
+            <div id="code-cell-30-output" class="output" style="display: none;"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="splitting-and-visualising-channels">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Splitting and visualising channels</h3>
+                        <p>Since an RGB image&#x27;s channels are stored along the third dimension of the image array, we can extract them individually with great ease, by simply using NumPy <strong>slicing</strong>. Splitting an image into its separate channels allows us to inspect how much each channel contributes to the final image, and can help reveal structures that are more prominent in one colour component than in the others.<br><br>As aforementioned, in images where different stains and markers can be used to separate structures of interest, we expect these to differ in their red, green and blue composition.<br><br>By examining channels separately, we can better understand how colour information is distributed across the image. We can also merge channels back together again by stacking them in the correct order, recreating the original RGB image from its component arrays.<br><br>Let&#x27;s start out by separating the channels.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-31">import matplotlib.pyplot as plt
+
+# Read in the colour image
+image_colour = imread(&quot;./data/dendrite_colour.png&quot;)
+
+# Convert normalised float images to 8-bit RGB values
+if image_colour.max() &lt;= 1.0:
+    image_colour = (image_colour * 255).round().astype(&quot;uint8&quot;)
+
+# Split into red, green, and blue channels
+red = image_colour[:, :, 0]
+green = image_colour[:, :, 1]
+blue = image_colour[:, :, 2]
+
+# Display the original image and its individual channels
+fig, ax = plt.subplots(nrows=2, ncols=2, figsize=(8, 6))
+
+font_size = 8 # Set the size of the title font
+
+ax[0, 0].imshow(image_colour)
+ax[0, 0].set_title(&quot;Original RGB image&quot;, fontsize=font_size)
+ax[0, 0].axis(&quot;off&quot;)
+
+ax[0, 1].imshow(red, cmap=&quot;Reds&quot;)
+ax[0, 1].set_title(&quot;Red channel&quot;, fontsize=font_size)
+ax[0, 1].axis(&quot;off&quot;)
+
+ax[1, 0].imshow(green, cmap=&quot;Greens&quot;)
+ax[1, 0].set_title(&quot;Green channel&quot;, fontsize=font_size)
+ax[1, 0].axis(&quot;off&quot;)
+
+ax[1, 1].imshow(blue, cmap=&quot;Blues&quot;)
+ax[1, 1].set_title(&quot;Blue channel&quot;, fontsize=font_size)
+ax[1, 1].axis(&quot;off&quot;)
+
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-31-output" class="output"></div>
+        </div>
+        <p>From first glance, the green channel clearly separates the dendritic processes away from the rest of the image.<br><br>Next, let&#x27;s take a look at the intensity values for each channel, and plot these as histograms.<br><br>Some things to bear in mind about the plotting code given below:<br><ul class="nested-list"><li>The panel shows four plots: one for red, blue, green and, finally, combined channel intensities across the image.</li><br><li>As we have done previously we use the <code>.ravel()</code> method for plotting a histogram, as this reduces the image down to a 1-dimensional list of intensities. Since a histogram is a plot of frequency, it requires that the data is given as a 1-D list, in order to show the distribution of intensities across the image, evenly.</li><br><li>The <code>bin</code> size is given at 50. This essentially means the plot shows 50 &#x27;groupings&#x27; across the intensity scale. You can increase or decrease this value, to increase the &#x27;resolution&#x27; of the groupings.</li><br><li>We have set x- and y-axis limits. Since the image contains predominantly black background, there is a very large intensity peak in values at the very darkest end of the spectrum between 0-5. Thus, we have decided to exclude these from our plot using <code>.xlim()</code>, and have &#x27;zoomed in&#x27; on the y-axis, using <code>.ylim()</code></li><br><li>The aim of all these is to create a comprehensive and meaningful set of histograms that accessibly describe our image.</li></ul></p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-32">from matplotlib.pyplot import subplots, show
+
+# Split the image into red, green, and blue channels
+red = image_colour[:, :, 0]
+green = image_colour[:, :, 1]
+blue = image_colour[:, :, 2]
+
+# Create a figure with three panels
+fig, ax = subplots(nrows=2, ncols=2, figsize=(10,8))
+
+font_size = 8
+
+# Histogram for all three channels
+ax[0, 0].hist(red.ravel(), bins=50, color=&quot;red&quot;, alpha=0.4, label=&quot;Red&quot;)
+ax[0, 0].hist(green.ravel(), bins=100, color=&quot;green&quot;, alpha=0.4, label=&quot;Green&quot;)
+ax[0, 0].hist(blue.ravel(), bins=100, color=&quot;blue&quot;, alpha=0.4, label=&quot;Blue&quot;)
+ax[0, 0].set_title(&quot;All RGB channels&quot;, fontsize=font_size)
+ax[0, 0].set_xlabel(&quot;Pixel intensity&quot;, fontsize=font_size)
+ax[0, 0].set_ylabel(&quot;Frequency&quot;, fontsize=font_size)
+ax[0, 0].set_xlim(5, 255)
+ax[0, 0].set_ylim(0, 0.025e6)
+ax[0, 0].legend(fontsize=font_size)
+
+# Histogram for red channel
+ax[0, 1].hist(red.ravel(), bins=50, color=&quot;red&quot;)
+ax[0, 1].set_title(&quot;Red channel&quot;, fontsize=font_size)
+ax[0, 1].set_xlabel(&quot;Pixel intensity&quot;, fontsize=font_size)
+ax[0, 1].set_ylabel(&quot;Frequency&quot;, fontsize=font_size)
+ax[0, 1].set_xlim(5, 255)
+ax[0, 1].set_ylim(0, 0.025e6)
+
+# Histogram for green channel
+ax[1, 0].hist(green.ravel(), bins=50, color=&quot;green&quot;)
+ax[1, 0].set_title(&quot;Green channel&quot;, fontsize=font_size)
+ax[1, 0].set_xlabel(&quot;Pixel intensity&quot;, fontsize=font_size)
+ax[1, 0].set_ylabel(&quot;Frequency&quot;, fontsize=font_size)
+ax[1, 0].set_xlim(5, 255)
+ax[1, 0].set_ylim(0, 0.025e6)
+
+# Histogram for blue channel
+ax[1, 1].hist(blue.ravel(), bins=50, color=&quot;blue&quot;)
+ax[1, 1].set_title(&quot;Blue channel&quot;, fontsize=font_size)
+ax[1, 1].set_xlabel(&quot;Pixel intensity&quot;, fontsize=font_size)
+ax[1, 1].set_ylabel(&quot;Frequency&quot;, fontsize=font_size)
+ax[1, 1].set_xlim(5, 255)
+ax[1, 1].set_ylim(0, 0.025e6)
+
+
+
+fig.tight_layout()
+
+show()</textarea>
+            </div>
+            <div id="code-cell-32-output" class="output"></div>
+        </div>
+        <p>From these simple channel visualisations and intensity histograms alone, we can already see that the dendritic processes contribute strongly to both the <strong>red</strong> and especially the <strong>green</strong> channels, which is why much of the branching structure appears yellow-green in the composite RGB image.<br><br>The smaller puncta are most prominent in the <strong>red</strong> channel, where they appear as distinct bright spots distributed along and around the dendrites; they show a clear lack of intensity in green and blue channels; observations that can be useful in framing how we might approach separating them.<br><br>Conversely, the <strong>blue</strong> channel contributes relatively little across most of the image, apart from the cell body, where it is concentrated much more strongly than in the dendritic processes. The histograms also show a large number of low-intensity pixels in all channels, reflecting the dark background, while the high-intensity peaks near the upper end of the red and green distributions correspond to the bright neuronal structures that dominate the visible signal. And it is these regions that we are interested in.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="merging-channels">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Merging channels</h3>
+                        <p>Once channels have been split, they can also be merged back together again. This is done by stacking the three 2-dimensional channel arrays along a third axis in the order red, green, and blue. Recombining channels in this way reconstructs the RGB image from its individual components, and also prepares us for later image manipulations in which one or more channels may be modified before being merged again.</p>
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p>If the red, green, and blue channels are merged in the correct order, the recombined image should closely match the original RGB image.</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-33">import numpy as np
+
+# Merge the channels back into one RGB image
+image_merged = np.dstack((red, green, blue))
+
+# Display the reconstructed image
+plt.imshow(image_merged)
+plt.title(&quot;Merged RGB image&quot;)
+plt.axis(&quot;off&quot;)
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-33-output" class="output"></div>
+        </div>
+        <p>While this might look like a pointless exercise, our earlier visualisation of separate colour channels, showed that the blue channel largely had very little info in it, surrounding the dendritic processes themselves (excluding the cell body) and the puncta. Thus, on occasion, it might be useful to merge just two of the three channels, to see how this might look.<br><br>In the code cell below, we will merge red and green channels only, to illustrate this.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-34"># Merge the red and green channels, with blue set to zero
+image_rg_merged = np.dstack((red, green, np.zeros_like(blue)))
+
+# Display the red-green merged image
+plt.imshow(image_rg_merged)
+plt.title(&quot;Merged red-green image&quot;)
+plt.axis(&quot;off&quot;)
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-34-output" class="output"></div>
+        </div>
+        <p>Looking at this two-channel merged image in the context of our earlier channel splitting, it is clear that much of the visually prominent signal in this image is carried by the red and green channels, alone.<br><br>In situations where large numbers of parametrically-consistent images are being analysed, reducing the data in this way can improve computational efficiency by lowering memory use and simplifying downstream processing.<br><br>Conceptually, this is very similar to dropping less informative features from a DataFrame, as we saw in earlier Data Processing lessons, and will encounter as we approach the Machine Learning module. However, this should only be done when the discarded channel is known to contribute little meaningful information for the specific analysis.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="false-colour-images">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>False-colour images</h3>
+                        <p>On occasion, it might be useful to apply false colour to an image. This can be useful for visual emphasis, for distinguishing overlapping features more clearly, or simply for demonstrating that a colour image is built from separate numerical channels that can be manipulated independently.</p>
+        <div class="info-box key-terms-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                KEY TERMS
+            </div>
+            <div class="box-content">
+                <p><strong>False colouring</strong> refers to the deliberate <em>reassignment</em> or <em>transformation</em> of an image&#x27;s colour channels so that structures are displayed in colours different from those that were present in the original image.</p>
+            </div>
+        </div>
+        <p>In Python, false colouring can be achieved in several ways, the simplest of which are <strong>inverting</strong> one or more channels so that bright regions in that channel are displayed with their opposite intensity; and <strong>swapping</strong> the order of the red, green and blue channels. Although this changes the visual appearance of the image, it does not alter the underlying spatial structure of the data.</p><h4>Inversion</h4><p>Take this image of Adam&#x27;s cat, Milo. There is a strong yellow hue in the beanbag he is splayed out upon, but in the RGB colour space, this yellow cannot be represented as a single independent quantity. Instead, it is produced by a particular combination of red, green and blue intensities, with relatively strong red and green values and a noticeably lower blue contribution.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-35">from matplotlib import cm
+milo = imread(&quot;./data/Milo.jpg&quot;)
+
+plt.axis(&quot;off&quot;)
+plt.imshow(milo);
+
+milo.dtype</textarea>
+            </div>
+            <div id="code-cell-35-output" class="output"></div>
+        </div>
+        <p>As an exploratory step to validate this thinking, let&#x27;s quickly plot an RGB intensity histogram, so we can get a feel for the intensities of red, green and blue present in the image. We&#x27;ll also plot grayscale representations of each individual red, green and blue channel in the image, as this makes it easy to identify each channel&#x27;s contribution to a particular region of the image.</p>
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p>Matplotlib sees individual colours as the single dimension of intensities that they are - namely, a range of numbers from 0-255. It therefore applies a default colour map to these (which is viridis). To make it easy for us to see intensity of each channel, we have overriden this default by specifying <code>cmap=&quot;gray&quot;</code>, which allows us to visualise channel intensity per pixel ranging from low to high, as black to white.</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-36"># Extract channels from Milo&#x27;s photo
+
+fig, ax = subplots(ncols=4, figsize=(12, 3))
+
+milo_red = milo[:, :, 0]
+milo_green = milo[:, :, 1]
+milo_blue = milo[:, :, 2]
+
+# Plot an overlaid RGB histogram
+ax[0].hist(milo_red.ravel(), bins=50, alpha=0.4, color=&quot;red&quot;)
+ax[0].hist(milo_green.ravel(), bins=50, alpha=0.4, color=&quot;green&quot;)
+ax[0].hist(milo_blue.ravel(), bins=50, alpha=0.4, color=&quot;blue&quot;)
+ax[0].set_title(&quot;Milo RGB Histogram&quot;, fontsize=9)
+
+ax[1].imshow(milo_red, cmap=&quot;gray&quot;)
+ax[1].set_title(&quot;Milo Red Channel&quot;, fontsize=9)
+ax[1].axis(&quot;off&quot;)
+
+ax[2].imshow(milo_green, cmap=&quot;gray&quot;)
+ax[2].set_title(&quot;Milo Green Channel&quot;, fontsize=9)
+ax[2].axis(&quot;off&quot;)
+
+ax[3].imshow(milo_blue, cmap=&quot;gray&quot;)
+ax[3].set_title(&quot;Milo Blue Channel&quot;, fontsize=9)
+ax[3].axis(&quot;off&quot;)
+
+fig.tight_layout();</textarea>
+            </div>
+            <div id="code-cell-36-output" class="output"></div>
+        </div>
+        <p>The channel representations corroborate our previous statement:<br><ul class="nested-list"><li>The blue channel intensities in the beanbag are relatively low (as denoted by the larger proportion of darker values in the histogram&#x27;s blue channel, and the blue channel plot).</li><br><li>The red and green channels are quite bright and intense in the yellow bean bag, as denoted by the whiter and lighter grey shades on these plots, and the peak in red and green intensities between 200-250 on the RGB histogram.</li></ul>Next, let&#x27;s invert the image channels. Since each pixel is a simple numerical intensity, getting its <strong>inverted value</strong> is achieved by <strong>subtracting that value from the maximum possible intensity</strong>.</p>
+        <div class="info-box remember-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                REMEMBER
+            </div>
+            <div class="box-content">
+                <p>We encounter two different intensity scales when dealing with image data:<br><ul class="nested-list"><li>Images stored as 8-bit (<code>dtype = uint8</code>) data have intensity values scaled from 0-255</li><br><li>Images normalised to a floating point scale, with intensities ranging from 0.0-1.0</li></ul></p>
+            </div>
+        </div>
+        
+        <div class="info-box important-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                IMPORTANT
+            </div>
+            <div class="box-content">
+                <p>To <strong>invert</strong> an image, we substitute the value of each pixel from the maximum intensity. Thus:<ul class="nested-list"><li>For an <strong>8-bit image</strong>, we use:</li></ul>$$255-intensity$$<br><ul class="nested-list"><li>For an image <em>normalised</em> to a <strong>floating point scale</strong>, we use:</li></ul>$$1-intensity$$</p>
+            </div>
+        </div>
+        <p>Since we checked our <code>dtype</code> above, and found that the photograph of Milo is scaled from 0-255 (as <code>uint8</code> data), we achieve inversion by subtracting each intensity value from 255, as follows:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-37"># Invert channels
+milo_red_inv = 255 - milo_red
+milo_green_inv = 255 - milo_green
+milo_blue_inv = 255 - milo_blue
+
+# Merge in swapped order
+milo_swapped_inverted = np.dstack((milo_blue_inv, milo_green_inv, milo_red_inv))
+
+# Display the result
+plt.imshow(milo_swapped_inverted)
+plt.axis(&quot;off&quot;)
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-37-output" class="output"></div>
+        </div>
+        <p>As we would expect, the inversion or <strong>negative</strong> of the image alters the appearance of the beanbag quite dramatically. The original yellow colour is produced by relatively strong red and green intensities with a lower blue contribution. Thus, when these channel intensities are inverted, those relationships are reversed, producing a <strong>false-colour</strong> result in which the original warm yellow tones are replaced by much cooler cyan-blue hues.</p><h4>Swapping channels</h4><p>Another simple way to false-colour an image is to swap its channels around. This can be done using a NumPy function called <code>dstack</code>, which stacks separate 2-dimensional arrays together along a third axis, forming a new colour image. By changing the order in which the red, green, and blue channels are stacked, we can create a new, <em>composite image</em> in which the original colours are reassigned.<br><br>This does not change the spatial arrangement of the image, but it can dramatically alter its appearance and help us to understand how strongly the final colours depend on channel order.<br><br>It&#x27;s achieved by simply rearranging the order of the channels, and visualising this.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-38">milo_swapped = np.dstack((milo_blue, milo_red, milo_green))
+
+# Display the swapped image
+plt.imshow(milo_swapped)
+plt.axis(&quot;off&quot;)
+plt.show()
+</textarea>
+            </div>
+            <div id="code-cell-38-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="false-colour-images">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>3.</strong></p>
+                <p>Let&#x27;s practice false-colouring by combining channel swapping and channel inversion on the dendrite image.<ol class="nested-list"><li>Invert the red, green, and blue channels of the <code>image_colour</code> image (which has been split into <code>red</code>, <code>green</code>, and <code>blue</code> in the previous cells). Since these channels are stored as 8-bit unsigned integers (<code>uint8</code>), their values range from 0 to 255; you can invert them by subtracting each channel&#x27;s values from <strong>255</strong> (e.g., <code>255 - red</code>).</li><br><li>Swap the channels: merge the inverted channels into a single RGB image in the order <strong>blue</strong>, <strong>green</strong>, and <strong>red</strong> (BGR) using <code>np.dstack</code>, and store the result in a variable called <code>image_swapped_inverted</code>.</li><br><li>Display the resulting false-colour image using Matplotlib&#x27;s <code>imshow</code> function, making sure to hide the axes.</li></ol></p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-39">import numpy as np
+import matplotlib.pyplot as plt
+
+# 1. Invert the red, green, and blue channels (subtract from 255)
+red_inv = 
+green_inv = 
+blue_inv = 
+
+# 2. Swap and merge channels in BGR order (blue, green, red)
+image_swapped_inverted = 
+
+# 3. Display the false-colour image
+# ...</textarea>
+            </div>
+            <button id="run-code-cell-39" class="run-button">Run Code</button>
+            <div id="code-cell-39-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="colour-space-conversions">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Colour space conversions</h3>
+                        <p>Despite its abundance, the RGB colour space is not always the most intuitive or useful representation of an image, for analysis. In many cases, it is helpful to convert an image into a different <strong>colour space</strong>, in which the colour information is organised according to other properties such as hue, saturation, and brightness. This can make it easier to describe colours in a way that aligns more closely with human perception, and can also simplify tasks such as identifying particular colour ranges or separating biological features from background.</p>
+        <div class="info-box key-terms-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                KEY TERMS
+            </div>
+            <div class="box-content">
+                <p>A <strong>colour space</strong> is a system for representing colours numerically, by describing each pixel using a defined set of components such as <strong>red, green and blue (RGB)</strong>; or <strong>hue, saturation and value (HSV)</strong>.</p>
+            </div>
+        </div>
+        <p>In this part of the lesson, we will introduce the idea that a colour image can be represented in multiple mathematically equivalent ways, depending on the purpose of the analysis.<br><br>While RGB is the most abundant, the next most commonly-encountered colour space is arguably <strong>HSV</strong> (which stands for <strong>Hue, Saturation, Value</strong>). HSV is especially helpful when we want to isolate colours by their <strong>dominant tone</strong> rather than by raw red, green and blue intensities.<br><br>In a bioscience context, this is often useful for separating stained structures, identifying discoloured tissue, or isolating lesions and regions of interest in photographs or microscopy images. HSV can make colour-based thresholding and masking more interpretable and effective.<br><br>The diagram below helps to visualise the concept of HSV. You may have encountered a colour wheel when trying to change the colour of a font, or an object in Photoshop. The concept behind these colour wheels operates on the principles of the HSV colourspace.</p><p><img src="./images/HSV_upscaled.jpg" alt="" class="notebook-image"></p>
+        <div class="info-box key-terms-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                KEY TERMS
+            </div>
+            <div class="box-content">
+                <p>HSV is a colour space that represents each pixel using <strong>hue</strong>, <strong>saturation</strong>, and <strong>value</strong>, rather than red, green, and blue intensities.<br><ul class="nested-list"><li><strong>Hue (H)</strong> describes the <em>dominant perceived colour</em> of a pixel, such as red, green, blue, or yellow.</li><br><li><strong>Saturation (S)</strong> describes how <em>pure or intense</em> that colour is, ranging from grey and washed-out to vivid and fully coloured.</li><br><li><strong>Value (V)</strong> describes the <em>overall brightness</em> of the pixel, ranging from dark to bright.</li></ul></p>
+            </div>
+        </div>
+        <p>In cases where we have an RGB image, but want to operate on it using HSV principles, we first need to convert it from the RGB colour space into HSV. This is because hue, saturation, and value are not stored explicitly in a standard RGB image, but must instead be derived mathematically from the red, green, and blue channel values. Within matplotlib, there is a function called <code>rgb_to_hsv()</code> that performs this conversion.<br><br>Let&#x27;s convert the image, and display it side by side with the original RGB image.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-40"># import matplotlib.pyplot as plt
+# from matplotlib.image import imread
+from matplotlib.colors import rgb_to_hsv
+
+# Read in the RGB image
+image_rgb = imread(&quot;./data/dendrite_colour.png&quot;)
+
+# Convert to HSV
+image_hsv = rgb_to_hsv(image_rgb[:, :, :3])
+
+# Display the original RGB image and the converted HSV array
+fig, ax = plt.subplots(ncols=2, figsize=(10, 5))
+
+ax[0].imshow(image_rgb)
+ax[0].set_title(&quot;Original RGB image&quot;)
+ax[0].axis(&quot;off&quot;)
+
+ax[1].imshow(image_hsv)
+ax[1].set_title(&quot;HSV representation&quot;)
+ax[1].axis(&quot;off&quot;)
+
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-40-output" class="output"></div>
+        </div>
+        <p>Immediately, you will notice how bizarre the HSV image looks when visualised directly. Once this conversion has been performed, each pixel is no longer described in terms of red, green, and blue intensities, but instead by its dominant colour (H), the strength or purity of that colour (S), and its overall brightness (V). However, <code>imshow()</code> still assumes that any three-channel image it receives is in RGB format, so it <em>misinterprets</em> the HSV values as though they were red, green, and blue intensities.<br><br>In practice, this means that HSV images are not usually displayed directly as ordinary colour images. Instead, we typically either inspect the <strong>H</strong>, <strong>S</strong>, and <strong>V</strong> channels separately, or convert the HSV image back into RGB for display. In other words, HSV is mainly a useful colour space for <strong>analysis and segmentation</strong>, rather than for direct visual presentation in the same way as RGB.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="obtaining-feature-target-hsv-values">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Obtaining feature target HSV values</h3>
+                        <p>When working in HSV, we first need some idea of what values correspond to the feature we want to isolate. One informal approach is to use a <a href="https://imagecolorpicker.online/">colour picker tool</a> to sample points from an image and inspect their displayed hue, saturation, and value. This can be a useful starting point, especially when exploring an unfamiliar image, because it gives a quick sense of the colour range associated with a structure of interest.<br><br>However, it is often more useful - and more reproducible - to obtain these values programmatically in Python. Since the image is stored as a NumPy array, we can select individual pixels or small regions of interest, convert the image to HSV, and inspect the corresponding numerical values directly.<br><br>Looking at a single pixel can be helpful for an initial estimate, but in practice it is usually better to inspect a small patch of the image, since real biological structures often vary slightly in colour and intensity across space. This allows us to identify a more realistic range of hue, saturation, and value for the feature of interest, which can then be used to guide thresholding and masking.<br><br>The code cell below selects a small patch of the image containing a dendritic process and some surrounding background signal.<br><br>Firstly, let&#x27;s list a few notes about the code in this cell, to help us understand what&#x27;s going on:<br><ul class="nested-list"><li>We firstly define a small image patch so that the dendrite can be inspected more clearly than in the full image.</li><br><li>The patch is then displayed as it appears in the image, alongside separate panels for <strong>hue</strong>, <strong>saturation</strong> and <strong>value</strong>, allowing us to compare the original RGB appearance (which serves as a sort of &#x27;map&#x27;) against the three HSV components that will later be used for thresholding.</li><br><li>Very dark pixels are hidden from the HSV panels using a Boolean mask based on the <strong>value</strong> channel. This is helpful because hue and saturation are often not very informative in pixels that are close to black.</li><br><li>The hue, saturation and value arrays are then visualised as <strong>heatmaps</strong>, with colour bars added to show the numerical range from 0 to 1 for each channel. This is the step that helps us to pick HSV value ranges for thresholding.</li><br><li>Tick marks are added to the colour bars in steps of <code>0.1</code> using NumPy&#x27;s <code>arange</code> function, for more precise legibility of these heatmaps.</li><br><li>This gives us a more interpretable visual guide for choosing approximate HSV ranges associated with the dendritic process, while reducing distraction from dark background pixels.</li></ul></p>
+        <div class="info-box important-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                IMPORTANT
+            </div>
+            <div class="box-content">
+                <p>The goal here is not yet to build a final mask, but to make an informed first estimate of which HSV values correspond to the feature of interest.</p>
+            </div>
+        </div>
+        
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p>The code cell below makes use of the NumPy function <code>np.where(condition, value_if_true, value_if_false)</code>, which evaluates every element of an array independently. For each pixel, if the corresponding value in <code>dark_mask</code> is <code>True</code>, the original hue, saturation or value is retained; if it is <code>False</code>, the pixel is replaced with <code>np.nan</code> (<em>Not a Number</em>). This produces three new arrays (<code>hue_visible</code>, <code>sat_visible</code> and <code>val_visible</code>) that preserve the HSV values only in the brighter regions of the image, while leaving the darker regions blank in the subsequent visualisations.</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-41">import numpy as np
+
+# Select a small patch
+rgb_patch = image_rgb[225:300, 680:695]
+hsv_patch = image_hsv[225:300, 680:695]
+
+# Extract channels
+hue_patch = hsv_patch[:, :, 0]
+sat_patch = hsv_patch[:, :, 1]
+val_patch = hsv_patch[:, :, 2]
+
+# Hide very dark pixels in all HSV displays
+dark_mask = val_patch &gt; 0.15
+
+hue_visible = np.where(dark_mask, hue_patch, np.nan)
+sat_visible = np.where(dark_mask, sat_patch, np.nan)
+val_visible = np.where(dark_mask, val_patch, np.nan)
+
+# Show RGB patch and HSV channels
+fig, ax = plt.subplots(ncols=4, figsize=(12, 6))
+
+ax[0].imshow(rgb_patch)
+ax[0].set_title(&quot;Selected dendrite patch&quot;)
+ax[0].axis(&quot;off&quot;)
+
+im_h = ax[1].imshow(hue_visible, cmap=&quot;rainbow&quot;, vmin=0, vmax=1)
+ax[1].set_title(&quot;Hue (dark pixels hidden)&quot;)
+ax[1].axis(&quot;off&quot;)
+
+im_s = ax[2].imshow(sat_visible, cmap=&quot;rainbow&quot;, vmin=0, vmax=1)
+ax[2].set_title(&quot;Saturation (dark pixels hidden)&quot;)
+ax[2].axis(&quot;off&quot;)
+
+im_v = ax[3].imshow(val_visible, cmap=&quot;rainbow&quot;, vmin=0, vmax=1)
+ax[3].set_title(&quot;Value (dark pixels hidden)&quot;)
+ax[3].axis(&quot;off&quot;)
+
+ticks = np.arange(0, 1.01, 0.1)
+
+fig.colorbar(im_h, ax=ax[1], fraction=0.046, pad=0.04, label=&quot;Hue&quot;, ticks=ticks)
+fig.colorbar(im_s, ax=ax[2], fraction=0.046, pad=0.04, label=&quot;Saturation&quot;, ticks=ticks)
+fig.colorbar(im_v, ax=ax[3], fraction=0.046, pad=0.04, label=&quot;Value&quot;, ticks=ticks)
+
+plt.tight_layout()
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-41-output" class="output"></div>
+        </div>
+        <p>We can now quite accurately eyeball value ranges for H, S and V that correspond to the bright green dendritic process, based on this patch. This is the exploratory step that allows us to find a meaningful starting point for HSV-based thresholding and masking of features.<br><br>From the figure we generated above, it is reasonable to assume that the dendritic processes are captured in the following ranges:<br><ul class="nested-list"><li>Hue range: <strong>O.20-0.35</strong></li><br><li>Saturation range: <strong>0.75-1.00</strong></li><br><li>Value range: <strong>0.75-1.00</strong></li></ul>In the next section of this lesson, we will apply these techniques to a leaf dataset, and actually perform thresholding and masking on these, based on HSV value ranges.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="summary">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Summary</h3>
+                        <p>In this section of Data Processing 3, we extended our treatment of images as NumPy arrays from greyscale to <strong>colour</strong>, introducing <strong>RGB</strong> images as three-channel data structures in which each pixel stores red, green and blue intensity values. We examined how colour image data may be represented on either <code>0-1</code> or <code>0-255</code> scales, visualised and interpreted individual RGB channels, compared their intensity distributions using <strong>histograms</strong>, and used channel splitting and merging to explore how different components contribute to the final image. We then introduced <strong>colour space conversion</strong>, showing how RGB data can be transformed into <strong>HSV</strong> to represent colour in terms of hue, saturation and value, and discussed why this can be useful for more interpretable colour-based analysis. Together, these ideas provide a foundation for working with colour image data <em>quantitatively</em>, and for using colour information to isolate, compare and manipulate biologically relevant features with greater efficacy.</p>
+                    </div>
+                </div>
+            </div>
+            
+
+        <div class="page-navigation">
+            <a href="./greyscale-images.html" class="nav-button prev">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                </svg>
+                Previous
+            </a>
+            <a href="./segmentation-masking.html" class="nav-button next">
+                Next
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </a></div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div>© All materials are copyright scryptIQ 2025</div>
+            <div>Powered by Pyodide</div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../assets/main.js"></script>
+    
+    <!-- Pyodide Initialisation Script -->
+    <script>
+
+// Generalisable Pyodide Initialisation Script
+// Variables and state build up naturally as code blocks execute in order
+
+async function main() {
+    // Show loading message for all output elements
+    document.querySelectorAll(".output").forEach(el => {
+        el.textContent = "Loading Pyodide...";
+        el.classList.add("loading-message");
+    });
+    
+    try {
+        // Load Pyodide
+        console.log("Loading Pyodide...");
+        const pyodideStartTime = performance.now();
+        let pyodide = await loadPyodide();
+        const pyodideLoadTime = performance.now() - pyodideStartTime;
+        console.log(`Pyodide loaded in ${pyodideLoadTime.toFixed(2)}ms`);
+        
+        // Load required packages only if specified
+        const lessonPackages = window.LESSON_PACKAGES || [];
+        
+        if (lessonPackages.length > 0) {
+            console.log("Loading required Python packages...");
+            const packagesStartTime = performance.now();
+            
+            // Separate built-in packages from PyPI packages
+            const builtInPackages = lessonPackages.filter(pkg => 
+                ['numpy', 'scipy', 'matplotlib', 'pandas', 'scikit-learn', 'pillow', 'regex'].includes(pkg)
+            );
+            
+            const micropipPackages = lessonPackages.filter(pkg => !builtInPackages.includes(pkg));
+            
+            // Load built-in packages (fast)
+            if (builtInPackages.length > 0) {
+                await pyodide.loadPackage(builtInPackages);
+                console.log(`Loaded built-in packages: ${builtInPackages.join(', ')}`);
+            }
+            
+            // Install PyPI packages (slower)
+            if (micropipPackages.length > 0) {
+                await pyodide.loadPackage(['micropip']);
+                const micropip = pyodide.pyimport('micropip');
+                await micropip.install(micropipPackages);
+                console.log(`Installed PyPI packages: ${micropipPackages.join(', ')}`);
+            }
+            
+            const packagesLoadTime = performance.now() - packagesStartTime;
+            console.log(`Packages loaded in ${packagesLoadTime.toFixed(2)}ms`);
+            console.log(`Total initialisation time: ${(pyodideLoadTime + packagesLoadTime).toFixed(2)}ms`);
+        } else {
+            console.log("No packages to load for this lesson");
+            console.log(`Total initialisation time: ${pyodideLoadTime.toFixed(2)}ms`);
+        }
+
+        // Only set up basic Python environment - no pre-loaded variables
+        await pyodide.runPythonAsync(`
+            import sys
+            from io import StringIO
+        `);
+
+        // Only set up matplotlib if it's in the loaded packages
+        if (lessonPackages.includes('matplotlib')) {
+            await pyodide.runPythonAsync(`
+                # Set up matplotlib for web rendering
+                import matplotlib
+                matplotlib.use('AGG')
+                import matplotlib.pyplot as plt
+                import io
+                import base64
+                
+                def capture_matplotlib():
+                    """Capture current matplotlib figure as HTML img tag"""
+                    buf = io.BytesIO()
+                    plt.savefig(buf, format='png', bbox_inches='tight', dpi=100)
+                    buf.seek(0)
+                    img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+                    plt.close()
+                    return f'<img src="data:image/png;base64,{img_base64}" style="max-width: 100%; height: auto;" />'
+
+                # Silence the "FigureCanvasAgg is non-interactive" warning that
+                # occurs when notebook code calls plt.show().  In this environment
+                # figures are captured automatically via capture_matplotlib(), so
+                # plt.show() should simply be a no-op.
+                plt.show = lambda *args, **kwargs: None
+            `);
+            console.log('Matplotlib capture function set up');
+        }
+        
+        console.log("Pyodide loaded successfully");
+        
+        // Load remote files if URLs are specified
+        const lessonFiles = window.LESSON_FILES || [];
+        
+        if (lessonFiles.length > 0) {
+            try {
+                console.log(`Checking for ${lessonFiles.length} remote file(s) to load...`);
+                
+                // Build Python code to load all files dynamically
+                let pythonCode = `
+from pyodide.http import pyfetch
+import os
+
+# Create data directory if it doesn't exist
+os.makedirs('./data', exist_ok=True)
+`;
+                
+                // Add loading code for each file
+                for (const file of lessonFiles) {
+                    if (file.is_binary) {
+                        // Binary files (images, etc.) - use bytes
+                        pythonCode += `
+# Load ${file.filename} (binary)
+try:
+    response = await pyfetch("${file.url}")
+    content = await response.bytes()
+    with open('./data/${file.filename}', 'wb') as f:
+        f.write(bytes(content))
+    print("Loaded: ${file.filename}")
+except Exception as e:
+    print(f"Could not load ${file.filename}: {e}")
+`;
+                    } else {
+                        // Text files (CSV, etc.) - use string
+                        pythonCode += `
+# Load ${file.filename} (text)
+try:
+    response = await pyfetch("${file.url}")
+    content = await response.string()
+    with open('./data/${file.filename}', 'w') as f:
+        f.write(content)
+    print("Loaded: ${file.filename}")
+except Exception as e:
+    print(f"Could not load ${file.filename}: {e}")
+`;
+                    }
+                }
+                
+                await pyodide.runPythonAsync(pythonCode);
+                console.log("Remote files loaded successfully");
+            } catch (error) {
+                console.warn("Error loading remote files (continuing anyway):", error);
+            }
+        } else {
+            console.log("No remote files to load for this lesson");
+        }
+        
+        // Function to execute Python code and capture output
+        async function executePythonCode(code) {
+            try {
+                // Redirect Python stdout and stderr to capture print statements and warnings
+                await pyodide.runPythonAsync(`
+                    old_stdout = sys.stdout
+                    old_stderr = sys.stderr
+                    sys.stdout = mystdout = StringIO()
+                    sys.stderr = mystderr = StringIO()
+                `);
+
+                // Run the user code.
+                // We pass the code string via pyodide.globals to avoid JS-string escaping
+                // issues, then use Python's ast module to execute it.  The last expression
+                // (if any) is eval-ed inside Python so that repr() is called there —
+                // this means display settings such as np.set_printoptions() are always
+                // respected before the value crosses the Python→JS boundary.
+                // (Pyodide auto-converts numpy arrays to TypedArray, so String(result)
+                // would bypass numpy's formatting entirely.)
+                pyodide.globals.set('__cell_code__', code);
+                await pyodide.runPythonAsync(`
+import ast as _ast
+__cell_result__ = None
+try:
+    _tree = _ast.parse(__cell_code__)
+    if _tree.body and isinstance(_tree.body[-1], _ast.Expr):
+        _last = _tree.body.pop()
+        exec(compile(_ast.Module(body=_tree.body, type_ignores=[]), '<cell>', 'exec'), globals())
+        _val = eval(compile(_ast.Expression(body=_last.value), '<cell>', 'eval'), globals())
+        if _val is not None:
+            __cell_result__ = repr(_val)
+    else:
+        exec(compile(_tree, '<cell>', 'exec'), globals())
+finally:
+    for _k in ['_tree', '_last', '_val', '_ast']:
+        globals().pop(_k, None)
+    globals().pop('__cell_code__', None)
+`);
+
+                // Get the captured stdout and stderr
+                let stdout = await pyodide.runPythonAsync(`
+                    sys.stdout = old_stdout
+                    sys.stderr = old_stderr
+                    mystdout.getvalue()
+                `);
+
+                const stderr = await pyodide.runPythonAsync(`mystderr.getvalue()`);
+                if (stderr) {
+                    if (stdout) stdout += "\n";
+                    stdout += stderr;
+                }
+
+                // Retrieve the Python-side repr string (already formatted correctly)
+                const resultRepr = await pyodide.runPythonAsync(`
+_r = __cell_result__
+del __cell_result__
+_r
+`);
+
+                // Check for matplotlib figures only if matplotlib was loaded
+                const lessonPackages = window.LESSON_PACKAGES || [];
+                if (lessonPackages.includes('matplotlib')) {
+                    const hasFigures = await pyodide.runPythonAsync(`
+                        import matplotlib.pyplot as plt
+                        len(plt.get_fignums()) > 0
+                    `);
+
+                    if (hasFigures) {
+                        const figureHtml = await pyodide.runPythonAsync(`capture_matplotlib()`);
+                        if (stdout) stdout += "\n";
+                        stdout += figureHtml;
+                    }
+                }
+
+                // Combine stdout and result repr
+                let output = stdout;
+                if (resultRepr !== undefined && resultRepr !== null && String(resultRepr).trim() !== '') {
+                    if (output) output += "\n";
+                    output += String(resultRepr);
+                }
+                
+                return { success: true, output: output || "Code executed successfully (no output)" };
+                
+            } catch (error) {
+                // Attempt to restore stdout/stderr even on failure
+                try {
+                    await pyodide.runPythonAsync(`
+                        if 'old_stdout' in dir(): sys.stdout = old_stdout
+                        if 'old_stderr' in dir(): sys.stderr = old_stderr
+                    `);
+                } catch (_) {}
+                // Re-run through Python's traceback machinery to get a clean error message
+                let tracebackStr = '';
+                try {
+                    pyodide.globals.set('_traceback_code', code);
+                    await pyodide.runPythonAsync(`
+                        import traceback as _tb
+                        from io import StringIO as _SIO
+                        _trace_result = None
+                        _saved_io = (sys.stdout, sys.stderr)
+                        sys.stdout = sys.stderr = _SIO()
+                        try:
+                            exec(compile(_traceback_code, '<exec>', 'exec'), globals())
+                        except Exception:
+                            _trace_result = _tb.format_exc()
+                        finally:
+                            sys.stdout, sys.stderr = _saved_io
+                    `);
+                    const tbVal = await pyodide.runPythonAsync('_trace_result');
+                    if (tbVal) tracebackStr = tbVal;
+                } catch (_) {}
+                let displayMsg;
+                if (tracebackStr && tracebackStr.includes('File "<exec>"')) {
+                    const lines = tracebackStr.split('\n');
+                    let execIdx = -1;
+                    for (let i = lines.length - 1; i >= 0; i--) {
+                        if (lines[i].includes('File "<exec>"')) { execIdx = i; break; }
+                    }
+                    displayMsg = execIdx !== -1
+                        ? lines.slice(execIdx).join('\n').trim()
+                        : tracebackStr.trim();
+                } else {
+                    displayMsg = (error.message || '').trim() || error.type || String(error);
+                }
+                return { success: false, output: 'Error:\n' + displayMsg };
+            }
+        }
+        
+        // Execute all hidden code blocks first (for setup code like imports)
+        const hiddenCodeBlocks = Array.from(document.querySelectorAll('.hidden-code textarea'));
+        console.log(`Found ${hiddenCodeBlocks.length} hidden code blocks`);
+
+        for (const textarea of hiddenCodeBlocks) {
+            const code = textarea.value.trim();
+            if (!code) continue;
+            
+            console.log(`Executing hidden code block: ${textarea.id}`);
+            console.log(`Hidden code content: ${code.substring(0, 100)}...`);
+            const result = await executePythonCode(code);
+            
+            if (!result.success) {
+                console.error(`Error in hidden code block ${textarea.id}:`, result.output);
+            } else {
+                console.log(`Hidden code block ${textarea.id} executed successfully`);
+                console.log(`Result: ${result.output}`);
+            }
+        }
+
+        console.log("All hidden code blocks executed");
+        
+        // Get all fixed code blocks in document order
+        const fixedCodeBlocks = Array.from(document.querySelectorAll('.code-fixed textarea'));
+        
+        // Setup and execute fixed code blocks sequentially
+        for (const textarea of fixedCodeBlocks) {
+            const code = textarea.value.trim();
+            if (!code) continue;
+            
+            // Set up CodeMirror editor (read-only)
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: "python",
+                theme: "pastel-on-dark",
+                lineNumbers: true,
+                readOnly: true,
+                viewportMargin: Infinity
+            });
+            
+            // Find corresponding output element
+            const outputId = textarea.id + '-output';
+            const outputElement = document.getElementById(outputId);
+            
+            if (outputElement) {
+                outputElement.textContent = "Running code...";
+                outputElement.classList.add("loading-message");
+                
+                // Execute the code (this maintains state for subsequent blocks)
+                const result = await executePythonCode(code);
+                
+                // Display the output - check if it's HTML
+                const trimmedOutput = result.output.trim();
+                console.log('Output length:', trimmedOutput.length);
+                console.log('Output starts with:', trimmedOutput.substring(0, 100));
+                
+                if (trimmedOutput.includes('<script') && trimmedOutput.includes('Plotly')) {
+                    // It's Plotly HTML output - extract just the body content
+                    console.log('Rendering as Plotly HTML');
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(result.output, 'text/html');
+                    // Clear the output element and append the body content
+                    outputElement.innerHTML = '';
+                    
+                    // Find and load external scripts first (like Plotly CDN)
+                    const externalScripts = Array.from(doc.querySelectorAll('script[src]'));
+                    const inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+                    
+                    // Append non-script content first
+                    Array.from(doc.body.children).forEach(child => {
+                        if (child.tagName !== 'SCRIPT') {
+                            outputElement.appendChild(child.cloneNode(true));
+                        }
+                    });
+                    
+                    // Load external scripts sequentially
+                    const loadScript = (src) => {
+                        return new Promise((resolve, reject) => {
+                            const script = document.createElement('script');
+                            script.src = src;
+                            script.onload = resolve;
+                            script.onerror = reject;
+                            document.head.appendChild(script);
+                        });
+                    };
+                    
+                    // Load all external scripts first
+                    Promise.all(externalScripts.map(s => loadScript(s.src)))
+                        .then(() => {
+                            console.log('External scripts loaded, executing inline scripts');
+                            // Now execute inline scripts
+                            inlineScripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                newScript.textContent = oldScript.textContent;
+                                outputElement.appendChild(newScript);
+                            });
+                            console.log('Output element after processing:', outputElement.children.length, 'children');
+                        })
+                        .catch(err => {
+                            console.error('Failed to load external scripts:', err);
+                            outputElement.textContent = 'Error loading Plotly: ' + err.message;
+                        });
+                } else if (trimmedOutput.startsWith('<!DOCTYPE') || 
+                           trimmedOutput.startsWith('<html') ||
+                            trimmedOutput.startsWith('<div') ||
+                            trimmedOutput.startsWith('<img')) {
+                    console.log('Rendering as generic HTML');
+                    outputElement.innerHTML = result.output;
+                    console.log('Output element after innerHTML:', outputElement.children.length, 'children');
+                } else {
+                    console.log('Rendering as plain text');
+                    outputElement.textContent = result.output;
+                }
+                outputElement.classList.remove("loading-message");
+                if (result.success) {
+                    outputElement.classList.add("success-message");
+                    outputElement.classList.remove("error-message");
+                } else {
+                    outputElement.classList.add("error-message");
+                    outputElement.classList.remove("success-message");
+                }
+            }
+            
+            // Small delay to show progression
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        
+        // Set flag to indicate all FIXED cells have been executed
+        // This is used by PDF generation to ensure all outputs are ready
+        window.allCellsExecuted = true;
+        console.log("All FIXED cells executed successfully");
+        
+        // Setup all editable code blocks (but don't execute them)
+        document.querySelectorAll('.code-editor textarea').forEach((textarea) => {
+            // Set up CodeMirror editor (editable)
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: "python",
+                theme: "pastel-on-dark",
+                lineNumbers: true,
+                viewportMargin: Infinity
+            });
+            
+            // Find corresponding run button and output element
+            const baseId = textarea.id;
+            const runButtonId = 'run-' + baseId;
+            const outputId = baseId + '-output';
+            
+            const runButton = document.getElementById(runButtonId);
+            const outputElement = document.getElementById(outputId);
+            
+            if (runButton && outputElement) {
+                // Set initial state
+                outputElement.textContent = "Ready to run code!";
+                outputElement.classList.remove("loading-message");
+                
+                runButton.addEventListener("click", async () => {
+                    const code = editor.getValue().trim();
+                    if (!code) {
+                        outputElement.textContent = "No code to run";
+                        return;
+                    }
+                    
+                    outputElement.textContent = "Running...";
+                    outputElement.classList.remove("error-message", "success-message");
+                    outputElement.classList.add("loading-message");
+                    
+                    // Execute the code (this also maintains state for future blocks)
+                    const result = await executePythonCode(code);
+                    
+                    // Display the output - check if it's HTML
+                    const trimmedOutput = result.output.trim();
+                    console.log('Output length:', trimmedOutput.length);
+                    console.log('Output starts with:', trimmedOutput.substring(0, 100));
+                    
+                    if (trimmedOutput.includes('<script') && trimmedOutput.includes('Plotly')) {
+                        // It's Plotly HTML output - extract just the body content
+                        console.log('Rendering as Plotly HTML');
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(result.output, 'text/html');
+                        // Clear the output element and append the body content
+                        outputElement.innerHTML = '';
+                        
+                        // Find and load external scripts first (like Plotly CDN)
+                        const externalScripts = Array.from(doc.querySelectorAll('script[src]'));
+                        const inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+                        
+                        // Append non-script content first
+                        Array.from(doc.body.children).forEach(child => {
+                            if (child.tagName !== 'SCRIPT') {
+                                outputElement.appendChild(child.cloneNode(true));
+                            }
+                        });
+                        
+                        // Load external scripts sequentially
+                        const loadScript = (src) => {
+                            return new Promise((resolve, reject) => {
+                                const script = document.createElement('script');
+                                script.src = src;
+                                script.onload = resolve;
+                                script.onerror = reject;
+                                document.head.appendChild(script);
+                            });
+                        };
+                        
+                        // Load all external scripts first
+                        Promise.all(externalScripts.map(s => loadScript(s.src)))
+                            .then(() => {
+                                console.log('External scripts loaded, executing inline scripts');
+                                // Now execute inline scripts
+                                inlineScripts.forEach(oldScript => {
+                                    const newScript = document.createElement('script');
+                                    newScript.textContent = oldScript.textContent;
+                                    outputElement.appendChild(newScript);
+                                });
+                                console.log('Output element after processing:', outputElement.children.length, 'children');
+                            })
+                            .catch(err => {
+                                console.error('Failed to load external scripts:', err);
+                                outputElement.textContent = 'Error loading Plotly: ' + err.message;
+                            });
+                    } else if (trimmedOutput.startsWith('<!DOCTYPE') || 
+                               trimmedOutput.startsWith('<html') ||
+                               trimmedOutput.startsWith('<div') ||
+                               trimmedOutput.startsWith('<img')) {
+                        outputElement.innerHTML = result.output;
+                    } else {
+                        outputElement.textContent = result.output;
+                    }
+                    outputElement.classList.remove("loading-message");
+                    if (result.success) {
+                        outputElement.classList.add("success-message");
+                        outputElement.classList.remove("error-message");
+                    } else {
+                        outputElement.classList.add("error-message");
+                        outputElement.classList.remove("success-message");
+                    }
+                });
+            }
+        });
+        
+        console.log("All code blocks initialised successfully");
+
+        // Set flag to indicate Pyodide is fully ready
+        window.pyodideReady = true;
+        console.log("Pyodide fully ready");
+        
+    } catch (error) {
+        console.error("Failed to initialise Pyodide:", error);
+        document.querySelectorAll(".output").forEach(el => {
+            el.textContent = "Error loading Pyodide: " + error.message;
+            el.classList.remove("loading-message");
+            el.classList.add("error-message");
+        });
+    }
+}
+
+// Start the application when DOM is loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', main);
+} else {
+    main();
+}
+    </script>
+    
+</body>
+</html>
