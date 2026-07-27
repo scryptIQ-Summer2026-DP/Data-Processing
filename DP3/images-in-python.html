@@ -50,7 +50,7 @@
             {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/main/dp3/healthy/healthy_1.JPG", filename: "healthy_1.JPG", is_binary: true},
             {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/main/dp3/healthy/healthy_5.JPG", filename: "healthy_5.JPG", is_binary: true}
         ];
-        window.LESSON_PACKAGES = ['numpy', 'matplotlib'];
+        window.LESSON_PACKAGES = ['matplotlib'];
     </script>
 </head>
 <body>
@@ -219,13 +219,18 @@
                         <p>Before we can inspect or analyse an image in Python, we first need to be able to read the image file into memory, as an array. In this lesson, we will focus on using the <code>imread</code> function from the <code>matplotlib.image</code> submodule; a common and convenient function for loading image data directly into a NumPy-compatible format.<br><br>That is not to say that there aren&#x27;t other methods for doing this. For instance, you may encounter <code>Image.open()</code> from the <strong>Pillow</strong> library, <code>imageio.imread()</code> or even <code>cv2.imread()</code> from <strong>OpenCV</strong>. But <code>imread</code> is a good starting point, as it keeps the process simple and closely aligned with array-based image analysis. We will use it consistently throughout this course, going forward, whenever we are dealing with image files.<br><br>Let&#x27;s start with this image of a bitter gourd leaf.</p><p><img src="./images/Fig2_healthy_5.JPG" alt="" class="notebook-image"></p><p>We can make use of the <code>imread</code> function to load in the file, and check its <code>type</code>:</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-1">from matplotlib.image import imread
-
-leaf_image = imread(&#x27;./data/healthy_5.JPG&#x27;)
+                <textarea id="code-cell-1">from matplotlib.image import imread</textarea>
+            </div>
+            <div id="code-cell-1-output" class="output" style="display: none;"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-2">leaf_image = imread(&#x27;./data/healthy_5.JPG&#x27;)
 
 type(leaf_image)</textarea>
             </div>
-            <div id="code-cell-1-output" class="output"></div>
+            <div id="code-cell-2-output" class="output"></div>
         </div>
         
         <div class="info-box note-box">
@@ -240,11 +245,11 @@ type(leaf_image)</textarea>
         <p>Now that the image has been loaded as a NumPy array, we can inspect some of its properties.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-2">height, width, channels = leaf_image.shape # For easy pixel counting
+                <textarea id="code-cell-3">height, width, channels = leaf_image.shape # For easy pixel counting
 
 print(f&quot;shape = {leaf_image.shape} \ndimensions (channels) = {leaf_image.ndim} \nsize = {height * width} pixels or {(height * width) / 1000000} megapixels \ndtype = {leaf_image.dtype}&quot;)</textarea>
             </div>
-            <div id="code-cell-2-output" class="output"></div>
+            <div id="code-cell-3-output" class="output"></div>
         </div>
         
         <div class="info-box note-box">
@@ -306,18 +311,18 @@ print(f&quot;shape = {leaf_image.shape} \ndimensions (channels) = {leaf_image.nd
         <p>We can also inspect the range of values stored in the array, and access individual pixels or small regions using ordinary NumPy indexing.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-3">leaf_image.min(), leaf_image.max()</textarea>
+                <textarea id="code-cell-4">leaf_image.min(), leaf_image.max()</textarea>
             </div>
-            <div id="code-cell-3-output" class="output"></div>
+            <div id="code-cell-4-output" class="output"></div>
         </div>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-4"># RGB values for one pixel near the top-left corner
+                <textarea id="code-cell-5"># RGB values for one pixel near the top-left corner
 
 leaf_image[0, 0]</textarea>
             </div>
-            <div id="code-cell-4-output" class="output"></div>
+            <div id="code-cell-5-output" class="output"></div>
         </div>
         
         <div class="info-box remember-box">
@@ -332,11 +337,11 @@ leaf_image[0, 0]</textarea>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-5"># A small 3 x 3 patch of pixels from the image
+                <textarea id="code-cell-6"># A small 3 x 3 patch of pixels from the image
 
 leaf_image[:3, :3]</textarea>
             </div>
-            <div id="code-cell-5-output" class="output"></div>
+            <div id="code-cell-6-output" class="output"></div>
         </div>
         <p>The way this NumPy array is structured can be visualised as a <strong>3 × 3 grid of pixels</strong>, as shown in the table, below. The <strong>outer list</strong> corresponds to the image rows, each <strong>inner list</strong> corresponds to the columns, each being a three-element array (<code>[R, G, B]</code>) containing the <strong>Red, Green</strong> and  <strong>Blue</strong> values describing the colour of a single pixel.</p><table class="markdown-table">
 <thead>
@@ -379,13 +384,18 @@ leaf_image[:3, :3]</textarea>
                         <p>Now that we have read the image in as a NumPy array, we can display it graphically using Matplotlib. An oft-used approach is employing the <code>imshow</code> function within matplotlib&#x27;s <code>pyplot</code> submodule, which renders the array as an image. In the code below, we use <code>plt.axis(&#x27;off&#x27;)</code> to hide axes when we only want to view the image itself. If we left this out, the numbering on x and y axes would correspond to the dimensions of the image, in pixels.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-6">import matplotlib.pyplot as plt
-
-plt.imshow(leaf_image)
+                <textarea id="code-cell-7">import matplotlib.pyplot as plt</textarea>
+            </div>
+            <div id="code-cell-7-output" class="output" style="display: none;"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-8">plt.imshow(leaf_image)
 plt.axis(&#x27;off&#x27;)
 plt.show()</textarea>
             </div>
-            <div id="code-cell-6-output" class="output"></div>
+            <div id="code-cell-8-output" class="output"></div>
         </div>
         <p>As with any array, you can slice into an image in order to focus on particular zones or areas of interest. This can, for instance, allow the inspection local detail, filling the figure canvas with a cropped region of the image in question.<br><br>With colour images, we typically slice across the first two dimensions to select rows and columns of pixels, while the third dimension stores the colour channels, and is kept, in tact.</p>
         <div class="info-box note-box">
@@ -400,22 +410,20 @@ plt.show()</textarea>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-7"># Take a rectangular crop from the image
+                <textarea id="code-cell-9"># Take a rectangular crop from the image
 
 leaf_crop = leaf_image[500:1200, 800:1500]
 leaf_crop.shape</textarea>
             </div>
-            <div id="code-cell-7-output" class="output"></div>
+            <div id="code-cell-9-output" class="output"></div>
         </div>
         <p>Using <code>subplots</code> - with which you will be familiar from previous lessons in this module - you can easily create tiled figures, displaying different regions of the image</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-8">from matplotlib.pyplot import subplots
-
-leaf_crop_2 = leaf_image[1300:1900, 1600:2300]
+                <textarea id="code-cell-10">leaf_crop_2 = leaf_image[1300:1900, 1600:2300]
 leaf_crop_3 = leaf_image[1000:1700, 1500:2200]
 
-fig, ax = subplots(ncols=2, nrows=2, figsize=(10,10))
+fig, ax = plt.subplots(ncols=2, nrows=2, figsize=(10,10))
 
 ax[0, 0].imshow(leaf_image)
 ax[0, 0].axis(&quot;off&quot;)
@@ -435,7 +443,7 @@ ax[1, 1].set_title(&quot;Crop 3&quot;,fontsize=10)
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-8-output" class="output"></div>
+            <div id="code-cell-10-output" class="output"></div>
         </div>
         
                     </div>
@@ -459,10 +467,7 @@ plt.show()</textarea>
         
         <div class="code-area">
             <div class="code-container code-editor">
-                <textarea id="code-cell-9">from matplotlib.image import imread
-import matplotlib.pyplot as plt
-
-# 1. Load the image healthy_1.JPG from ./data/healthy/
+                <textarea id="code-cell-11"># 1. Load the image healthy_1.JPG from ./data/healthy/
 leaf_2 = 
 
 # 2. Print shape and data type
@@ -475,20 +480,17 @@ leaf_2_crop =
 # 4. Display the cropped image
 # </textarea>
             </div>
-            <button id="run-code-cell-9" class="run-button">Run Code</button>
-            <div id="code-cell-9-output" class="output"></div>
+            <button id="run-code-cell-11" class="run-button">Run Code</button>
+            <div id="code-cell-11-output" class="output"></div>
         </div>
         
         <div class="code-area">
-            <div class="code-collapse-header" onclick="toggleCodeCollapse('code-cell-10')">
+            <div class="code-collapse-header" onclick="toggleCodeCollapse('code-cell-12')">
                 <span class="code-collapse-icon">▶</span>
                 <span class="code-collapse-label">Show solution</span>
             </div>
-            <div class="code-container code-fixed code-solution code-collapsed" id="code-cell-10-container">
-                <textarea id="code-cell-10">from matplotlib.image import imread
-import matplotlib.pyplot as plt
-
-# 1. Load the image healthy_1.JPG from ./data/healthy/
+            <div class="code-container code-fixed code-solution code-collapsed" id="code-cell-12-container">
+                <textarea id="code-cell-12"># 1. Load the image healthy_1.JPG from ./data/healthy/
 leaf_2 = imread(&#x27;./data/healthy_1.JPG&#x27;)
 
 # 2. Print shape and data type
