@@ -25,6 +25,14 @@ body {
     position: relative;
     overflow: hidden;
     z-index: 2;
+    box-sizing: border-box;
+    /* The nav is position:absolute over the hero (logo can be up to 120px +
+       padding ≈ 160px tall). Reserve that space at the top so the centered
+       hero content always sits below the nav, and — when the content is taller
+       than the viewport — it grows downward from below the nav instead of
+       overlapping it. */
+    padding-top: 170px;
+    padding-bottom: 40px;
 }
 
 .hero-shapes-container {
@@ -351,6 +359,15 @@ body {
 
 @media (max-width: 768px) {
 
+    /* The nav is position:absolute over the hero. On small screens the large
+       title would otherwise sit underneath it, so anchor the hero content to
+       the top and clear the nav height instead of vertically centering. */
+    .hero-section {
+        align-items: flex-start;
+        padding-top: 100px;
+        padding-bottom: 40px;
+    }
+
     .main-title {
         font-size: 48px;
     }
@@ -400,5 +417,23 @@ body {
         flex-direction: column;
         text-align: center;
         padding: 15px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-section {
+        padding-top: 90px;
+    }
+
+    .main-title {
+        font-size: 36px;
+    }
+
+    .main-subtitle {
+        font-size: 18px;
+    }
+
+    .modules-title {
+        font-size: 30px;
     }
 }

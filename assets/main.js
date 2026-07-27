@@ -22,11 +22,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const sidebar = document.getElementById('sidebar');
     const mainContent = document.querySelector('.main-content');
     
+    // On small screens the sidebar overlays the content, so start it
+    // collapsed to keep the page content visible on load.
+    const mobileQuery = window.matchMedia('(max-width: 900px)');
+    if (mobileQuery.matches && sidebar && sidebarToggle) {
+        sidebar.classList.add('collapsed');
+        mainContent && mainContent.classList.add('expanded');
+        sidebarToggle.classList.add('collapsed');
+        sidebarToggle.innerHTML = '❯';
+    }
+
     sidebarToggle.addEventListener('click', function() {
         sidebar.classList.toggle('collapsed');
         mainContent.classList.toggle('expanded');
         sidebarToggle.classList.toggle('collapsed');
-        
+
         // Change the toggle button text based on state
         if (sidebar.classList.contains('collapsed')) {
             sidebarToggle.innerHTML = '❯';

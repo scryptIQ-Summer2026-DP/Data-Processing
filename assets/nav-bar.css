@@ -178,3 +178,27 @@
 .collapsible-content.collapsed {
     max-height: 0;
 }
+
+/* ---- Responsive sidebar: small screens ---- */
+@media (max-width: 900px) {
+    /* On small screens the sidebar becomes a slide-in overlay. It no longer
+       reserves layout space (main-content handles its own full width), so the
+       toggle simply slides it in and out over the content. */
+    .sidebar {
+        width: min(280px, 85vw);
+    }
+
+    .sidebar.collapsed {
+        /* Hide the whole panel regardless of its actual width. */
+        transform: translateX(-100%);
+    }
+
+    /* Keep the toggle button reachable at the panel edge / screen edge. */
+    .sidebar-toggle {
+        left: min(280px, 85vw);
+    }
+
+    .sidebar-toggle.collapsed {
+        left: 15px;
+    }
+}
