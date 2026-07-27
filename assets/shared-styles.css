@@ -260,6 +260,14 @@ body {
 }
 
 
+/* Inline HTML widgets (WIDGET marker cells) */
+.lesson-widget {
+    margin: 20px 0;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+
 /* Navigation */
 .navigation {
     position: absolute;
