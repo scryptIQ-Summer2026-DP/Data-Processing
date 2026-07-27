@@ -285,7 +285,7 @@ show()</textarea>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-16">fig, ax = subplots(ncols=2)
+                <textarea id="code-cell-16">fig, ax = subplots(figsize=(12,5), ncols=2, layout=&quot;constrained&quot;)
 
 dendrite_crop = dendrite[500:1000, 1200:1700]
 
@@ -298,14 +298,14 @@ ax[1].set_xlim(0.1, 0.92)
 ax[1].set_ylim(0, 0.0014e6)
 ax[1].set_title(&quot;Intensity Distribution&quot;, fontsize=10)
 
-fig.tight_layout()</textarea>
+plt.show()</textarea>
             </div>
             <div id="code-cell-16-output" class="output"></div>
         </div>
         <p>When the dark background pixels are excluded from the histogram, we start to see two broader intensity groupings becoming more apparent. In this cropped image, the brightest structures are the labelled <em>dendritic processes</em>, which appear as elongated branching fibres. The dimmer grey features are <em>punctate signals</em> distributed around and along these processes.<br><br>In fluorescence microscopy images such as this, these puncta often correspond to localised, labelled structures; for example synaptic puncta or other subcellular compartments. Despite this, their precise biological identity depends on the stain or marker that was used. The two broad peaks in the histogram therefore likely reflect different classes of foreground signal intensity, with brighter pixels arising mainly from the dendrites and dimmer pixels arising from smaller punctate features.<br><br>Immediately, the histogram has helped to inform us that these common peaks lie between intensities of 0.2-0.4, and 0.8-0.9. We can use this early exploratory analysis of our image to inform us of the components present within the image, which may help us to isolate or mask them out.<br><br>We can then generate a similar plot, this time across the entire image, to see if those two peaks hold true.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-17">fig, ax = subplots(ncols=2)
+                <textarea id="code-cell-17">fig, ax = subplots(figsize=(12,5), ncols=2, layout=&quot;constrained&quot;)
 
 ax[0].imshow(dendrite, cmap=&quot;gray&quot;)
 ax[0].axis(&quot;off&quot;)
@@ -316,7 +316,7 @@ ax[1].set_xlim(0.1, 0.92)
 ax[1].set_ylim(0, 0.0075e6)
 ax[1].set_title(&quot;Intensity Distribution&quot;, fontsize=10)
 
-fig.tight_layout()</textarea>
+plt.show()</textarea>
             </div>
             <div id="code-cell-17-output" class="output"></div>
         </div>
@@ -533,7 +533,7 @@ brighter = np.clip(dendrite + 0.2, 0, 1)
 higher_contrast = np.clip((dendrite - 0.5) * 1.8 + 0.5, 0, 1)
 
 # Display the original and adjusted images
-fig, ax = plt.subplots(ncols=3, figsize=(12,8))
+fig, ax = plt.subplots(ncols=3, figsize=(12,8), layout=&quot;constrained&quot;)
 
 ax[0].imshow(dendrite, cmap=&quot;gray&quot;)
 ax[0].set_title(&quot;Original&quot;)
@@ -546,8 +546,6 @@ ax[1].axis(&quot;off&quot;)
 ax[2].imshow(higher_contrast, cmap=&quot;gray&quot;)
 ax[2].set_title(&quot;Increased contrast&quot;)
 ax[2].axis(&quot;off&quot;)
-
-fig.tight_layout()
 
 plt.show()</textarea>
             </div>
@@ -640,7 +638,7 @@ puncta_only = dendrite.copy()
 puncta_only[~puncta_mask] = masked_background
 
 # Display the original image alongside the two masked outputs
-fig, ax = subplots(ncols=3, figsize=(12, 7))
+fig, ax = subplots(ncols=3, figsize=(12, 7), layout=&quot;constrained&quot;)
 
 ax[0].imshow(dendrite, cmap=&quot;gray&quot;, vmin=0, vmax=1)
 ax[0].set_title(&quot;Original Image&quot;)
@@ -653,8 +651,6 @@ ax[1].axis(&quot;off&quot;)
 ax[2].imshow(puncta_only, cmap=&quot;gray&quot;, vmin=0, vmax=1)
 ax[2].set_title(&quot;Punctate Signals Only&quot;)
 ax[2].axis(&quot;off&quot;)
-
-fig.tight_layout()
 
 plt.show()</textarea>
             </div>

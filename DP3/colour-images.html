@@ -258,7 +258,7 @@ green = image_colour[:, :, 1]
 blue = image_colour[:, :, 2]
 
 # Display the original image and its individual channels
-fig, ax = plt.subplots(nrows=2, ncols=2, figsize=(8, 6))
+fig, ax = plt.subplots(nrows=2, ncols=2, figsize=(8, 6), layout=&quot;constrained&quot;)
 
 font_size = 8 # Set the size of the title font
 
@@ -293,7 +293,7 @@ green = image_colour[:, :, 1]
 blue = image_colour[:, :, 2]
 
 # Create a figure with three panels
-fig, ax = subplots(nrows=2, ncols=2, figsize=(10,8))
+fig, ax = subplots(nrows=2, ncols=2, figsize=(10,8), layout=&quot;constrained&quot;)
 
 font_size = 8
 
@@ -331,10 +331,6 @@ ax[1, 1].set_xlabel(&quot;Pixel intensity&quot;, fontsize=font_size)
 ax[1, 1].set_ylabel(&quot;Frequency&quot;, fontsize=font_size)
 ax[1, 1].set_xlim(5, 255)
 ax[1, 1].set_ylim(0, 0.025e6)
-
-
-
-fig.tight_layout()
 
 show()</textarea>
             </div>
@@ -436,7 +432,7 @@ milo.dtype</textarea>
             <div class="code-container code-fixed">
                 <textarea id="code-cell-36"># Extract channels from Milo&#x27;s photo
 
-fig, ax = subplots(ncols=4, figsize=(12, 3))
+fig, ax = subplots(ncols=4, figsize=(12, 3), layout=&quot;constrained&quot;)
 
 milo_red = milo[:, :, 0]
 milo_green = milo[:, :, 1]
@@ -460,7 +456,7 @@ ax[3].imshow(milo_blue, cmap=&quot;gray&quot;)
 ax[3].set_title(&quot;Milo Blue Channel&quot;, fontsize=9)
 ax[3].axis(&quot;off&quot;)
 
-fig.tight_layout();</textarea>
+plt.show()</textarea>
             </div>
             <div id="code-cell-36-output" class="output"></div>
         </div>
@@ -510,8 +506,7 @@ plt.show()</textarea>
 # Display the swapped image
 plt.imshow(milo_swapped)
 plt.axis(&quot;off&quot;)
-plt.show()
-</textarea>
+plt.show()</textarea>
             </div>
             <div id="code-cell-38-output" class="output"></div>
         </div>
@@ -597,7 +592,7 @@ image_rgb = imread(&quot;./data/dendrite_colour.png&quot;)
 image_hsv = rgb_to_hsv(image_rgb[:, :, :3])
 
 # Display the original RGB image and the converted HSV array
-fig, ax = plt.subplots(ncols=2, figsize=(10, 5))
+fig, ax = plt.subplots(ncols=2, figsize=(10, 5), layout=&quot;constrained&quot;)
 
 ax[0].imshow(image_rgb)
 ax[0].set_title(&quot;Original RGB image&quot;)
@@ -662,7 +657,7 @@ sat_visible = np.where(dark_mask, sat_patch, np.nan)
 val_visible = np.where(dark_mask, val_patch, np.nan)
 
 # Show RGB patch and HSV channels
-fig, ax = plt.subplots(ncols=4, figsize=(12, 6))
+fig, ax = plt.subplots(ncols=4, figsize=(12, 6), layout=&quot;constrained&quot;)
 
 ax[0].imshow(rgb_patch)
 ax[0].set_title(&quot;Selected dendrite patch&quot;)
@@ -686,7 +681,6 @@ fig.colorbar(im_h, ax=ax[1], fraction=0.046, pad=0.04, label=&quot;Hue&quot;, ti
 fig.colorbar(im_s, ax=ax[2], fraction=0.046, pad=0.04, label=&quot;Saturation&quot;, ticks=ticks)
 fig.colorbar(im_v, ax=ax[3], fraction=0.046, pad=0.04, label=&quot;Value&quot;, ticks=ticks)
 
-plt.tight_layout()
 plt.show()</textarea>
             </div>
             <div id="code-cell-41-output" class="output"></div>
