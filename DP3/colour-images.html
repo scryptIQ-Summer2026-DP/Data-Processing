@@ -171,31 +171,31 @@
         <p>With a colour, RGB image, its three channel values combine to produce the final perceived colour of each pixel. For example, a pixel with a high red value and low green and blue values will appear red-dominant, while a pixel with similar values in all three channels will appear more grey or white.<br><br>This numerical pixel representation is very useful to us as data scientists, for it allows us to inspect, manipulate and analyse each colour channel separately. In biological imaging, colour information may arise from stains, fluorescent markers or false-colour rendering, for instance, and so understanding how RGB images are structured is an important first step towards more advanced colour-based image analysis.</p><p>Let&#x27;s use matplotlib&#x27;s <code>imread()</code> function, to read in a colour image, and store it into a variable.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-28">from matplotlib.image import imread
+                <textarea id="code-cell-27">from matplotlib.image import imread
 import matplotlib.pyplot as plt
 
 import numpy as np</textarea>
             </div>
-            <div id="code-cell-28-output" class="output" style="display: none;"></div>
+            <div id="code-cell-27-output" class="output" style="display: none;"></div>
         </div>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-29">image_colour = imread(&quot;./data/dendrite_colour.png&quot;)
+                <textarea id="code-cell-28">image_colour = imread(&quot;./data/dendrite_colour.png&quot;)
 
 type(image_colour)</textarea>
             </div>
-            <div id="code-cell-29-output" class="output"></div>
+            <div id="code-cell-28-output" class="output"></div>
         </div>
         <p>The image is now stored as a NumPy array, and so we can use NumPy methods to inspect the data held within it, as follows.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-30">max_intensity = image_colour.max()
+                <textarea id="code-cell-29">max_intensity = image_colour.max()
 min_intensity = image_colour.min()
 
 print(f&quot;Data type = {image_colour.dtype}\nMinimum pixel intensity = {min_intensity}\nMaximum pixel intensity = {max_intensity}\n\nImage Array = \n{image_colour}&quot;)</textarea>
             </div>
-            <div id="code-cell-30-output" class="output"></div>
+            <div id="code-cell-29-output" class="output"></div>
         </div>
         <p>The array comprises trios of intensities with indices <code>0</code>, <code>1</code> and <code>2</code> corresponding to red, green and blue channels, respectively. We can see that its <code>.min</code> value is <code>0.0</code>, and its <code>.max</code> value is 1.0, and can see that its data type is <code>float32</code>, and not an integer.<br><br>This shows that the intensities in this image are normalised to a scale running from 0 to 1, not 0-255, as many colour images are.</p>
         <div class="info-box note-box">
@@ -210,32 +210,32 @@ print(f&quot;Data type = {image_colour.dtype}\nMinimum pixel intensity = {min_in
         <p>Let&#x27;s take a look at our dendrite image, this time, in colour. As before, we&#x27;ll display the image using matplotlib&#x27;s <code>imshow()</code> function.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-31"># Display
+                <textarea id="code-cell-30"># Display
 plt.imshow(image_colour)
 plt.axis(&quot;off&quot;);</textarea>
             </div>
-            <div id="code-cell-31-output" class="output"></div>
+            <div id="code-cell-30-output" class="output"></div>
         </div>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-32"># Inspect NumPy array structure and channel count
+                <textarea id="code-cell-31"># Inspect NumPy array structure and channel count
 print(f&quot;shape = {image_colour.shape}&quot;)
 print(f&quot;dimensions = {image_colour.ndim}&quot;)
 print(f&quot;dtype = {image_colour.dtype}&quot;)
 print(f&quot;channel count = {image_colour.shape[2]}&quot;)</textarea>
             </div>
-            <div id="code-cell-32-output" class="output"></div>
+            <div id="code-cell-31-output" class="output"></div>
         </div>
         <p>The image clearly contains a total of three channels, and thus is RGB, containing no transparency layer. Visibly, the dendritic processes are now a vibrant, light green colour, with punctate signal in bright red. At a glance, we can immediately anticipate that isolating one feature from the other should give a better result, when using the colour image over the greyscale counterpart we looked at, previously.<br><br>Since we have already worked with 0-1 intensities with our earlier greyscale image example, let&#x27;s convert these normalised intensities to a <code>uint8</code> or &#x27;8-bit unsigned integer&#x27; type, so that we can experience handling images whose intensities are represented on a 0-255, integer scale.<br><br>We can do this using a simple conditional statement:</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-33"># Convert normalised float images to 8-bit RGB values
+                <textarea id="code-cell-32"># Convert normalised float images to 8-bit RGB values
 
 if image_colour.max() &lt;= 1.0:
     image_colour = (image_colour * 255).round().astype(&quot;uint8&quot;)</textarea>
             </div>
-            <div id="code-cell-33-output" class="output" style="display: none;"></div>
+            <div id="code-cell-32-output" class="output" style="display: none;"></div>
         </div>
         
                     </div>
@@ -249,7 +249,7 @@ if image_colour.max() &lt;= 1.0:
                         <p>Since an RGB image&#x27;s channels are stored along the third dimension of the image array, we can extract them individually with great ease, by simply using NumPy <strong>slicing</strong>. Splitting an image into its separate channels allows us to inspect how much each channel contributes to the final image, and can help reveal structures that are more prominent in one colour component than in the others.<br><br>As aforementioned, in images where different stains and markers can be used to separate structures of interest, we expect these to differ in their red, green and blue composition.<br><br>By examining channels separately, we can better understand how colour information is distributed across the image. We can also merge channels back together again by stacking them in the correct order, recreating the original RGB image from its component arrays.<br><br>Let&#x27;s start out by separating the channels.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-34"># Read in the colour image
+                <textarea id="code-cell-33"># Read in the colour image
 image_colour = imread(&quot;./data/dendrite_colour.png&quot;)
 
 # Convert normalised float images to 8-bit RGB values
@@ -284,12 +284,12 @@ ax[1, 1].axis(&quot;off&quot;)
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-34-output" class="output"></div>
+            <div id="code-cell-33-output" class="output"></div>
         </div>
         <p>From first glance, the green channel clearly separates the dendritic processes away from the rest of the image.<br><br>Next, let&#x27;s take a look at the intensity values for each channel, and plot these as histograms.<br><br>Some things to bear in mind about the plotting code given below:<br><ul class="nested-list"><li>The panel shows four plots: one for red, blue, green and, finally, combined channel intensities across the image.</li><br><li>As we have done previously we use the <code>.ravel()</code> method for plotting a histogram, as this reduces the image down to a 1-dimensional list of intensities. Since a histogram is a plot of frequency, it requires that the data is given as a 1-D list, in order to show the distribution of intensities across the image, evenly.</li><br><li>The <code>bin</code> size is given at 50. This essentially means the plot shows 50 &#x27;groupings&#x27; across the intensity scale. You can increase or decrease this value, to increase the &#x27;resolution&#x27; of the groupings.</li><br><li>We have set x- and y-axis limits. Since the image contains predominantly black background, there is a very large intensity peak in values at the very darkest end of the spectrum between 0-5. Thus, we have decided to exclude these from our plot using <code>.xlim()</code>, and have &#x27;zoomed in&#x27; on the y-axis, using <code>.ylim()</code></li><br><li>The aim of all these is to create a comprehensive and meaningful set of histograms that accessibly describe our image.</li></ul></p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-35"># Split the image into red, green, and blue channels
+                <textarea id="code-cell-34"># Split the image into red, green, and blue channels
 red = image_colour[:, :, 0]
 green = image_colour[:, :, 1]
 blue = image_colour[:, :, 2]
@@ -336,7 +336,7 @@ ax[1, 1].set_ylim(0, 0.025e6)
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-35-output" class="output"></div>
+            <div id="code-cell-34-output" class="output"></div>
         </div>
         <p>From these simple channel visualisations and intensity histograms alone, we can already see that the dendritic processes contribute strongly to both the <strong>red</strong> and especially the <strong>green</strong> channels, which is why much of the branching structure appears yellow-green in the composite RGB image.<br><br>The smaller puncta are most prominent in the <strong>red</strong> channel, where they appear as distinct bright spots distributed along and around the dendrites; they show a clear lack of intensity in green and blue channels; observations that can be useful in framing how we might approach separating them.<br><br>Conversely, the <strong>blue</strong> channel contributes relatively little across most of the image, apart from the cell body, where it is concentrated much more strongly than in the dendritic processes. The histograms also show a large number of low-intensity pixels in all channels, reflecting the dark background, while the high-intensity peaks near the upper end of the red and green distributions correspond to the bright neuronal structures that dominate the visible signal. And it is these regions that we are interested in.</p>
                     </div>
@@ -360,7 +360,7 @@ plt.show()</textarea>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-36"># Merge the channels back into one RGB image
+                <textarea id="code-cell-35"># Merge the channels back into one RGB image
 image_merged = np.dstack((red, green, blue))
 
 # Display the reconstructed image
@@ -369,12 +369,12 @@ plt.title(&quot;Merged RGB image&quot;)
 plt.axis(&quot;off&quot;)
 plt.show()</textarea>
             </div>
-            <div id="code-cell-36-output" class="output"></div>
+            <div id="code-cell-35-output" class="output"></div>
         </div>
         <p>While this might look like a pointless exercise, our earlier visualisation of separate colour channels, showed that the blue channel largely had very little info in it, surrounding the dendritic processes themselves (excluding the cell body) and the puncta. Thus, on occasion, it might be useful to merge just two of the three channels, to see how this might look.<br><br>In the code cell below, we will merge red and green channels only, to illustrate this.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-37"># Merge the red and green channels, with blue set to zero
+                <textarea id="code-cell-36"># Merge the red and green channels, with blue set to zero
 image_rg_merged = np.dstack((red, green, np.zeros_like(blue)))
 
 # Display the red-green merged image
@@ -383,7 +383,7 @@ plt.title(&quot;Merged red-green image&quot;)
 plt.axis(&quot;off&quot;)
 plt.show()</textarea>
             </div>
-            <div id="code-cell-37-output" class="output"></div>
+            <div id="code-cell-36-output" class="output"></div>
         </div>
         <p>Looking at this two-channel merged image in the context of our earlier channel splitting, it is clear that much of the visually prominent signal in this image is carried by the red and green channels, alone.<br><br>In situations where large numbers of parametrically-consistent images are being analysed, reducing the data in this way can improve computational efficiency by lowering memory use and simplifying downstream processing.<br><br>Conceptually, this is very similar to dropping less informative features from a DataFrame, as we saw in earlier Data Processing lessons, and will encounter as we approach the Machine Learning module. However, this should only be done when the discarded channel is known to contribute little meaningful information for the specific analysis.</p>
                     </div>
@@ -407,14 +407,14 @@ plt.show()</textarea>
         <p>In Python, false colouring can be achieved in several ways, the simplest of which are <strong>inverting</strong> one or more channels so that bright regions in that channel are displayed with their opposite intensity; and <strong>swapping</strong> the order of the red, green and blue channels. Although this changes the visual appearance of the image, it does not alter the underlying spatial structure of the data.</p><h4>Inversion</h4><p>Take this image of Adam&#x27;s cat, Milo. There is a strong yellow hue in the beanbag he is splayed out upon, but in the RGB colour space, this yellow cannot be represented as a single independent quantity. Instead, it is produced by a particular combination of red, green and blue intensities, with relatively strong red and green values and a noticeably lower blue contribution.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-38">milo = imread(&quot;./data/Milo.jpg&quot;)
+                <textarea id="code-cell-37">milo = imread(&quot;./data/Milo.jpg&quot;)
 
 plt.axis(&quot;off&quot;)
 plt.imshow(milo);
 
 milo.dtype</textarea>
             </div>
-            <div id="code-cell-38-output" class="output"></div>
+            <div id="code-cell-37-output" class="output"></div>
         </div>
         <p>As an exploratory step to validate this thinking, let&#x27;s quickly plot an RGB intensity histogram, so we can get a feel for the intensities of red, green and blue present in the image. We&#x27;ll also plot grayscale representations of each individual red, green and blue channel in the image, as this makes it easy to identify each channel&#x27;s contribution to a particular region of the image.</p>
         <div class="info-box note-box">
@@ -429,7 +429,7 @@ milo.dtype</textarea>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-39"># Extract channels from Milo&#x27;s photo
+                <textarea id="code-cell-38"># Extract channels from Milo&#x27;s photo
 
 fig, ax = plt.subplots(ncols=4, figsize=(12, 3), layout=&quot;constrained&quot;)
 
@@ -457,7 +457,7 @@ ax[3].axis(&quot;off&quot;)
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-39-output" class="output"></div>
+            <div id="code-cell-38-output" class="output"></div>
         </div>
         <p>The channel representations corroborate our previous statement:<br><ul class="nested-list"><li>The blue channel intensities in the beanbag are relatively low (as denoted by the larger proportion of darker values in the histogram&#x27;s blue channel, and the blue channel plot).</li><br><li>The red and green channels are quite bright and intense in the yellow bean bag, as denoted by the whiter and lighter grey shades on these plots, and the peak in red and green intensities between 200-250 on the RGB histogram.</li></ul>Next, let&#x27;s invert the image channels. Since each pixel is a simple numerical intensity, getting its <strong>inverted value</strong> is achieved by <strong>subtracting that value from the maximum possible intensity</strong>.</p>
         <div class="info-box remember-box">
@@ -482,7 +482,7 @@ plt.show()</textarea>
         <p>Since we checked our <code>dtype</code> above, and found that the photograph of Milo is scaled from 0-255 (as <code>uint8</code> data), we achieve inversion by subtracting each intensity value from 255, as follows:</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-40"># Invert channels
+                <textarea id="code-cell-39"># Invert channels
 milo_red_inv = 255 - milo_red
 milo_green_inv = 255 - milo_green
 milo_blue_inv = 255 - milo_blue
@@ -495,19 +495,19 @@ plt.imshow(milo_swapped_inverted)
 plt.axis(&quot;off&quot;)
 plt.show()</textarea>
             </div>
-            <div id="code-cell-40-output" class="output"></div>
+            <div id="code-cell-39-output" class="output"></div>
         </div>
         <p>As we would expect, the inversion or <strong>negative</strong> of the image alters the appearance of the beanbag quite dramatically. The original yellow colour is produced by relatively strong red and green intensities with a lower blue contribution. Thus, when these channel intensities are inverted, those relationships are reversed, producing a <strong>false-colour</strong> result in which the original warm yellow tones are replaced by much cooler cyan-blue hues.</p><h4>Swapping channels</h4><p>Another simple way to false-colour an image is to swap its channels around. This can be done using a NumPy function called <code>dstack</code>, which stacks separate 2-dimensional arrays together along a third axis, forming a new colour image. By changing the order in which the red, green, and blue channels are stacked, we can create a new, <em>composite image</em> in which the original colours are reassigned.<br><br>This does not change the spatial arrangement of the image, but it can dramatically alter its appearance and help us to understand how strongly the final colours depend on channel order.<br><br>It&#x27;s achieved by simply rearranging the order of the channels, and visualising this.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-41">milo_swapped = np.dstack((milo_blue, milo_red, milo_green))
+                <textarea id="code-cell-40">milo_swapped = np.dstack((milo_blue, milo_red, milo_green))
 
 # Display the swapped image
 plt.imshow(milo_swapped)
 plt.axis(&quot;off&quot;)
 plt.show()</textarea>
             </div>
-            <div id="code-cell-41-output" class="output"></div>
+            <div id="code-cell-40-output" class="output"></div>
         </div>
         
                     </div>
@@ -531,7 +531,7 @@ plt.show()</textarea>
         
         <div class="code-area">
             <div class="code-container code-editor">
-                <textarea id="code-cell-42"># 1. Invert the red, green, and blue channels (subtract from 255)
+                <textarea id="code-cell-41"># 1. Invert the red, green, and blue channels (subtract from 255)
 red_inv = 
 green_inv = 
 blue_inv = 
@@ -542,8 +542,8 @@ image_swapped_inverted =
 # 3. Display the false-colour image
 # ...</textarea>
             </div>
-            <button id="run-code-cell-42" class="run-button">Run Code</button>
-            <div id="code-cell-42-output" class="output"></div>
+            <button id="run-code-cell-41" class="run-button">Run Code</button>
+            <div id="code-cell-41-output" class="output"></div>
         </div>
         
                     </div>
@@ -577,14 +577,14 @@ image_swapped_inverted =
         <p>In cases where we have an RGB image, but want to operate on it using HSV principles, we first need to convert it from the RGB colour space into HSV. This is because hue, saturation, and value are not stored explicitly in a standard RGB image, but must instead be derived mathematically from the red, green, and blue channel values. Within matplotlib, there is a function called <code>rgb_to_hsv()</code> that performs this conversion.<br><br>Let&#x27;s convert the image, and display it side by side with the original RGB image.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-43">from matplotlib.colors import rgb_to_hsv</textarea>
+                <textarea id="code-cell-42">from matplotlib.colors import rgb_to_hsv</textarea>
             </div>
-            <div id="code-cell-43-output" class="output" style="display: none;"></div>
+            <div id="code-cell-42-output" class="output" style="display: none;"></div>
         </div>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-44"># Read in the RGB image
+                <textarea id="code-cell-43"># Read in the RGB image
 image_rgb = imread(&quot;./data/dendrite_colour.png&quot;)
 
 # Convert to HSV
@@ -603,7 +603,7 @@ ax[1].axis(&quot;off&quot;)
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-44-output" class="output"></div>
+            <div id="code-cell-43-output" class="output"></div>
         </div>
         <p>Immediately, you will notice how bizarre the HSV image looks when visualised directly. Once this conversion has been performed, each pixel is no longer described in terms of red, green, and blue intensities, but instead by its dominant colour (H), the strength or purity of that colour (S), and its overall brightness (V). However, <code>imshow()</code> still assumes that any three-channel image it receives is in RGB format, so it <em>misinterprets</em> the HSV values as though they were red, green, and blue intensities.<br><br>In practice, this means that HSV images are not usually displayed directly as ordinary colour images. Instead, we typically either inspect the <strong>H</strong>, <strong>S</strong>, and <strong>V</strong> channels separately, or convert the HSV image back into RGB for display. In other words, HSV is mainly a useful colour space for <strong>analysis and segmentation</strong>, rather than for direct visual presentation in the same way as RGB.</p>
                     </div>
@@ -637,7 +637,7 @@ plt.show()</textarea>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-45"># Select a small patch
+                <textarea id="code-cell-44"># Select a small patch
 rgb_patch = image_rgb[225:300, 680:695]
 hsv_patch = image_hsv[225:300, 680:695]
 
@@ -680,7 +680,7 @@ fig.colorbar(im_v, ax=ax[3], fraction=0.046, pad=0.04, label=&quot;Value&quot;, 
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-45-output" class="output"></div>
+            <div id="code-cell-44-output" class="output"></div>
         </div>
         <p>We can now quite accurately eyeball value ranges for H, S and V that correspond to the bright green dendritic process, based on this patch. This is the exploratory step that allows us to find a meaningful starting point for HSV-based thresholding and masking of features.<br><br>From the figure we generated above, it is reasonable to assume that the dendritic processes are captured in the following ranges:<br><ul class="nested-list"><li>Hue range: <strong>O.20-0.35</strong></li><br><li>Saturation range: <strong>0.75-1.00</strong></li><br><li>Value range: <strong>0.75-1.00</strong></li></ul>In the next section of this lesson, we will apply these techniques to a leaf dataset, and actually perform thresholding and masking on these, based on HSV value ranges.</p>
                     </div>

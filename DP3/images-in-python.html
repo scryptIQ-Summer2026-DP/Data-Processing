@@ -420,10 +420,10 @@ leaf_crop.shape</textarea>
         <p>Using <code>subplots</code> - with which you will be familiar from previous lessons in this module - you can easily create tiled figures, displaying different regions of the image</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-10">leaf_crop_2 = leaf_image[1300:1900, 1600:2300]
+                <textarea id="code-cell-10">leaf_crop_2 = leaf_image[1200:1900, 1600:2300]
 leaf_crop_3 = leaf_image[1000:1700, 1500:2200]
 
-fig, ax = plt.subplots(ncols=2, nrows=2, figsize=(10,10))
+fig, ax = plt.subplots(ncols=2, nrows=2, figsize=(10,10), layout=&quot;constrained&quot;)
 
 ax[0, 0].imshow(leaf_image)
 ax[0, 0].axis(&quot;off&quot;)
@@ -444,6 +444,16 @@ ax[1, 1].set_title(&quot;Crop 3&quot;,fontsize=10)
 plt.show()</textarea>
             </div>
             <div id="code-cell-10-output" class="output"></div>
+        </div>
+        
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p>In the code cell above, we make use of <code>layout=&quot;constrained&quot;</code>, to present each subplot (or image crop, in this case) in a symmetrical, evenly spaced configuration and manner. This more correctly and currently updates the <code>.tightlayout()</code> method and convention that is often used to achieve a similar outcome.</p>
+            </div>
         </div>
         
                     </div>
