@@ -216,7 +216,18 @@
                 <div class="module-body">
                     <div class="module-section">
                         <h3>Reading image files into Python</h3>
-                        <p>Before we can inspect or analyse an image in Python, we first need to be able to read the image file into memory, as an array. In this lesson, we will focus on using the <code>imread</code> function from the <code>matplotlib.image</code> submodule; a common and convenient function for loading image data directly into a NumPy-compatible format.<br><br>That is not to say that there aren&#x27;t other methods for doing this. For instance, you may encounter <code>Image.open()</code> from the <strong>Pillow</strong> library, <code>imageio.imread()</code> or even <code>cv2.imread()</code> from <strong>OpenCV</strong>. But <code>imread</code> is a good starting point, as it keeps the process simple and closely aligned with array-based image analysis. We will use it consistently throughout this course, going forward, whenever we are dealing with image files.<br><br>Let&#x27;s start with this image of a bitter gourd leaf.</p><p><img src="./images/Fig2_healthy_5.JPG" alt="" class="notebook-image"></p><p>We can make use of the <code>imread</code> function to load in the file, and check its <code>type</code>:</p>
+                        
+        <div class="video-container">
+            <iframe 
+                src="https://www.youtube.com/embed/_ruZzUCDbWQ"
+                width="560"
+                height="315"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+        </div>
+        <p>Before we can inspect or analyse an image in Python, we first need to be able to read the image file into memory, as an array. In this lesson, we will focus on using the <code>imread</code> function from the <code>matplotlib.image</code> submodule; a common and convenient function for loading image data directly into a NumPy-compatible format.<br><br>That is not to say that there aren&#x27;t other methods for doing this. For instance, you may encounter <code>Image.open()</code> from the <strong>Pillow</strong> library, <code>imageio.imread()</code> or even <code>cv2.imread()</code> from <strong>OpenCV</strong>. But <code>imread</code> is a good starting point, as it keeps the process simple and closely aligned with array-based image analysis. We will use it consistently throughout this course, going forward, whenever we are dealing with image files.<br><br>Let&#x27;s start with this image of a bitter gourd leaf.</p><p><img src="./images/Fig2_healthy_5.JPG" alt="" class="notebook-image"></p><p>We can make use of the <code>imread</code> function to load in the file, and check its <code>type</code>:</p>
         <div class="code-area">
             <div class="code-container code-fixed">
                 <textarea id="code-cell-1">from matplotlib.image import imread</textarea>
@@ -484,7 +495,7 @@ leaf_2 =
 print(f&quot;Shape = {leaf_2.shape}&quot;)
 print(f&quot;Data type = {leaf_2.dtype}&quot;)
 
-# 3. Crop the image: rows 500:1700, columns 1000:1000
+# 3. Crop the image: rows 500:1700, columns 1000:2000
 leaf_2_crop = 
 
 # 4. Display the cropped image

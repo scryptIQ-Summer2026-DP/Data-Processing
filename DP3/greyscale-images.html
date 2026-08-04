@@ -203,9 +203,10 @@ print(f&quot;shape = {dendrite.shape} \ndimensions = {dendrite.ndim} \nsize = {d
         </div>
         
         <div class="code-area">
-            <div class="code-container code-fixed">
+            <div class="code-container code-editor">
                 <textarea id="code-cell-14">plt.imshow(dendrite);   # semi-colon to suppress alphanumeric output.</textarea>
             </div>
+            <button id="run-code-cell-14" class="run-button">Run Code</button>
             <div id="code-cell-14-output" class="output"></div>
         </div>
         
@@ -462,6 +463,67 @@ print(f&quot;Pixel at row {row}, column {col} has intensity {intensity:.3f}&quot
 })();
 </script>
 </div>
+        <div class="code-area">
+            <div class="code-collapse-header" onclick="toggleCodeCollapse('code-cell-23')">
+                <span class="code-collapse-icon">▶</span>
+                <span class="code-collapse-label">Show code</span>
+            </div>
+            <div class="code-container code-fixed code-collapsed" id="code-cell-23-container">
+                <textarea id="code-cell-23"># The code to produce the above
+
+from pathlib import Path
+import base64
+from IPython.display import HTML, display
+
+image_path = Path(&quot;./data/dendrite_greyscale.png&quot;)
+image_base64 = base64.b64encode(image_path.read_bytes()).decode(&quot;ascii&quot;)
+viewer_id = &quot;dendrite-pixel-viewer&quot;
+
+display(HTML(f&#x27;&#x27;&#x27;
+&lt;div id=&quot;{viewer_id}&quot; style=&quot;font-family: sans-serif; max-width: 980px;&quot;&gt;
+  &lt;p id=&quot;{viewer_id}-readout&quot; style=&quot;margin: 0 0 10px 0;&quot;&gt;Loading image...&lt;/p&gt;
+  &lt;canvas id=&quot;{viewer_id}-canvas&quot; style=&quot;border: 1px solid #ccc; max-width: 100%; cursor: crosshair;&quot;&gt;&lt;/canvas&gt;
+&lt;/div&gt;
+&lt;script&gt;
+(function() {{
+  const canvas = document.getElementById(&quot;{viewer_id}-canvas&quot;);
+  const readout = document.getElementById(&quot;{viewer_id}-readout&quot;);
+  const ctx = canvas.getContext(&quot;2d&quot;, {{ willReadFrequently: true }});
+  const img = new Image();
+
+  img.onload = function() {{
+    const maxWidth = 900;
+    const scale = Math.min(1, maxWidth / img.width);
+    canvas.width = img.width;
+    canvas.height = img.height;
+    canvas.style.width = (img.width * scale) + &quot;px&quot;;
+    canvas.style.height = (img.height * scale) + &quot;px&quot;;
+    ctx.drawImage(img, 0, 0);
+    readout.textContent = &quot;Hover over the image to inspect a pixel.&quot;;
+  }};
+
+  canvas.addEventListener(&quot;mousemove&quot;, function(event) {{
+    const rect = canvas.getBoundingClientRect();
+    const x = Math.max(0, Math.min(canvas.width - 1, Math.floor((event.clientX - rect.left) * canvas.width / rect.width)));
+    const y = Math.max(0, Math.min(canvas.height - 1, Math.floor((event.clientY - rect.top) * canvas.height / rect.height)));
+    const pixel = ctx.getImageData(x, y, 1, 1).data;
+    const intensity = (pixel[0] / 255).toFixed(3);
+    readout.textContent = `row = ${{y}}, col = ${{x}}, intensity = ${{intensity}}`;
+  }});
+
+  canvas.addEventListener(&quot;mouseleave&quot;, function() {{
+    readout.textContent = &quot;Hover over the image to inspect a pixel.&quot;;
+  }});
+
+  img.src = &quot;data:image/png;base64,{image_base64}&quot;;
+}})();
+&lt;/script&gt;
+&#x27;&#x27;&#x27;))
+</textarea>
+            </div>
+            <div id="code-cell-23-output" class="output" style="display: none;"></div>
+        </div>
+        
                     </div>
                 </div>
             </div>
@@ -503,7 +565,7 @@ print(f&quot;Pixel at row {row}, column {col} has intensity {intensity:.3f}&quot
         <p>Being able to adjust the apparent <strong>brightness</strong> of an image after it has been loaded into Python can therefore be useful when the original image looks noticeably too dark or too bright for clear visual inspection. This can help make features easier to see and interpret. However, it is important to remember that post hoc brightness adjustment does not recover information that was never captured properly in the first place. It is best understood as a visualisation aid, rather than a true correction of the original acquisition conditions.<br><br>Adjusting <strong>contrast</strong> can also be helpful when different structures in an image occupy different parts of the intensity range, but do not stand apart clearly enough for easy visual inspection. In simple terms, increasing contrast stretches the differences between darker and brighter pixels, which can make prominent structures appear more distinct. In this example, raising the contrast helps the brighter dendritic processes stand out more strongly, while the dimmer punctate signals become less visually dominant. This can be a useful quick visual aid when we want to emphasise the main branching structures.<br><br>In the code cell below, let&#x27;s visualise our greyscale image in a 3-way tile, displaying:<br><ul class="nested-list"><li>how it looks in its original form</li><br><li>with increased brightness</li><br><li>and finally increased contrast</li></ul>The <code>np.clip()</code> function has the syntax <code>np.clip(array, min, max)</code>, where the second and third arguments define the minimum and maximum allowable values. Here, all pixel intensities are clipped to the range <strong>0 to 1</strong>, meaning any value below <code>0</code> is hard set to <code>0</code> and any value above <code>1</code> is hard set to <code>1</code>. Although clipping can cause some bright or dark pixels to lose detail by saturating at these limits, this effect is often negligible if only a small proportion of pixels are affected.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-23"># Increase brightness by adding a constant
+                <textarea id="code-cell-24"># Increase brightness by adding a constant
 brighter = np.clip(dendrite + 0.2, 0, 1)
 
 # Increase contrast by stretching values away from the midpoint
@@ -526,7 +588,7 @@ ax[2].axis(&quot;off&quot;)
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-23-output" class="output"></div>
+            <div id="code-cell-24-output" class="output"></div>
         </div>
         <p>The differences between the three images are most clearly observed at the <strong>soma</strong> (cell body) - the structure in the bottom centre of the image, from which all the dendritic processes radiate.<br><br>Notice that increasing <strong>brightness</strong> simply adds a constant to every pixel, whereas increasing <strong>contrast</strong> first subtracts the midpoint (<code>0.5</code>) before scaling. This centres the intensity values around zero, allowing pixels above the midpoint to become brighter and those below it to become darker by equal proportions. Finally, the midpoint is added back, returning the image to its original intensity scale while preserving the increased contrast.</p>
         <div class="info-box note-box">
@@ -550,7 +612,7 @@ plt.show()</textarea>
                         <p>As we have demonstrated with all the analysis and image manipulation discussed so far, the way that an image is displayed can alter how it is perceived by the observer&#x27;s eye. Depending on the imaging method, important features may appear as dark objects on a pale background, or as bright objects on a dark background. Inverting a grayscale image can therefore be useful when the original presentation makes structures harder to distinguish at a glance.<br><br>Inverting a grayscale image refers to <em>reversing its intensity values</em> so that dark pixels become bright and bright pixels become dark. In an 8-bit image, for instance, this would map values near 0 towards 255 and values near 255 towards 0; in a normalised image the same applies to intensities from 0.0-1.0. This can be useful when important structures are easier for the eye to interpret as bright objects on a dark background, or when the original display makes subtle features difficult to distinguish.<br><br>In practice, inversion can improve visual contrast for certain images, making important features pop out more clearly. As with brightness and contrast adjustment, however, inversion changes only the visual representation of the data, not the underlying signal, itself.<br><br>With Python, we can use simple arithmetic to invert a grayscale image by reversing its intensity values across the available range. For images stored as normalised floating-point data, where intensities run from 0.0 to 1.0, this can be done simply by <em>subtracting the image array from 1</em>. For 8-bit images, inversion is usually performed by <em>subtracting the image from 255</em>, instead.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-24"># Invert the image
+                <textarea id="code-cell-25"># Invert the image
 image_inverted = 1 - dendrite
 
 # Display the original and inverted images
@@ -566,7 +628,7 @@ ax[1].axis(&quot;off&quot;)
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-24-output" class="output"></div>
+            <div id="code-cell-25-output" class="output"></div>
         </div>
         
                     </div>
@@ -600,7 +662,7 @@ plt.show()</textarea>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-25"># Reuse the masks defined earlier from the thresholded intensity ranges
+                <textarea id="code-cell-26"># Reuse the masks defined earlier from the thresholded intensity ranges
 puncta_mask = peak_1_mask
 dendrite_mask = peak_2_mask
 
@@ -631,7 +693,7 @@ ax[2].axis(&quot;off&quot;)
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-25-output" class="output"></div>
+            <div id="code-cell-26-output" class="output"></div>
         </div>
         
                     </div>
@@ -655,7 +717,7 @@ plt.show()</textarea>
         
         <div class="code-area">
             <div class="code-container code-editor">
-                <textarea id="code-cell-26"># 1. Create a boolean mask for intensities between 0.8 and 0.9 (inclusive)
+                <textarea id="code-cell-27"># 1. Create a boolean mask for intensities between 0.8 and 0.9 (inclusive)
 dendrite_mask = 
 
 # 2. Create a new array of zeros with the same shape as dendrite
@@ -667,8 +729,8 @@ binary_image[] =
 # 4. Display the binary image
 # ...</textarea>
             </div>
-            <button id="run-code-cell-26" class="run-button">Run Code</button>
-            <div id="code-cell-26-output" class="output"></div>
+            <button id="run-code-cell-27" class="run-button">Run Code</button>
+            <div id="code-cell-27-output" class="output"></div>
         </div>
         
                     </div>
