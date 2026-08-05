@@ -392,7 +392,18 @@ leaf_image[:3, :3]</textarea>
                 <div class="module-body">
                     <div class="module-section">
                         <h3>Displaying images using matplotlib</h3>
-                        <p>Now that we have read the image in as a NumPy array, we can display it graphically using Matplotlib. An oft-used approach is employing the <code>imshow</code> function within matplotlib&#x27;s <code>pyplot</code> submodule, which renders the array as an image. In the code below, we use <code>plt.axis(&#x27;off&#x27;)</code> to hide axes when we only want to view the image itself. If we left this out, the numbering on x and y axes would correspond to the dimensions of the image, in pixels.</p>
+                        
+        <div class="video-container">
+            <iframe 
+                src="https://www.youtube.com/embed/BqinOkdSydg"
+                width="560"
+                height="315"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+        </div>
+        <p>Now that we have read the image in as a NumPy array, we can display it graphically using Matplotlib. An oft-used approach is employing the <code>imshow</code> function within matplotlib&#x27;s <code>pyplot</code> submodule, which renders the array as an image. In the code below, we use <code>plt.axis(&#x27;off&#x27;)</code> to hide axes when we only want to view the image itself. If we left this out, the numbering on x and y axes would correspond to the dimensions of the image, in pixels.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
                 <textarea id="code-cell-7">import matplotlib.pyplot as plt</textarea>
@@ -407,6 +418,17 @@ plt.axis(&#x27;off&#x27;)
 plt.show()</textarea>
             </div>
             <div id="code-cell-8-output" class="output"></div>
+        </div>
+        
+        <div class="video-container">
+            <iframe 
+                src="https://www.youtube.com/embed/RttmK9jQNNU"
+                width="560"
+                height="315"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
         </div>
         <p>As with any array, you can slice into an image in order to focus on particular zones or areas of interest. This can, for instance, allow the inspection local detail, filling the figure canvas with a cropped region of the image in question.<br><br>With colour images, we typically slice across the first two dimensions to select rows and columns of pixels, while the third dimension stores the colour channels, and is kept, in tact.</p>
         <div class="info-box note-box">
